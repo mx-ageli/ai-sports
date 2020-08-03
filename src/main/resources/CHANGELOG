@@ -1,0 +1,23 @@
+### 接口文档说明
+===
+
+作者:孟加鑫
+电话(微信): 18608121393
+**老师** 登录账号:17788888888 密码:123456
+**学生** 登录账号:17788888888 密码:123456
+
+##### 下面的内容是项目接口文档, 支持在线调试调用!
+
+
+所有的接口都需要传入令牌, 获取令牌请调用 /api/user/v/login
+
+令牌格式: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNTY0NzM2MDkyLCJpYXQiOjE1NjQxMzEyOTJ9.UOZka6D2Gyuf4jK4WKzlCOGIdCuyUEGqJ5U1yF8jTCQO_mX8sM5NSdjag0AdRK7hhlGYGd2qJP9bzkc3uXU0YA ")
+令牌使用: 在请求的Header中添加参数Authorization，值为具体的令牌
+
+---
+#### 更新日志
+
+* 2020-07-14
+1. 项目基础代码初始化，实现基础功能
+    1.1 swagger文档的支持
+    1.2 实现登录、注册的接口（目前为通用注册逻辑，还不支持学生老师限制注册逻辑）
