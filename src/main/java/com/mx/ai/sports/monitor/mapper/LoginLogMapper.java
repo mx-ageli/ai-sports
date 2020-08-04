@@ -1,7 +1,7 @@
 package com.mx.ai.sports.monitor.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.mx.ai.sports.user.entity.User;
+import com.mx.ai.sports.system.entity.User;
 import com.mx.ai.sports.monitor.entity.LoginLog;
 
 import java.util.List;

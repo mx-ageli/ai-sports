@@ -83,4 +83,33 @@ public class AiSportsConstant {
     public final static String JSON = "json";
 
 
+    /**
+     * 默认学校Id
+     */
+    public static final Long DEFAULT_SCHOOL_ID = 1L;
+    /**
+     * 默认头像
+     */
+    public static final String DEFAULT_AVATAR = "/avatar/default.jpg";
+    /**
+     * 默认密码
+     */
+    public static final String DEFAULT_PASSWORD = "123456";
+    /**
+     * 性别男
+     */
+    public static final String SEX_MALE = "0";
+    /**
+     * 性别女
+     */
+    public static final String SEX_FEMALE = "1";
+    /**
+     * 学生组
+     */
+    public static final Long DEPT_STUDENT = 3L;
+    /**
+     * 老师组
+     */
+    public static final Long DEPT_TEACHER = 2L;
+
 }

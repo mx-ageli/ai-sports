@@ -3,8 +3,8 @@ package com.mx.ai.sports.common.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.mx.ai.sports.user.dto.UserSimple;
-import com.mx.ai.sports.user.entity.User;
+import com.mx.ai.sports.system.dto.UserSimple;
+import com.mx.ai.sports.system.entity.User;
 import com.mx.ai.sports.common.entity.AiSportsConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -97,19 +97,6 @@ public class AiSportsUtil {
      * @return
      */
     public static UserSimple getCurrentUser() {
-        Object objectUser = SecurityUtils.getSubject().getPrincipal();
-        if (objectUser != null) {
-            UserSimple userSimple = new UserSimple();
-            User user = (User) objectUser;
-
-            userSimple.setUserId(user.getUserId());
-            userSimple.setDeptId(user.getDeptId());
-            userSimple.setNickname(user.getNickname());
-            userSimple.setUsername(user.getUsername());
-            userSimple.setRoleId(user.getRoleId());
-            return userSimple;
-        }
-
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = Objects.requireNonNull(servletRequestAttributes).getRequest();
 

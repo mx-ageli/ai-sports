@@ -1,7 +1,7 @@
-package com.mx.ai.sports.user.mapper;
+package com.mx.ai.sports.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.mx.ai.sports.user.entity.User;
+import com.mx.ai.sports.system.entity.User;
 
 /**
  * 用户Mapper
@@ -9,5 +9,7 @@ import com.mx.ai.sports.user.entity.User;
  * @date 2019-08-20 19:46
  */
 public interface UserMapper extends BaseMapper<User> {
+
+
 
 }

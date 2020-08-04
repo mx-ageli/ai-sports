@@ -18,9 +18,9 @@ import javax.validation.constraints.NotNull;
  * @date 2020/7/14 4:40 下午
  */
 @Validated
-@Api(tags = "通用接口", protocols = "application/json")
-@RequestMapping(value = "/api/common", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public interface CommonApi {
+@Api(tags = "90-上传图片、视频相关接口", protocols = "application/json")
+@RequestMapping(value = "/api/upload", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+public interface UploadApi {
 
     /**
      * 单张图片上传-返回OSS图片路径
@@ -28,8 +28,8 @@ public interface CommonApi {
      * @param file 上传的文件
      * @return
      */
-    @ApiOperation(value = "单张图片上传-返回OSS图片路径 #已实现 2020-07-14#")
-    @RequestMapping(value = "/v/upload", method = RequestMethod.POST)
+    @ApiOperation(value = "单张图片上传-返回OSS图片路径 #已实现 2020-08-03#")
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
     AiSportsResponse<String> upload(@NotNull MultipartFile file);
 
 

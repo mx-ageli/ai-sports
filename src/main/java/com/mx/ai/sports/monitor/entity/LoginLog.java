@@ -21,7 +21,7 @@ import java.util.Date;
  */
 @Slf4j
 @Data
-@TableName("sys_login_log")
+@TableName("SYS_LOGIN_LOG")
 public class LoginLog implements Serializable {
 
     private static final long serialVersionUID = 921991157363932095L;

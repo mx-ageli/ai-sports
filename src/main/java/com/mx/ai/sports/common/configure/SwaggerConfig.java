@@ -34,7 +34,7 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo())
                 .useDefaultResponseMessages(false)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.mx.ekb.app.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.mx.ai.sports.app.controller"))
                 .paths(PathSelectors.regex("^(?!auth).*$"))
                 .build()
                 .securitySchemes(securitySchemes())

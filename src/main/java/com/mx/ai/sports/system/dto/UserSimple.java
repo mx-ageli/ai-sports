@@ -1,4 +1,4 @@
-package com.mx.ai.sports.user.dto;
+package com.mx.ai.sports.system.dto;
 
 
 import lombok.Data;
@@ -28,17 +28,12 @@ public class UserSimple implements Serializable {
     private String username;
 
     /**
-     * 用户组
-     */
-    private Long deptId;
-
-    /**
      * 姓名
      */
-    private String nickname;
+    private String fullName;
 
     /**
      * 角色
      */
-    private String roleId;
+    private Long roleId;
 }

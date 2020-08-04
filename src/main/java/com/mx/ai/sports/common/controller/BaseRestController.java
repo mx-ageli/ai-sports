@@ -1,9 +1,9 @@
 package com.mx.ai.sports.common.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.mx.ai.sports.user.dto.UserSimple;
-import com.mx.ai.sports.user.entity.User;
-import com.mx.ai.sports.user.service.IUserService;
+import com.mx.ai.sports.system.dto.UserSimple;
+import com.mx.ai.sports.system.entity.User;
+import com.mx.ai.sports.system.service.IUserService;
 import com.mx.ai.sports.common.entity.AiSportsConstant;
 import com.mx.ai.sports.common.utils.JwtTokenUtil;
 import org.apache.commons.lang3.StringUtils;

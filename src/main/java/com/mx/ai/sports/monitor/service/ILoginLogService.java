@@ -2,7 +2,7 @@ package com.mx.ai.sports.monitor.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mx.ai.sports.user.entity.User;
+import com.mx.ai.sports.system.entity.User;
 import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.monitor.entity.LoginLog;
 

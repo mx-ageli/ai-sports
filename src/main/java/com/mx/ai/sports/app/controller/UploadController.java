@@ -1,6 +1,6 @@
 package com.mx.ai.sports.app.controller;
 
-import com.mx.ai.sports.app.api.CommonApi;
+import com.mx.ai.sports.app.api.UploadApi;
 import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
@@ -15,14 +15,14 @@ import javax.validation.constraints.NotNull;
 
 
 /**
- * 基础信息(分类,年级等)相关的接口
+ * 基础信息相关的接口
  *
  * @author Mengjiaxin
  * @date 2019-08-28 16:04
  */
 @Slf4j
-@RestController("CommonApi")
-public class CommonController extends BaseRestController implements CommonApi {
+@RestController("UploadApi")
+public class UploadController extends BaseRestController implements UploadApi {
 
     @Autowired
     private OssUploadUtil ossUploadUtil;

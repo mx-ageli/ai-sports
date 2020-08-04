@@ -3,21 +3,41 @@
 
 作者:孟加鑫
 电话(微信): 18608121393
+
 **老师** 登录账号:17788888888 密码:123456
 **学生** 登录账号:17788888888 密码:123456
 
-##### 下面的内容是项目接口文档, 支持在线调试调用!
+-------------
+#### 下面的内容是项目接口文档, 支持在线调试调用!
 
 
-所有的接口都需要传入令牌, 获取令牌请调用 /api/user/v/login
+##### 我们这个项目的所有功能几乎都是需要登录后才能使用，所以调用每个接口时都需要传递令牌。下面有令牌的获取方式，以及使用方式。
+##### 其中访问的url中带有/v/路径的接口不需要使用令牌就可以请求
+> 怎么获取令牌？
+> 第一步，先调用**/api/user/v/get_code**接口，输入手机号获得短信验证码。我们在测试阶段不发送短信，直接使用666666作为默认验证码。
+> 第二步，再通过手机号和获得的验证码，调用**/api/user/v/login**接口，这时候会返回一个令牌。
+> 令牌格式: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNTY0NzM2MDkyLCJpYXQiOjE1NjQxMzEyOTJ9.UOZka6D2Gyuf4jK4WKzlCOGIdCuyUEGqJ5U1yF8jTCQO_mX8sM5NSdjag0AdRK7hhlGYGd2qJP9bzkc3uXU0YA
+>
+> 怎么使用令牌？
+> 在每一个接口的请求的Header中添加参数Authorization，值为具体的令牌即可。
+>
+> 关于令牌过期的问题？
+> 我们的令牌过期时间默认为30天，在这30天内用户可以不用登录，一直使用这个令牌。但是会涉及到30天后过期的问题，所以我们在每次启动app的时候，
+> 调用**/api/user/v/refresh**接口来获得一个新的有效期30天的令牌
 
-令牌格式: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNTY0NzM2MDkyLCJpYXQiOjE1NjQxMzEyOTJ9.UOZka6D2Gyuf4jK4WKzlCOGIdCuyUEGqJ5U1yF8jTCQO_mX8sM5NSdjag0AdRK7hhlGYGd2qJP9bzkc3uXU0YA ")
-令牌使用: 在请求的Header中添加参数Authorization，值为具体的令牌
 
 ---
-#### 更新日志
+#### 日常更新日志
 
-* 2020-07-14
-1. 项目基础代码初始化，实现基础功能
-    1.1 swagger文档的支持
-    1.2 实现登录、注册的接口（目前为通用注册逻辑，还不支持学生老师限制注册逻辑）
+* 2020-08-03
+项目基础代码初始化，实现基础功能
+swagger文档的支持
+
+* 2020-08-04
+实现用户相关接口，获取验证码、登录、刷新token
+实现oss服务器配置，满足文件上传服务
+实现接口限流功能，防止高并发请求
+实现Xss攻击拦截器，防止xss攻击
+实现短信服务
+实现接口级别日志记录，登录日志记录，方便问题跟踪
+创建基本表结构，以及项目中的domain

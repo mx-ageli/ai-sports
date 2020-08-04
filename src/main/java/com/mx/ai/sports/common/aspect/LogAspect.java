@@ -1,6 +1,6 @@
 package com.mx.ai.sports.common.aspect;
 
-import com.mx.ai.sports.user.dto.UserSimple;
+import com.mx.ai.sports.system.dto.UserSimple;
 import com.mx.ai.sports.common.properties.AiSportsProperties;
 import com.mx.ai.sports.common.utils.AiSportsUtil;
 import com.mx.ai.sports.common.utils.HttpContextUtil;

@@ -17,8 +17,7 @@ import java.util.Date;
  * @date 2019-08-20 19:52
  */
 @Data
-@TableName("sys_log")
-@Excel("系统日志表")
+@TableName("SYS_LOG")
 public class Log implements Serializable {
 
     private static final long serialVersionUID = 1L;
