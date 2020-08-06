@@ -1,5 +1,6 @@
 package com.mx.ai.sports.common.oss;
 
+import lombok.Builder;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,7 +16,7 @@ public class AliyunOssConfig extends OssConfig {
     /**
      * 默认的aliyun oss 操作地址不能随便修改
      */
-    private String endpoint = "http://oss-cn-beijing.aliyuncs.com";
+    private String endpoint = "http://oss-cn-chengdu.aliyuncs.com";
 
     /**
      * 默认的aliyun oss 文件读取地址不能随便修改
@@ -26,7 +27,7 @@ public class AliyunOssConfig extends OssConfig {
 
     private String accessKeySecret = "6sKjUKKQ8tNp12qDukJZuCpjcpU87P";
 
-    private String bucketName = "kaoba880";
+    private String bucketName = "ai-sports";
 
     /**
      * aliyun oss 内网访问路径，当不能使用OSS内网环境的时候，请配置为外网endpoint或者不填写

@@ -1,6 +1,7 @@
 package com.mx.ai.sports.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.mx.ai.sports.system.entity.School;
 import com.mx.ai.sports.system.entity.TeacherRegister;
 import com.mx.ai.sports.system.entity.User;
 
@@ -41,6 +42,24 @@ public interface IUserService extends IService<User> {
      */
     Boolean updateRegisterTeacher(TeacherRegister register);
 
+    /**
+     * 根据学号查询
+     * @param sno
+     * @return
+     */
+    User findBySno(String sno);
 
+    /**
+     * 检查用户是否已经注册，如果没有注册默认系统注册
+     * @param mobile 手机号
+     * @return
+     */
+    User checkUserAndRegister(String mobile);
 
+    /**
+     * 根据学校Id查询学校信息
+     * @param schoolId
+     * @return
+     */
+    School findSchoolById(Long schoolId);
 }

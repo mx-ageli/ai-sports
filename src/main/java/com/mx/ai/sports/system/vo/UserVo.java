@@ -84,6 +84,12 @@ public class UserVo implements Serializable {
     private Long schoolId;
 
     /**
+     * 学校名称
+     */
+    @ApiModelProperty("学校名称")
+    private String schoolName;
+
+    /**
      * 学号
      */
     @ApiModelProperty("学号")

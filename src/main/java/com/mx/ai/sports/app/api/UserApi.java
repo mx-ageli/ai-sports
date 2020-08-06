@@ -66,18 +66,9 @@ public interface UserApi {
      *
      * @return 用户信息
      */
-    @ApiOperation(value = "#已实现 2020-08-04# 获取用户信息")
+    @ApiOperation(value = "#已实现 2020-08-04# 获取用户信息，同时也可以用来校验token的正确性")
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     AiSportsResponse<UserVo> info();
-
-    /**
-     * 校验token是否有效
-     *
-     * @return 是否有效
-     */
-    @ApiOperation(value = "#已实现 2020-08-04# 校验token是否有效，只会返回true有效，false无效，不做其他功能")
-    @RequestMapping(value = "/check", method = RequestMethod.GET)
-    AiSportsResponse<Boolean> check();
 
     /**
      * 刷新用户的token信息
@@ -95,8 +86,8 @@ public interface UserApi {
      * @return 上传成功后返回的oss地址
      */
     @ApiOperation(value = "#已实现 2020-08-04# 用户修改自己的头像 成功后返回头像地址")
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    AiSportsResponse<String> upload(@NotNull MultipartFile file);
+    @RequestMapping(value = "/upload_avatar", method = RequestMethod.POST)
+    AiSportsResponse<String> uploadAvatar(@NotNull MultipartFile file);
 
     /**
      * 将单个手机号设置为老师
@@ -114,5 +105,22 @@ public interface UserApi {
     AiSportsResponse<Boolean> systemRegisterTeacher(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
                                                     @NotBlank @RequestParam("fullName") String fullName);
 
-
+    /**
+     * 学生更新个人信息，只能修改学号、姓名、班级。都是非必填字段，各项传值才修改，不传的不修改。
+     *
+     * @param sno       学号
+     * @param fullName  姓名
+     * @param classesId 班级Id
+     * @return
+     */
+    @ApiOperation(value = "#已实现 2020-08-06# 学生更新个人信息，只能修改学号、姓名、班级。都是非必填字段，各项传值才修改，不传的不修改。")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sno", value = "学号", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "fullName", value = "姓名", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "classesId", value = "班级Id", paramType = "query", dataType = "long")
+    })
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    AiSportsResponse<Boolean> update(@RequestParam(value = "sno", required = false) String sno,
+                                     @RequestParam(value = "fullName", required = false) String fullName,
+                                     @RequestParam(value = "classesId", required = false) Long classesId);
 }

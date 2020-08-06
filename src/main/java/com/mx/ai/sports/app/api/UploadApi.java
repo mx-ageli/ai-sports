@@ -23,12 +23,12 @@ import javax.validation.constraints.NotNull;
 public interface UploadApi {
 
     /**
-     * 单张图片上传-返回OSS图片路径
+     * 单张文件上传-返回OSS文件路径
      *
      * @param file 上传的文件
      * @return
      */
-    @ApiOperation(value = "单张图片上传-返回OSS图片路径 #已实现 2020-08-03#")
+    @ApiOperation(value = "#已实现 2020-08-03# 单张文件上传-返回OSS文件路径")
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     AiSportsResponse<String> upload(@NotNull MultipartFile file);
 

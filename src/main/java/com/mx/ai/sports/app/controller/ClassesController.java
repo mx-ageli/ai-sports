@@ -1,6 +1,7 @@
 package com.mx.ai.sports.app.controller;
 
 import com.mx.ai.sports.app.api.ClassesApi;
+import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsConstant;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
@@ -34,6 +35,7 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     private IClassesService classesService;
 
     @Override
+    @Log("老师创建班级")
     public AiSportsResponse<Boolean> add(@NotBlank @RequestParam("classesName") String classesName) {
         // 是否为老师用户, 不是老师直接抛异常
         if (!isTeacher()) {
@@ -56,6 +58,7 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     }
 
     @Override
+    @Log("老师修改班级")
     public AiSportsResponse<Boolean> update(@NotNull @RequestParam("classesId") Long classesId, @NotBlank @RequestParam("classesName") String classesName) {
         // 是否为老师用户, 不是老师直接抛异常
         if (!isTeacher()) {
@@ -83,6 +86,7 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     }
 
     @Override
+    @Log("查询班级列表")
     public AiSportsResponse<List<ClassesVo>> list() {
         UserSimple user = getCurrentUser();
 

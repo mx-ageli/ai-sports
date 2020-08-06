@@ -15,6 +15,9 @@ import com.mx.ai.sports.common.utils.*;
 import com.mx.ai.sports.monitor.entity.LoginLog;
 import com.mx.ai.sports.monitor.service.ILoginLogService;
 import com.mx.ai.sports.system.converter.UserConverter;
+import com.mx.ai.sports.system.entity.Classes;
+import com.mx.ai.sports.system.entity.School;
+import com.mx.ai.sports.system.service.IClassesService;
 import com.mx.ai.sports.system.vo.UserSimple;
 import com.mx.ai.sports.system.vo.UserVo;
 import com.mx.ai.sports.system.entity.TeacherRegister;
@@ -35,6 +38,7 @@ import javax.validation.constraints.Pattern;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
 
 import static com.mx.ai.sports.common.entity.AiSportsConstant.*;
 
@@ -67,6 +71,9 @@ public class UserController extends BaseRestController implements UserApi {
     @Autowired
     private OssUploadUtil ossUploadUtil;
 
+    @Autowired
+    private IClassesService classesService;
+
 
     @Override
     @Log("手机号和短信验证码登录获得token")
@@ -88,7 +95,7 @@ public class UserController extends BaseRestController implements UserApi {
             return new AiSportsResponse<String>().fail().message("验证码错误!");
         } else {
             // 检查用户是否已经注册，如果没有注册默认系统注册
-            User user = checkUserAndRegister(mobile, deviceId);
+            User user = userService.checkUserAndRegister(mobile);
             // 保存登录日志
             mobileLoginLog(mobile);
             // 生成token
@@ -97,6 +104,7 @@ public class UserController extends BaseRestController implements UserApi {
             if (!StringUtils.isEmpty(deviceId)) {
                 User updateUser = userService.getById(user.getUserId());
                 updateUser.setDeviceId(deviceId);
+                updateUser.setLastLoginTime(new Date());
                 userService.saveOrUpdate(updateUser);
             }
 
@@ -105,46 +113,6 @@ public class UserController extends BaseRestController implements UserApi {
 
             return new AiSportsResponse<String>().success().data(token);
         }
-    }
-
-    /**
-     * 检查用户是否已经注册，如果没有注册默认系统注册
-     *
-     * @param mobile
-     * @param deviceId
-     * @return
-     */
-    private User checkUserAndRegister(String mobile, String deviceId) {
-        // 先通过手机号查询用户信息
-        User user = userService.findByUsername(mobile);
-        // 用户还没有注册，系统给默认注册
-        if (user == null) {
-            user = new User();
-            user.setUsername(mobile);
-            user.setCreateTime(new Date());
-            user.setModifyTime(new Date());
-            user.setLastLoginTime(new Date());
-            user.setDeviceId(deviceId);
-            user.setSchoolId(DEFAULT_SCHOOL_ID);
-            user.setAvatar(DEFAULT_AVATAR);
-
-            // 检查这个用户是不是老师
-            TeacherRegister teacherRegister = userService.findTeacherRegisterByUsername(mobile);
-            // 存在说明为老师
-            if (teacherRegister != null) {
-                // 使用老师登记的姓名
-                user.setFullName(teacherRegister.getFullName());
-                user.setRoleId(RoleEnum.TEACHER.value());
-
-                teacherRegister.setIsRegister(Boolean.TRUE);
-                userService.updateRegisterTeacher(teacherRegister);
-            } else {
-                user.setRoleId(RoleEnum.STUDENT.value());
-            }
-
-            userService.save(user);
-        }
-        return user;
     }
 
     /**
@@ -183,7 +151,7 @@ public class UserController extends BaseRestController implements UserApi {
         code = "666666";
         log.info("手机号:{}, 获取验证码:{}", mobile, code);
 
-        // 往redis中存放验证码，设置过期时间为十分钟
+        // 往redis中存放验证码，设置过期时间为五分钟
         jedisPoolUtil.set(mobile, code);
         jedisPoolUtil.expire(mobile, CODE_EXPIRE_TIME);
 
@@ -205,12 +173,20 @@ public class UserController extends BaseRestController implements UserApi {
 
     @Override
     public AiSportsResponse<UserVo> info() {
-        return new AiSportsResponse<UserVo>().success().data(userConverter.domain2Vo(getUser()));
-    }
+        User user = getUser();
 
-    @Override
-    public AiSportsResponse<Boolean> check() {
-        return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
+        if(user.getSchoolId() == null){
+            return new AiSportsResponse<UserVo>().message("用户对应的学校Id有误，后台错误！").fail();
+        }
+
+        School school = userService.findSchoolById(user.getSchoolId());
+        if(school == null){
+            return new AiSportsResponse<UserVo>().message("用户对应的学校Id有误，没有查询到学校数据！").fail();
+        }
+
+        UserVo userVo = userConverter.domain2Vo(user);
+        userVo.setSchoolName(school.getSchoolName());
+        return new AiSportsResponse<UserVo>().success().data(userVo);
     }
 
     @Override
@@ -220,12 +196,18 @@ public class UserController extends BaseRestController implements UserApi {
 
         // 生成token
         String token = JwtTokenUtil.generateToken(userSimple);
+
+        User user = userService.getById(userSimple.getUserId());
+        // 更新最后一次使用时间
+        user.setLastLoginTime(new Date());
+        userService.updateById(user);
+
         return new AiSportsResponse<String>().success().data(token);
     }
 
     @Override
     @Log("用户上传个人头像")
-    public AiSportsResponse<String> upload(@NotNull MultipartFile file) {
+    public AiSportsResponse<String> uploadAvatar(@NotNull MultipartFile file) {
         try {
 
             File image = FileUtil.multipartFileToFile(file);
@@ -265,5 +247,41 @@ public class UserController extends BaseRestController implements UserApi {
         }
 
         return new AiSportsResponse<Boolean>().success().data(userService.registerTeacher(mobile, fullName));
+    }
+
+    @Override
+    public AiSportsResponse<Boolean> update(@RequestParam(value = "sno", required = false) String sno,
+                                            @RequestParam(value = "fullName", required = false) String fullName,
+                                            @RequestParam(value = "classesId", required = false) Long classesId) {
+
+        User user = getUser();
+        // 只能学生才能调用这个接口进行修改
+        if (!Objects.equals(RoleEnum.STUDENT.value(), user.getRoleId())) {
+            return new AiSportsResponse<Boolean>().message("当前能用户不是一个学生，不能修改！").fail();
+        } else {
+            if (StringUtils.isNotBlank(sno)) {
+                // 通过学号去查询
+                User snoUser = userService.findBySno(sno);
+                // 校验这个学号是否存在，而且判断是否有别的学生在使用
+                if (snoUser != null && !Objects.equals(snoUser.getUserId(), user.getUserId())) {
+                    return new AiSportsResponse<Boolean>().message("学号错误，学号已经被其他同学使用！").fail();
+                }
+                user.setSno(sno);
+            }
+            if (StringUtils.isNotBlank(fullName)) {
+                user.setFullName(fullName);
+            }
+            if (null != classesId) {
+                Classes classes = classesService.getById(classesId);
+                if (classes == null) {
+                    return new AiSportsResponse<Boolean>().message("传入的班级Id错误！没有查询到相应的班级数据！").fail();
+                }
+                // 再添加新的关系
+                classesService.saveStudentClassesRel(user.getUserId(), classesId);
+            }
+            // 重置修改时间
+            user.setModifyTime(new Date());
+            return new AiSportsResponse<Boolean>().success().data(userService.updateById(user));
+        }
     }
 }

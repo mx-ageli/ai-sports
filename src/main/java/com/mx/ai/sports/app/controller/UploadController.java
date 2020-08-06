@@ -15,10 +15,9 @@ import javax.validation.constraints.NotNull;
 
 
 /**
- * 基础信息相关的接口
- *
+ * 基础上传服务
  * @author Mengjiaxin
- * @date 2019-08-28 16:04
+ * @date 2020/8/6 10:58 上午
  */
 @Slf4j
 @RestController("UploadApi")
@@ -28,14 +27,14 @@ public class UploadController extends BaseRestController implements UploadApi {
     private OssUploadUtil ossUploadUtil;
 
     @Override
-    @Log("用户图片上传")
+    @Log("用户上传文件")
     public AiSportsResponse<String> upload(@NotNull MultipartFile file) {
         try {
-            // 上传图片, 返回OSS的图片路径
+            // 上传文件, 返回OSS的文件路径
             String ossUrl = ossUploadUtil.uploadToOss(FileUtil.multipartFileToFile(file));
             return new AiSportsResponse<String>().success().data(ossUrl);
         } catch (Exception e) {
-            String message = "图片上传失败,请稍后再试！";
+            String message = "文件上传失败,请稍后再试！";
             log.error(message, e);
             return new AiSportsResponse<String>().message(message).fail();
         }

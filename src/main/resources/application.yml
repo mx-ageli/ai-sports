@@ -40,7 +40,7 @@ management:
 
 mybatis-plus:
   # 实体类扫描路径
-  type-aliases-package: com.mx.ai.sports.monitor.entity,com.mx.ai.sports.app.user.entity
+  type-aliases-package: com.mx.ai.sports.monitor.entity,com.mx.ai.sports.system.entity
   # xml 扫描路径
   mapper-locations: classpath:mapper/*/*.xml
   configuration:
@@ -48,21 +48,6 @@ mybatis-plus:
   global-config:
     # 关闭 mybatis-plus的 banner
     banner: false
-
-# 阿里云OSS服务配置
-oss:
-  tmpdir: /tmp #文件在本地存储的临时目录
-  root-folder: uploads #可选,文件在oss上第一级文件夹,默认upload
-  delimiter:  /   #可选,文件在oss上文件夹分隔符,默认/
-  aliyun:   ## enabled = true 时加载
-    enabled: true
-    endpoint: http://oss-cn-beijing.aliyuncs.com
-    accessKeyId: LTAI4FqD1WE7i5mPYsQ7UMrJ
-    accessKeySecret: 6sKjUKKQ8tNp12qDukJZuCpjcpU87P
-    accessUrl: http://kaoba880.oss-cn-beijing.aliyuncs.com
-    regionId: cn-beijing
-    ##aliyun oss 文件存储的buket
-    bucket-name: kaoba880
 
 sms:
   regionId: cn-hangzhou

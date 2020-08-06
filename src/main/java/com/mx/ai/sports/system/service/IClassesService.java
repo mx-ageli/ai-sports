@@ -38,4 +38,15 @@ public interface IClassesService extends IService<Classes> {
      * @return
      */
     Classes findByClassesNameNotClassesId(Long classesId, String classesName);
+
+    /**
+     * 保存学生跟班级的关系，默认会先删除关系
+     * @param userId
+     * @param classesId
+     * @return
+     */
+    Boolean saveStudentClassesRel(Long userId, Long classesId);
+
+
+
 }
