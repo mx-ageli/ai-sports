@@ -7,19 +7,24 @@ import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsConstant;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
+import com.mx.ai.sports.common.entity.LimitType;
+import com.mx.ai.sports.common.entity.RoleEnum;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.common.oss.OssUploadUtil;
 import com.mx.ai.sports.common.utils.*;
 import com.mx.ai.sports.monitor.entity.LoginLog;
 import com.mx.ai.sports.monitor.service.ILoginLogService;
 import com.mx.ai.sports.system.converter.UserConverter;
-import com.mx.ai.sports.system.dto.UserSimple;
+import com.mx.ai.sports.system.vo.UserSimple;
+import com.mx.ai.sports.system.vo.UserVo;
+import com.mx.ai.sports.system.entity.TeacherRegister;
 import com.mx.ai.sports.system.entity.User;
 import com.mx.ai.sports.system.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,10 +32,11 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 
-import static com.mx.ai.sports.common.entity.AiSportsConstant.DEFAULT_AVATAR;
-import static com.mx.ai.sports.common.entity.AiSportsConstant.DEFAULT_SCHOOL_ID;
+import static com.mx.ai.sports.common.entity.AiSportsConstant.*;
 
 
 /**
@@ -65,9 +71,9 @@ public class UserController extends BaseRestController implements UserApi {
     @Override
     @Log("手机号和短信验证码登录获得token")
     @Limit(key = "mobileLogin", period = 60, count = 3, name = "登录", prefix = "limit")
-    public AiSportsResponse<String> login(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") String mobile,
-                                          @NotBlank @Length(min = 6, max = 6, message = "长度必须等于6位") String code,
-                                          @RequestParam(value = "deviceId") String deviceId) throws AiSportsException{
+    public AiSportsResponse<String> login(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
+                                          @NotBlank @Length(min = 6, max = 6, message = "长度必须等于6位") @RequestParam("code") String code,
+                                          @NotBlank @RequestParam("deviceId") String deviceId) throws AiSportsException {
         boolean isMobile = AccountValidatorUtil.isMobile(mobile);
         if (!isMobile) {
             return new AiSportsResponse<String>().fail().message("手机号格式不正确!");
@@ -81,37 +87,64 @@ public class UserController extends BaseRestController implements UserApi {
         } else if (!messageCode.equals(code)) {
             return new AiSportsResponse<String>().fail().message("验证码错误!");
         } else {
-            // 先通过手机号查询用户信息
-            User user = userService.findByUsername(mobile);
-            // 用户还没有注册，系统给默认注册
-            if(user == null){
-                user = new User();
-                user.setUsername(mobile);
-                user.setCreateTime(new Date());
-                user.setModifyTime(new Date());
-                user.setLastLoginTime(new Date());
-                user.setDeviceId(deviceId);
-                user.setSchoolId(DEFAULT_SCHOOL_ID);
-                user.setAvatar(DEFAULT_AVATAR);
-
-                userService.save(user);
-            }
-
+            // 检查用户是否已经注册，如果没有注册默认系统注册
+            User user = checkUserAndRegister(mobile, deviceId);
             // 保存登录日志
             mobileLoginLog(mobile);
-
             // 生成token
             String token = JwtTokenUtil.generateToken(userConverter.domain2Simple(user));
-            // 登录成功后,删除验证码
-            jedisPoolUtil.del(mobile);
             // 如果传入有设备Id，将设备Id更新保存
             if (!StringUtils.isEmpty(deviceId)) {
                 User updateUser = userService.getById(user.getUserId());
                 updateUser.setDeviceId(deviceId);
                 userService.saveOrUpdate(updateUser);
             }
+
+            // 登录成功后,删除验证码
+            jedisPoolUtil.del(mobile);
+
             return new AiSportsResponse<String>().success().data(token);
         }
+    }
+
+    /**
+     * 检查用户是否已经注册，如果没有注册默认系统注册
+     *
+     * @param mobile
+     * @param deviceId
+     * @return
+     */
+    private User checkUserAndRegister(String mobile, String deviceId) {
+        // 先通过手机号查询用户信息
+        User user = userService.findByUsername(mobile);
+        // 用户还没有注册，系统给默认注册
+        if (user == null) {
+            user = new User();
+            user.setUsername(mobile);
+            user.setCreateTime(new Date());
+            user.setModifyTime(new Date());
+            user.setLastLoginTime(new Date());
+            user.setDeviceId(deviceId);
+            user.setSchoolId(DEFAULT_SCHOOL_ID);
+            user.setAvatar(DEFAULT_AVATAR);
+
+            // 检查这个用户是不是老师
+            TeacherRegister teacherRegister = userService.findTeacherRegisterByUsername(mobile);
+            // 存在说明为老师
+            if (teacherRegister != null) {
+                // 使用老师登记的姓名
+                user.setFullName(teacherRegister.getFullName());
+                user.setRoleId(RoleEnum.TEACHER.value());
+
+                teacherRegister.setIsRegister(Boolean.TRUE);
+                userService.updateRegisterTeacher(teacherRegister);
+            } else {
+                user.setRoleId(RoleEnum.STUDENT.value());
+            }
+
+            userService.save(user);
+        }
+        return user;
     }
 
     /**
@@ -129,17 +162,18 @@ public class UserController extends BaseRestController implements UserApi {
 
     @Override
     @Log("获取手机验证码")
-    @Limit(key = "getCode", period = 60, count = 3, name = "获取手机验证码", prefix = "limit")
-    public AiSportsResponse<Boolean> getCode(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") String mobile) throws AiSportsException {
+    @Limit(key = "getCode", period = 60, count = 3, name = "获取手机验证码", prefix = "limit", limitType = LimitType.IP)
+    public AiSportsResponse<Boolean> getCode(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile) throws AiSportsException {
         boolean isMobile = AccountValidatorUtil.isMobile(mobile);
         if (!isMobile) {
             return new AiSportsResponse<Boolean>().fail().message("手机号格式不正确!");
         }
+        String keyMobile = CODE_DATE_OUT + mobile;
         // 先判断key是否存在，不存在则直接发送短信
-        Boolean isExists = jedisPoolUtil.exists(mobile);
+        Boolean isExists = jedisPoolUtil.exists(keyMobile);
         if (isExists) {
             // key存在，获取过期时间
-            Long ttlMobile = jedisPoolUtil.ttl(mobile);
+            Long ttlMobile = jedisPoolUtil.ttl(keyMobile);
             log.info("手机号:{}, 正在重复获取验证码, 间隔时间: {} 秒, 请求默认拒绝!", mobile, ttlMobile);
             String msg = "获取验证码太过频繁, 请等待" + ttlMobile + "秒后再次获取！";
             return new AiSportsResponse<Boolean>().message(msg).fail().data(Boolean.FALSE);
@@ -149,11 +183,16 @@ public class UserController extends BaseRestController implements UserApi {
         code = "666666";
         log.info("手机号:{}, 获取验证码:{}", mobile, code);
 
-        // 往redis中存放验证码
+        // 往redis中存放验证码，设置过期时间为十分钟
         jedisPoolUtil.set(mobile, code);
-        jedisPoolUtil.expire(mobile, AiSportsConstant.CODE_DATE_OUT_VALUE);
+        jedisPoolUtil.expire(mobile, CODE_EXPIRE_TIME);
 
-         // 给手机号发送短信验证码
+        // 记录手机号重复获取验证码的时间，间隔为一分钟
+        jedisPoolUtil.set(keyMobile, code);
+        jedisPoolUtil.expire(keyMobile, CODE_DATE_OUT_VALUE);
+
+
+        // 给手机号发送短信验证码
 //        try {
 //            smsUtil.sendCode(mobile, code);
 //        } catch (ClientException e) {
@@ -165,12 +204,11 @@ public class UserController extends BaseRestController implements UserApi {
     }
 
     @Override
-    public AiSportsResponse<User> info() {
-        return new AiSportsResponse<User>().success().data(getUser());
+    public AiSportsResponse<UserVo> info() {
+        return new AiSportsResponse<UserVo>().success().data(userConverter.domain2Vo(getUser()));
     }
 
     @Override
-    @Log("校验token是否有效")
     public AiSportsResponse<Boolean> check() {
         return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
     }
@@ -189,8 +227,17 @@ public class UserController extends BaseRestController implements UserApi {
     @Log("用户上传个人头像")
     public AiSportsResponse<String> upload(@NotNull MultipartFile file) {
         try {
+
+            File image = FileUtil.multipartFileToFile(file);
+            String fileType = FileUtil.getFileType(image);
+
+            fileType = StringUtils.lowerCase(fileType);
+            if (!ArrayUtils.contains(AiSportsConstant.IMAGE_FILE_TYPE, fileType)) {
+                return new AiSportsResponse<String>().message("上传的图片格式不正确！只能为" + Arrays.toString(IMAGE_FILE_TYPE)).fail();
+            }
+
             // 上传图片, 返回OSS的图片路径
-            String ossUrl = ossUploadUtil.uploadToOss(FileUtil.multipartFileToFile(file));
+            String ossUrl = ossUploadUtil.uploadToOss(image);
             if (StringUtils.isEmpty(ossUrl)) {
                 return new AiSportsResponse<String>().message("头像上传失败,请稍后再试！").fail();
             }
@@ -205,5 +252,18 @@ public class UserController extends BaseRestController implements UserApi {
             log.error(message, e);
             return new AiSportsResponse<String>().message(message).fail();
         }
+    }
+
+    @Override
+    @Log("系统注册老师用户")
+    public AiSportsResponse<Boolean> systemRegisterTeacher(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
+                                                           @NotBlank @RequestParam("fullName") String fullName) {
+
+        TeacherRegister register = userService.findTeacherRegisterByUsername(mobile);
+        if (register != null) {
+            return new AiSportsResponse<Boolean>().message("用户已经为注册老师，不需要重复注册。").fail();
+        }
+
+        return new AiSportsResponse<Boolean>().success().data(userService.registerTeacher(mobile, fullName));
     }
 }

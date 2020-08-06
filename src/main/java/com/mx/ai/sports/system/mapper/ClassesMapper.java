@@ -1,7 +1,11 @@
 package com.mx.ai.sports.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.mx.ai.sports.system.vo.ClassesVo;
 import com.mx.ai.sports.system.entity.Classes;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 班级Mapper
@@ -10,4 +14,10 @@ import com.mx.ai.sports.system.entity.Classes;
  */
 public interface ClassesMapper extends BaseMapper<Classes> {
 
+    /**
+     * 根据学校Id查询班级信息
+     * @param schoolId
+     * @return
+     */
+    List<ClassesVo> findBySchoolId(@Param("schoolId") Long schoolId);
 }

@@ -1,4 +1,4 @@
-package com.mx.ai.sports.system.dto;
+package com.mx.ai.sports.system.vo;
 
 
 import lombok.Data;
@@ -36,4 +36,9 @@ public class UserSimple implements Serializable {
      * 角色
      */
     private Long roleId;
+
+    /**
+     * 学校Id
+     */
+    private Long schoolId;
 }

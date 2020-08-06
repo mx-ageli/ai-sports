@@ -1,97 +1,91 @@
-package com.mx.ai.sports.system.entity;
+package com.mx.ai.sports.system.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 用户信息表
- *
+ * 用户信息
  * @author Mengjiaxin
- * @date 2019-08-20 19:47
+ * @date 2020/8/5 1:51 下午
  */
 @Data
-@TableName("SYS_USER")
-public class User implements Serializable {
+public class UserVo implements Serializable {
 
-    private static final long serialVersionUID = -4352868070794165001L;
+    private static final long serialVersionUID = -3964377585818464531L;
 
     /**
      * 用户Id
      */
-    @TableId(value = "USER_ID", type = IdType.AUTO)
+    @ApiModelProperty("用户Id")
     private Long userId;
 
     /**
      * 用户名，电话号码
      */
-    @TableField("USERNAME")
+    @ApiModelProperty("用户名，电话号码")
     private String username;
 
     /**
      * 创建时间
      */
-    @TableField("CREATE_TIME")
+    @ApiModelProperty("创建时间")
     private Date createTime;
 
     /**
      * 修改时间
      */
-    @TableField("MODIFY_TIME")
+    @ApiModelProperty("修改时间")
     private Date modifyTime;
 
     /**
      * 最近一次登录时间
      */
-    @TableField("LAST_LOGIN_TIME")
+    @ApiModelProperty("最近一次登录时间")
     private Date lastLoginTime;
 
     /**
      * 性别 1男 2女
      */
-    @TableField("SEX")
+    @ApiModelProperty("性别 1男 2女")
     private String sex;
 
     /**
      * 头像，oss地址
      */
-    @TableField("AVATAR")
+    @ApiModelProperty("头像，oss地址")
     private String avatar;
 
     /**
      * 姓名
      */
-    @TableField("FULL_NAME")
+    @ApiModelProperty("姓名")
     private String fullName;
 
     /**
      * 设备Id
      */
-    @TableField("DEVICE_ID")
+    @ApiModelProperty("设备Id")
     private String deviceId;
 
     /**
      * 角色Id
      */
-    @TableField("ROLE_ID")
+    @ApiModelProperty("角色Id")
     private Long roleId;
 
     /**
      * 学校Id
      */
-    @TableField("SCHOOL_ID")
+    @ApiModelProperty("学校Id")
     private Long schoolId;
 
     /**
      * 学号
      */
-    @TableField("SNO")
+    @ApiModelProperty("学号")
     private String sno;
-
-
 }

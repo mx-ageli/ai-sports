@@ -18,6 +18,7 @@ import java.util.Date;
 @TableName("SYS_YEAR")
 public class Year implements Serializable {
 
+    private static final long serialVersionUID = -4645905087895867724L;
 
     /**
      * 学年Id

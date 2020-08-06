@@ -1,12 +1,15 @@
 package com.mx.ai.sports.app.api;
 
 import com.mx.ai.sports.common.entity.AiSportsResponse;
+import com.mx.ai.sports.system.vo.TermVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
 
 /**
  * 学期相关接口
@@ -22,9 +25,9 @@ public interface TermApi {
      * 查询所有的学期列表
      * @return
      */
-    @ApiOperation(value = "查询所有的学期列表 #未实现 #")
+    @ApiOperation(value = "#已实现 2020-08-06# 查询所有的学期列表")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    AiSportsResponse<Boolean> list();
+    AiSportsResponse<List<TermVo>> list();
 
 
 

@@ -45,6 +45,7 @@ public class AiSportsResponse<T> implements Serializable {
 
     public AiSportsResponse<T> success() {
         this.code(HttpStatus.OK);
+        this.message("SUCCESS");
         return this;
     }
 

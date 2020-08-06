@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mx.ai.sports.system.mapper.ClassesMapper">
+    <select id="findBySchoolId" parameterType="long" resultType="com.mx.ai.sports.system.vo.ClassesVo">
+        SELECT
+            sc.CLASSES_ID AS classesId,
+            sc.CLASSES_NAME AS classesName,
+            su.USER_ID AS userId,
+            su.FULL_NAME AS teacherName
+        FROM
+            SYS_USER su
+            LEFT JOIN SYS_CLASSES sc ON su.USER_ID = sc.CLASSES_ID
+        WHERE
+            sc.SCHOOL_ID = #{schoolId}
+        ORDER BY
+            sc.CREATE_TIME ASC
+    </select>
+</mapper>

@@ -108,7 +108,7 @@ public class FileUtil {
      * @return 文件类型
      * @throws Exception Exception
      */
-    private static String getFileType(File file) throws Exception {
+    public static String getFileType(File file) throws Exception {
         Preconditions.checkNotNull(file);
         if (file.isDirectory()) {
             throw new Exception("file不是文件");

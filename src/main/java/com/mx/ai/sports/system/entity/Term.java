@@ -19,6 +19,8 @@ import java.util.Date;
 public class Term implements Serializable {
 
 
+    private static final long serialVersionUID = 2608009305574207132L;
+
     /**
      * 学期Id
      */
@@ -48,5 +50,11 @@ public class Term implements Serializable {
      */
     @TableField("TYPE")
     private String type;
+
+    /**
+     * 学年Id
+     */
+    @TableId("YEAR_ID")
+    private Long yearId;
 
 }

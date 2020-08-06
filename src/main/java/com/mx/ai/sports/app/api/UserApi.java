@@ -3,7 +3,7 @@ package com.mx.ai.sports.app.api;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.common.utils.AccountValidatorUtil;
-import com.mx.ai.sports.system.entity.User;
+import com.mx.ai.sports.system.vo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -46,9 +46,9 @@ public interface UserApi {
             @ApiImplicitParam(name = "deviceId", value = "设备Id，为极光推送的设备Id（现在可以随便传个值）", paramType = "query", dataType = "String", required = true)
     })
     @RequestMapping(value = "/v/login", method = RequestMethod.POST)
-    AiSportsResponse<String> login(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") String mobile,
-                                   @NotBlank @Length(min = 6, max = 6, message = "长度必须等于6位") String code,
-                                   @RequestParam(value = "deviceId") String deviceId) throws AiSportsException;
+    AiSportsResponse<String> login(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
+                                   @NotBlank @Length(min = 6, max = 6, message = "长度必须等于6位") @RequestParam("code") String code,
+                                   @NotBlank @RequestParam("deviceId") String deviceId) throws AiSportsException;
 
     /**
      * 获取手机验证码
@@ -59,9 +59,7 @@ public interface UserApi {
     @ApiOperation(value = "#已实现 2020-08-04# 获取手机验证码,通过手机号获得验证码(6位随机数). 在规定时间(60s)内重复获取验证码接口返回false! 测试时不发短信，调用该接口后默认使用666666 <接口限流：一分钟内只能访问3次>", notes = "获取手机验证码,通过手机号获得验证码(6位随机数). 在规定时间(60s)内重复获取验证码接口返回false!")
     @ApiImplicitParam(name = "mobile", value = "手机号", paramType = "query", dataType = "String", required = true)
     @RequestMapping(value = "/v/get_code", method = RequestMethod.GET)
-    AiSportsResponse<Boolean> getCode(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") String mobile) throws AiSportsException;
-
-    ;
+    AiSportsResponse<Boolean> getCode(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile) throws AiSportsException;
 
     /**
      * 获取用户信息
@@ -70,7 +68,7 @@ public interface UserApi {
      */
     @ApiOperation(value = "#已实现 2020-08-04# 获取用户信息")
     @RequestMapping(value = "/info", method = RequestMethod.GET)
-    AiSportsResponse<User> info();
+    AiSportsResponse<UserVo> info();
 
     /**
      * 校验token是否有效
@@ -80,7 +78,6 @@ public interface UserApi {
     @ApiOperation(value = "#已实现 2020-08-04# 校验token是否有效，只会返回true有效，false无效，不做其他功能")
     @RequestMapping(value = "/check", method = RequestMethod.GET)
     AiSportsResponse<Boolean> check();
-
 
     /**
      * 刷新用户的token信息
@@ -100,5 +97,22 @@ public interface UserApi {
     @ApiOperation(value = "#已实现 2020-08-04# 用户修改自己的头像 成功后返回头像地址")
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     AiSportsResponse<String> upload(@NotNull MultipartFile file);
+
+    /**
+     * 将单个手机号设置为老师
+     *
+     * @param mobile   手机号
+     * @param fullName 老师姓名
+     * @return
+     */
+    @ApiOperation(value = "#已实现 2020-08-05# 将单个手机号设置为老师，这个接口只是后台用来添加老师，以后将支持批量导入老师")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "mobile", value = "手机号", paramType = "query", dataType = "String", required = true),
+            @ApiImplicitParam(name = "fullName", value = "老师姓名", paramType = "query", dataType = "String", required = true)
+    })
+    @RequestMapping(value = "/v/system_register_teacher", method = RequestMethod.GET)
+    AiSportsResponse<Boolean> systemRegisterTeacher(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
+                                                    @NotBlank @RequestParam("fullName") String fullName);
+
 
 }

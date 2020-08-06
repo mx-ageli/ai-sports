@@ -1,7 +1,8 @@
 package com.mx.ai.sports.common.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.mx.ai.sports.system.dto.UserSimple;
+import com.mx.ai.sports.common.entity.RoleEnum;
+import com.mx.ai.sports.system.vo.UserSimple;
 import com.mx.ai.sports.system.entity.User;
 import com.mx.ai.sports.system.service.IUserService;
 import com.mx.ai.sports.common.entity.AiSportsConstant;
@@ -23,6 +24,16 @@ public class BaseRestController<T> {
 
     @Autowired
     private IUserService userService;
+
+    /**
+     * 是否是老师
+     * @return
+     */
+    protected Boolean isTeacher(){
+        UserSimple userSimple = getCurrentUser();
+
+        return Objects.equals(RoleEnum.TEACHER.value(), userSimple.getRoleId());
+    }
 
     protected UserSimple getCurrentUser() {
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();

@@ -1,15 +1,24 @@
 package com.mx.ai.sports.app.api;
 
 import com.mx.ai.sports.common.entity.AiSportsResponse;
+import com.mx.ai.sports.system.vo.ClassesVo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * 班级相关接口
+ *
  * @author Mengjiaxin
  * @date 2020/8/3 2:24 下午
  */
@@ -20,30 +29,38 @@ public interface ClassesApi {
 
     /**
      * 创建一个班级（只能是老师才能创建，创建后默认为当前班级的管理员）
+     *
+     * @param classesName 班级名称
      * @return
      */
-    @ApiOperation(value = "创建一个班级（只能是老师才能创建，创建后默认为当前班级的管理员） #未实现 #")
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    AiSportsResponse<Boolean> add();
+    @ApiOperation(value = "#已实现 2020-08-05# 创建一个班级（只能是老师才能创建，创建后默认为当前班级的管理员）")
+    @ApiImplicitParam(name = "classesName", value = "班级名称", paramType = "query", dataType = "String", required = true)
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    AiSportsResponse<Boolean> add(@NotBlank @RequestParam("classesName") String classesName);
 
     /**
      * 更改一个班级的信息（只能是创建班级的老师才可以修改）
+     *
+     * @param classesId   班级Id
+     * @param classesName 班级名称
      * @return
      */
-    @ApiOperation(value = "更改一个班级的信息（只能是创建班级的老师才可以修改） #未实现 #")
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    AiSportsResponse<Boolean> update();
+    @ApiOperation(value = "#已实现 2020-08-05# 更改一个班级的信息（只能是创建班级的老师才可以修改）")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "classesId", value = "班级Id", paramType = "query", dataType = "long", required = true),
+            @ApiImplicitParam(name = "classesName", value = "班级名称", paramType = "query", dataType = "String", required = true)
+    })
+    @RequestMapping(value = "/update", method = RequestMethod.GET)
+    AiSportsResponse<Boolean> update(@NotNull @RequestParam("classesId") Long classesId, @NotBlank @RequestParam("classesName") String classesName);
 
     /**
      * 查询当前用户的班级列表
+     *
      * @return
      */
-    @ApiOperation(value = "查询当前用户的班级列表 #未实现 #")
+    @ApiOperation(value = "#已实现 2020-08-05# 查询当前用户的班级列表")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    AiSportsResponse<Boolean> list();
-
-
-
+    AiSportsResponse<List<ClassesVo>> list();
 
 
 }

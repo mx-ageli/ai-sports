@@ -27,6 +27,12 @@ public class AiSportsConstant {
     public static final String[] VALID_FILE_TYPE = {"xlsx", "zip"};
 
     /**
+     * 上传的图片类型
+     */
+    public static final String[] IMAGE_FILE_TYPE = {"png", "jpg", "jpeg"};
+
+
+    /**
      * request 头信息
      */
     public static final String AUTH_HEADER = "Authorization";
@@ -53,24 +59,14 @@ public class AiSportsConstant {
     public final static Integer CODE_DATE_OUT_VALUE = 60;
 
     /**
-     * 短信验证码的过期时间 默认为五分钟
+     * 短信验证码的过期时间 默认为十分钟
      */
-    public final static Long CODE_EXPIRE_TIME = 5 * 60 * 1000L;
+    public final static Integer CODE_EXPIRE_TIME = 10 * 60;
 
     /**
      * 不需要token验证的路径
      */
-    public static final String[] AUTH_PATH = {
-            "api/ask/teacher/v/",
-            "api/basics/v/",
-            "api/index/v/",
-            "api/order/v/",
-            "api/news/v/",
-            "api/org/v/",
-            "api/region/v/",
-            "api/univ/v/",
-            "api/user/v/",
-            "api/student/v/"};
+    public static final String[] AUTH_PATH = {"api/user/v/"};
 
     /**
      * 多张图片的分隔符
