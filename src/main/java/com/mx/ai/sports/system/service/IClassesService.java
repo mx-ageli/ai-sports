@@ -31,21 +31,14 @@ public interface IClassesService extends IService<Classes> {
     List<ClassesVo> findBySchoolId(Long schoolId);
 
     /**
-     * 通过班级名称查找班级, 排除传入的classId
+     * 通过班级名称查找班级, 排除传入的classesId
      *
-     * @param classesId   排除classId
+     * @param classesId   排除classesId
      * @param classesName 班级名称
      * @return
      */
     Classes findByClassesNameNotClassesId(Long classesId, String classesName);
 
-    /**
-     * 保存学生跟班级的关系，默认会先删除关系
-     * @param userId
-     * @param classesId
-     * @return
-     */
-    Boolean saveStudentClassesRel(Long userId, Long classesId);
 
 
 

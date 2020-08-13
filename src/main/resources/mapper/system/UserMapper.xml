@@ -2,4 +2,43 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mx.ai.sports.system.mapper.UserMapper">
 
+    <select id="findVoById" parameterType="long" resultType="com.mx.ai.sports.system.vo.UserVo">
+        SELECT
+            su.USER_ID AS userId,
+            su.USERNAME AS username,
+            su.CREATE_TIME AS createTime,
+            su.MODIFY_TIME AS modifyTime,
+            su.LAST_LOGIN_TIME AS lastLoginTime,
+            su.SEX AS sex,
+            su.AVATAR AS avatar,
+            su.FULL_NAME AS fullName,
+            su.DEVICE_ID AS deviceId,
+            su.ROLE_ID AS roleId,
+            su.SCHOOL_ID AS schoolId,
+            su.CLASSES_ID AS classesId,
+            su.SNO AS sno,
+            sc.CLASSES_NAME AS classesName,
+            ss.SCHOOL_NAME schoolName
+        FROM
+            SYS_USER su,
+            SYS_CLASSES sc,
+            SYS_SCHOOL ss
+        WHERE
+            su.SCHOOL_ID = ss.SCHOOL_ID
+            AND su.CLASSES_ID = sc.CLASSES_ID
+            AND su.USER_ID = #{userId}
+    </select>
+    <select id="findByClassesId" resultType="com.mx.ai.sports.system.vo.UserSmallVo">
+        SELECT
+            su.USER_ID AS userId,
+            su.FULL_NAME AS fullName,
+            su.SEX AS sex,
+            su.AVATAR AS avatar,
+            su.SNO AS sno
+        FROM
+            SYS_USER su
+        WHERE
+            su.CLASSES_ID = #{classesId}
+    </select>
+
 </mapper>

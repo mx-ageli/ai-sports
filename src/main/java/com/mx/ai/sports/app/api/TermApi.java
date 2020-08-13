@@ -26,8 +26,8 @@ public interface TermApi {
      * @return
      */
     @ApiOperation(value = "#已实现 2020-08-06# 查询所有的学期列表")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    AiSportsResponse<List<TermVo>> list();
+    @RequestMapping(value = "/findAll", method = RequestMethod.GET)
+    AiSportsResponse<List<TermVo>> findAll();
 
 
 

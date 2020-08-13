@@ -1,17 +1,22 @@
 package com.mx.ai.sports.app.api;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
+import com.mx.ai.sports.system.query.ClassesQuery;
 import com.mx.ai.sports.system.vo.ClassesVo;
+import com.mx.ai.sports.system.vo.UserSmallVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -59,8 +64,18 @@ public interface ClassesApi {
      * @return
      */
     @ApiOperation(value = "#已实现 2020-08-05# 查询当前用户的班级列表")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    AiSportsResponse<List<ClassesVo>> list();
+    @RequestMapping(value = "/find_all", method = RequestMethod.GET)
+    AiSportsResponse<List<ClassesVo>> findAll();
 
+    /**
+     * 查询一个班级中的学生列表
+     *
+     * @param query 查询参数
+     * @return
+     */
+    @ApiOperation(value = "#已实现 2020-08-13# 查询一个班级中的学生列表")
+    @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "ClassesQuery", required = true)
+    @RequestMapping(value = "/find_student_by_classes_id", method = RequestMethod.POST)
+    AiSportsResponse<IPage<UserSmallVo>> findStudentByClassesId(@RequestBody @Valid ClassesQuery query);
 
 }

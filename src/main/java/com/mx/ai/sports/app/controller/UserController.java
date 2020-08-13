@@ -1,6 +1,5 @@
 package com.mx.ai.sports.app.controller;
 
-import com.aliyuncs.exceptions.ClientException;
 import com.mx.ai.sports.app.api.UserApi;
 import com.mx.ai.sports.common.annotation.Limit;
 import com.mx.ai.sports.common.annotation.Log;
@@ -16,22 +15,24 @@ import com.mx.ai.sports.monitor.entity.LoginLog;
 import com.mx.ai.sports.monitor.service.ILoginLogService;
 import com.mx.ai.sports.system.converter.UserConverter;
 import com.mx.ai.sports.system.entity.Classes;
-import com.mx.ai.sports.system.entity.School;
-import com.mx.ai.sports.system.service.IClassesService;
-import com.mx.ai.sports.system.vo.UserSimple;
-import com.mx.ai.sports.system.vo.UserVo;
 import com.mx.ai.sports.system.entity.TeacherRegister;
 import com.mx.ai.sports.system.entity.User;
+import com.mx.ai.sports.system.service.IClassesService;
 import com.mx.ai.sports.system.service.IUserService;
+import com.mx.ai.sports.system.vo.UserSimple;
+import com.mx.ai.sports.system.vo.UserUpdateVo;
+import com.mx.ai.sports.system.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -173,20 +174,8 @@ public class UserController extends BaseRestController implements UserApi {
 
     @Override
     public AiSportsResponse<UserVo> info() {
-        User user = getUser();
 
-        if(user.getSchoolId() == null){
-            return new AiSportsResponse<UserVo>().message("用户对应的学校Id有误，后台错误！").fail();
-        }
-
-        School school = userService.findSchoolById(user.getSchoolId());
-        if(school == null){
-            return new AiSportsResponse<UserVo>().message("用户对应的学校Id有误，没有查询到学校数据！").fail();
-        }
-
-        UserVo userVo = userConverter.domain2Vo(user);
-        userVo.setSchoolName(school.getSchoolName());
-        return new AiSportsResponse<UserVo>().success().data(userVo);
+        return new AiSportsResponse<UserVo>().success().data(userService.findVoById(getCurrentUserId()));
     }
 
     @Override
@@ -250,34 +239,35 @@ public class UserController extends BaseRestController implements UserApi {
     }
 
     @Override
-    public AiSportsResponse<Boolean> update(@RequestParam(value = "sno", required = false) String sno,
-                                            @RequestParam(value = "fullName", required = false) String fullName,
-                                            @RequestParam(value = "classesId", required = false) Long classesId) {
-
+    @Log("学生更新个人信息")
+    public AiSportsResponse<Boolean> update(@RequestBody @Valid UserUpdateVo userUpdateVo) {
         User user = getUser();
         // 只能学生才能调用这个接口进行修改
         if (!Objects.equals(RoleEnum.STUDENT.value(), user.getRoleId())) {
             return new AiSportsResponse<Boolean>().message("当前能用户不是一个学生，不能修改！").fail();
         } else {
-            if (StringUtils.isNotBlank(sno)) {
+            if (StringUtils.isNotBlank(userUpdateVo.getSno())) {
                 // 通过学号去查询
-                User snoUser = userService.findBySno(sno);
+                User snoUser = userService.findBySno(userUpdateVo.getSno());
                 // 校验这个学号是否存在，而且判断是否有别的学生在使用
                 if (snoUser != null && !Objects.equals(snoUser.getUserId(), user.getUserId())) {
                     return new AiSportsResponse<Boolean>().message("学号错误，学号已经被其他同学使用！").fail();
                 }
-                user.setSno(sno);
+                user.setSno(userUpdateVo.getSno());
             }
-            if (StringUtils.isNotBlank(fullName)) {
-                user.setFullName(fullName);
+            if (StringUtils.isNotBlank(userUpdateVo.getFullName())) {
+                user.setFullName(userUpdateVo.getFullName());
             }
-            if (null != classesId) {
-                Classes classes = classesService.getById(classesId);
+            if (null != userUpdateVo.getClassesId()) {
+                Classes classes = classesService.getById(userUpdateVo.getClassesId());
                 if (classes == null) {
                     return new AiSportsResponse<Boolean>().message("传入的班级Id错误！没有查询到相应的班级数据！").fail();
                 }
-                // 再添加新的关系
-                classesService.saveStudentClassesRel(user.getUserId(), classesId);
+                // 添加班级Id
+                user.setClassesId(userUpdateVo.getClassesId());
+            }
+            if (StringUtils.isNotBlank(userUpdateVo.getSex())) {
+                user.setSex(userUpdateVo.getSex());
             }
             // 重置修改时间
             user.setModifyTime(new Date());

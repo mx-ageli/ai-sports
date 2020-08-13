@@ -90,6 +90,18 @@ public class UserVo implements Serializable {
     private String schoolName;
 
     /**
+     * 班级Id
+     */
+    @ApiModelProperty("班级Id")
+    private Long classesId;
+
+    /**
+     * 班级名称
+     */
+    @ApiModelProperty("班级名称")
+    private String classesName;
+
+    /**
      * 学号
      */
     @ApiModelProperty("学号")

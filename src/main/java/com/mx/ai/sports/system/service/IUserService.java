@@ -1,9 +1,13 @@
 package com.mx.ai.sports.system.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mx.ai.sports.system.entity.School;
 import com.mx.ai.sports.system.entity.TeacherRegister;
 import com.mx.ai.sports.system.entity.User;
+import com.mx.ai.sports.system.query.ClassesQuery;
+import com.mx.ai.sports.system.vo.UserSmallVo;
+import com.mx.ai.sports.system.vo.UserVo;
 
 /**
  * 用户Service
@@ -62,4 +66,20 @@ public interface IUserService extends IService<User> {
      * @return
      */
     School findSchoolById(Long schoolId);
+
+
+    /**
+     *
+     * @param userId
+     * @return
+     */
+    UserVo findVoById(Long userId);
+
+
+    /**
+     * 根据班级Id和分页查询
+     * @param query
+     * @return
+     */
+    IPage<UserSmallVo> findByClassesId(ClassesQuery query);
 }

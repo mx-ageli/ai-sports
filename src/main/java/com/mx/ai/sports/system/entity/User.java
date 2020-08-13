@@ -88,6 +88,12 @@ public class User implements Serializable {
     private Long schoolId;
 
     /**
+     * 班级Id
+     */
+    @TableField("CLASSES_ID")
+    private Long classesId;
+
+    /**
      * 学号
      */
     @TableField("SNO")

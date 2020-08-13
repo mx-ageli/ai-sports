@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/api/signed", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public interface SignedApi {
 
+    // TODO 查询打卡信息
+
+    // TODO 打卡
 
 
 }

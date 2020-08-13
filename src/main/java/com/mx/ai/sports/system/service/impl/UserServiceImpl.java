@@ -1,6 +1,8 @@
 package com.mx.ai.sports.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.RoleEnum;
 import com.mx.ai.sports.common.oss.AliyunOssConfig;
@@ -10,7 +12,10 @@ import com.mx.ai.sports.system.entity.User;
 import com.mx.ai.sports.system.mapper.SchoolMapper;
 import com.mx.ai.sports.system.mapper.TeacherRegisterMapper;
 import com.mx.ai.sports.system.mapper.UserMapper;
+import com.mx.ai.sports.system.query.ClassesQuery;
 import com.mx.ai.sports.system.service.IUserService;
+import com.mx.ai.sports.system.vo.UserSmallVo;
+import com.mx.ai.sports.system.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -116,5 +121,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public School findSchoolById(Long schoolId) {
         return schoolMapper.selectById(schoolId);
+    }
+
+    @Override
+    public UserVo findVoById(Long userId) {
+
+        return baseMapper.findVoById(userId);
+    }
+
+    @Override
+    public IPage<UserSmallVo> findByClassesId(ClassesQuery query) {
+        Page<User> page = new Page<>(query.getRequest().getPageNum(), query.getRequest().getPageSize());
+        return baseMapper.findByClassesId(page, query.getClassesId());
     }
 }

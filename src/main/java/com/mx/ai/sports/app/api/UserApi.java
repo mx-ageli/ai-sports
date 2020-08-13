@@ -3,6 +3,7 @@ package com.mx.ai.sports.app.api;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.common.utils.AccountValidatorUtil;
+import com.mx.ai.sports.system.vo.UserUpdateVo;
 import com.mx.ai.sports.system.vo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -11,11 +12,13 @@ import io.swagger.annotations.ApiOperation;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -39,7 +42,7 @@ public interface UserApi {
      * @param deviceId 设备Id
      * @return token
      */
-    @ApiOperation(value = "#已实现 2020-08-04# 手机号和短信验证码登录获得token,如果账号没有注册则会在第一次登录时自动注册。<接口限流：一分钟内只能访问3次>")
+    @ApiOperation(value = "#已实现 图21# 手机号和短信验证码登录获得token,如果账号没有注册则会在第一次登录时自动注册。<接口限流：一分钟内只能访问3次>")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "mobile", value = "手机号", paramType = "query", dataType = "String", required = true),
             @ApiImplicitParam(name = "code", value = "短信验证码", paramType = "query", dataType = "String", required = true),
@@ -56,7 +59,7 @@ public interface UserApi {
      * @param mobile 手机号
      * @return 是否成功发送验证码
      */
-    @ApiOperation(value = "#已实现 2020-08-04# 获取手机验证码,通过手机号获得验证码(6位随机数). 在规定时间(60s)内重复获取验证码接口返回false! 测试时不发短信，调用该接口后默认使用666666 <接口限流：一分钟内只能访问3次>", notes = "获取手机验证码,通过手机号获得验证码(6位随机数). 在规定时间(60s)内重复获取验证码接口返回false!")
+    @ApiOperation(value = "#已实现 图21# 获取手机验证码,通过手机号获得验证码(6位随机数). 在规定时间(60s)内重复获取验证码接口返回false! 测试时不发短信，调用该接口后默认使用666666 <接口限流：一分钟内只能访问3次>", notes = "获取手机验证码,通过手机号获得验证码(6位随机数). 在规定时间(60s)内重复获取验证码接口返回false!")
     @ApiImplicitParam(name = "mobile", value = "手机号", paramType = "query", dataType = "String", required = true)
     @RequestMapping(value = "/v/get_code", method = RequestMethod.GET)
     AiSportsResponse<Boolean> getCode(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile) throws AiSportsException;
@@ -106,21 +109,15 @@ public interface UserApi {
                                                     @NotBlank @RequestParam("fullName") String fullName);
 
     /**
-     * 学生更新个人信息，只能修改学号、姓名、班级。都是非必填字段，各项传值才修改，不传的不修改。
+     * 学生更新个人信息，只能修改学号、姓名、班级、性别。都是非必填字段，各项传值才修改，不传的不修改。
      *
-     * @param sno       学号
-     * @param fullName  姓名
-     * @param classesId 班级Id
+     * @param userUpdateVo 个人资料参数
      * @return
      */
-    @ApiOperation(value = "#已实现 2020-08-06# 学生更新个人信息，只能修改学号、姓名、班级。都是非必填字段，各项传值才修改，不传的不修改。")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sno", value = "学号", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "fullName", value = "姓名", paramType = "query", dataType = "string"),
-            @ApiImplicitParam(name = "classesId", value = "班级Id", paramType = "query", dataType = "long")
-    })
+    @ApiOperation(value = "#已实现 图22# 学生更新个人信息，只能修改学号、姓名、班级、性别。都是非必填字段，各项传值才修改，不传的不修改。")
+    @ApiImplicitParam(name = "userUpdateVo", value = "个人资料参数", paramType = "body", dataType = "UserUpdateVo", required = true)
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    AiSportsResponse<Boolean> update(@RequestParam(value = "sno", required = false) String sno,
-                                     @RequestParam(value = "fullName", required = false) String fullName,
-                                     @RequestParam(value = "classesId", required = false) Long classesId);
+    AiSportsResponse<Boolean> update(@RequestBody @Valid UserUpdateVo userUpdateVo);
+
+
 }

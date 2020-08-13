@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
  * @date 2020/7/14 4:40 下午
  */
 @Validated
-@Api(tags = "90-上传图片、视频相关接口", protocols = "application/json")
+@Api(tags = "90-上传相关接口", protocols = "application/json")
 @RequestMapping(value = "/api/upload", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public interface UploadApi {
 

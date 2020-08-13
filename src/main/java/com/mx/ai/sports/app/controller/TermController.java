@@ -26,7 +26,7 @@ public class TermController extends BaseRestController implements TermApi {
     private ITermService termService;
 
     @Override
-    public AiSportsResponse<List<TermVo>> list() {
+    public AiSportsResponse<List<TermVo>> findAll() {
 
         return new AiSportsResponse<List<TermVo>>().success().data(termService.findByCurrentDate());
     }
