@@ -28,6 +28,12 @@ public class Run implements Serializable {
     private Long runId;
 
     /**
+     * 课程Id
+     */
+    @TableId(value = "COURSE_ID")
+    private Long courseId;
+
+    /**
      * 用户Id
      */
     @TableId(value = "USER_ID")

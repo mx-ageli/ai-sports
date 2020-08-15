@@ -3,7 +3,12 @@ package com.mx.ai.sports.app.api;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.entity.QueryRequest;
-import com.mx.ai.sports.course.entity.Course;
+import com.mx.ai.sports.course.query.CourseQuery;
+import com.mx.ai.sports.course.query.StudentCourseQuery;
+import com.mx.ai.sports.course.vo.CourseNumVo;
+import com.mx.ai.sports.course.query.CourseUpdateVo;
+import com.mx.ai.sports.course.vo.CourseVo;
+import com.mx.ai.sports.course.vo.StudentCourseVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -37,7 +42,7 @@ public interface CourseApi {
     @ApiOperation(value = "#未实现 图12# 查询我发布的课程列表（仅限于老师使用)")
     @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "QueryRequest", required = true)
     @RequestMapping(value = "/find_my_publish", method = RequestMethod.POST)
-    AiSportsResponse<IPage<Object>> findMyPublish(@RequestBody @Valid QueryRequest query);
+    AiSportsResponse<IPage<CourseVo>> findMyPublish(@RequestBody @Valid QueryRequest query);
 
     /**
      * 新增课程信息（仅限于老师使用)
@@ -46,9 +51,9 @@ public interface CourseApi {
      * @return
      */
     @ApiOperation(value = "#未实现 图30# 新增课程信息（仅限于老师使用)")
-    @ApiImplicitParam(name = "course", value = "新增参数", paramType = "body", dataType = "Course", required = true)
+    @ApiImplicitParam(name = "course", value = "新增参数", paramType = "body", dataType = "CourseUpdateVo", required = true)
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    AiSportsResponse<Boolean> add(@RequestBody @Valid Course course);
+    AiSportsResponse<Boolean> add(@RequestBody @Valid CourseUpdateVo course);
 
     /**
      * 修改课程信息（仅限于老师使用)
@@ -57,9 +62,9 @@ public interface CourseApi {
      * @return
      */
     @ApiOperation(value = "#未实现 图30# 修改课程信息（仅限于老师使用)")
-    @ApiImplicitParam(name = "course", value = "新增参数", paramType = "body", dataType = "Course", required = true)
+    @ApiImplicitParam(name = "course", value = "新增参数", paramType = "body", dataType = "CourseUpdateVo", required = true)
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    AiSportsResponse<Boolean> update(@RequestBody @Valid Course course);
+    AiSportsResponse<Boolean> update(@RequestBody @Valid CourseUpdateVo course);
 
     /**
      * 查询课程的完成情况历史统计分析（仅限于老师使用)
@@ -68,9 +73,32 @@ public interface CourseApi {
      * @return
      */
     @ApiOperation(value = "#未实现 图32# 查询课程的完成情况历史统计分析（仅限于老师使用)")
-    @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "QueryRequest", required = true)
+    @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "CourseQuery", required = true)
     @RequestMapping(value = "/find_history_analysis", method = RequestMethod.POST)
-    AiSportsResponse<IPage<Object>> findHistoryAnalysis(@RequestBody @Valid QueryRequest query);
+    AiSportsResponse<IPage<Object>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query);
+
+    /**
+     * 查询某一个课程报名数量、缺席数量、合格数量、不合格数量
+     *
+     * @param courseId 课程Id
+     * @return
+     */
+    @ApiOperation(value = "#未实现 图44# 查询某一个课程报名数量、缺席数量、合格数量、不合格数量")
+    @ApiImplicitParam(name = "courseId", value = "课程Id", paramType = "query", dataType = "long", required = true)
+    @RequestMapping(value = "/find_num_by_id", method = RequestMethod.GET)
+    AiSportsResponse<CourseNumVo> findNumById(@NotNull @RequestParam("courseId") Long courseId);
+
+    /**
+     * 查询某一个课程的完成情的学生列表（仅限于老师使用)
+     *
+     * @param query 查询参数
+     * @return
+     */
+    @ApiOperation(value = "#未实现 图44# 查询某一个课程的完成情的学生列表（仅限于老师使用)")
+    @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "StudentCourseQuery", required = true)
+    @RequestMapping(value = "/find_student_by_id", method = RequestMethod.POST)
+    AiSportsResponse<IPage<StudentCourseVo>> findStudentById(@RequestBody @Valid StudentCourseQuery query);
+
 
     /**
      * 查询学校所有的课程列表
@@ -78,10 +106,10 @@ public interface CourseApi {
      * @param query 查询参数
      * @return
      */
-    @ApiOperation(value = "#未实现 图14# 查询学校所有的课程列表")
+    @ApiOperation(value = "#未实现 图14# 查询学校所有的课程列表-今日课程会排在最前面，再根据创建时间排序")
     @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "QueryRequest", required = true)
     @RequestMapping(value = "/find_all", method = RequestMethod.POST)
-    AiSportsResponse<IPage<Object>> findAll(@RequestBody @Valid QueryRequest query);
+    AiSportsResponse<IPage<CourseVo>> findAll(@RequestBody @Valid QueryRequest query);
 
     /**
      * 查询课程详细信息
@@ -91,8 +119,8 @@ public interface CourseApi {
      */
     @ApiOperation(value = "#未实现 图14# 查询课程详细信息")
     @ApiImplicitParam(name = "courseId", value = "课程Id", paramType = "query", dataType = "long", required = true)
-    @RequestMapping(value = "/findById", method = RequestMethod.GET)
-    AiSportsResponse<Object> findById(@NotNull @RequestParam("courseId") Long courseId);
+    @RequestMapping(value = "/find_by_id", method = RequestMethod.GET)
+    AiSportsResponse<CourseVo> findById(@NotNull @RequestParam("courseId") Long courseId);
 
     /**
      * 学生报名课程（仅限于学生使用）

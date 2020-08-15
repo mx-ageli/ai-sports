@@ -1,48 +1,35 @@
-package com.mx.ai.sports.system.vo;
+package com.mx.ai.sports.system.query;
 
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * 班级信息
+ * 班级信息修改
+ *
  * @author Mengjiaxin
  * @date 2020/8/5 1:51 下午
  */
 @Data
-public class ClassesVo implements Serializable {
+public class ClassesUpdateVo implements Serializable {
 
-    private static final long serialVersionUID = -3964377585818464531L;
+    private static final long serialVersionUID = -7420156191175904467L;
 
-    /**
-     * 班级Id
-     */
     @ApiModelProperty("班级Id")
     private Long classesId;
 
-    /**
-     * 班级名称
-     */
+    @NotNull(message = "班级名称不能为null")
     @ApiModelProperty("班级名称")
     private String classesName;
 
-    /**
-     * 班主任的用户Id
-     */
+    @NotNull(message = "班主任的用户Id不能为null")
     @ApiModelProperty("班主任的用户Id")
     private Long userId;
 
-    /**
-     * 老师姓名
-     */
-    @ApiModelProperty("老师姓名")
-    private String teacherName;
-
-    /**
-     * 头像，oss地址
-     */
+    @NotNull(message = "头像不能为null")
     @ApiModelProperty("头像，oss地址")
     private String avatar;
 

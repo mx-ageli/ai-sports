@@ -34,6 +34,12 @@ public class Course implements Serializable {
     private String courseName;
 
     /**
+     * 课程编号
+     */
+    @TableField("COURSE_NO")
+    private String courseNo;
+
+    /**
      * 创建时间
      */
     @TableField("CREATE_TIME")

@@ -3,8 +3,10 @@ package com.mx.ai.sports.app.controller;
 import com.mx.ai.sports.app.api.RunApi;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
-import com.mx.ai.sports.course.entity.Run;
-import com.mx.ai.sports.course.entity.RunRule;
+import com.mx.ai.sports.course.query.RunAddVo;
+import com.mx.ai.sports.course.query.RunRecordQuery;
+import com.mx.ai.sports.course.vo.RunRecordVo;
+import com.mx.ai.sports.course.vo.RunRuleVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,17 +26,17 @@ import java.util.List;
 public class RunController extends BaseRestController implements RunApi {
 
     @Override
-    public AiSportsResponse<Boolean> add(@RequestBody @Valid Run run) {
+    public AiSportsResponse<Boolean> add(@RequestBody @Valid RunAddVo run) {
         return null;
     }
 
     @Override
-    public AiSportsResponse<List<RunRule>> findRunRule() {
+    public AiSportsResponse<List<RunRuleVo>> findRunRule() {
         return null;
     }
 
     @Override
-    public AiSportsResponse<List<Object>> findRunHistory() {
+    public AiSportsResponse<List<RunRecordVo>> findRunHistory(@RequestBody @Valid RunRecordQuery query) {
         return null;
     }
 

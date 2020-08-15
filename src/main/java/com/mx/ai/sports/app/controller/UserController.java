@@ -20,7 +20,7 @@ import com.mx.ai.sports.system.entity.User;
 import com.mx.ai.sports.system.service.IClassesService;
 import com.mx.ai.sports.system.service.IUserService;
 import com.mx.ai.sports.system.vo.UserSimple;
-import com.mx.ai.sports.system.vo.UserUpdateVo;
+import com.mx.ai.sports.system.query.UserUpdateVo;
 import com.mx.ai.sports.system.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;

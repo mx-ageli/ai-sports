@@ -3,6 +3,7 @@ package com.mx.ai.sports.app.api;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.system.query.ClassesQuery;
+import com.mx.ai.sports.system.query.ClassesUpdateVo;
 import com.mx.ai.sports.system.vo.ClassesVo;
 import com.mx.ai.sports.system.vo.UserSmallVo;
 import io.swagger.annotations.Api;
@@ -35,28 +36,24 @@ public interface ClassesApi {
     /**
      * 创建一个班级（只能是老师才能创建，创建后默认为当前班级的管理员）
      *
-     * @param classesName 班级名称
+     * @param classes 新增参数
      * @return
      */
-    @ApiOperation(value = "#已实现 2020-08-05# 创建一个班级（只能是老师才能创建，创建后默认为当前班级的管理员）")
-    @ApiImplicitParam(name = "classesName", value = "班级名称", paramType = "query", dataType = "String", required = true)
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
-    AiSportsResponse<Boolean> add(@NotBlank @RequestParam("classesName") String classesName);
+    @ApiOperation(value = "#已实现 图27# 创建一个班级（只能是老师才能创建，创建后默认为当前班级的管理员）")
+    @ApiImplicitParam(name = "classes", value = "新增参数", paramType = "body", dataType = "ClassesUpdateVo", required = true)
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    AiSportsResponse<Boolean> add(@RequestBody @Valid ClassesUpdateVo classes);
 
     /**
      * 更改一个班级的信息（只能是创建班级的老师才可以修改）
      *
-     * @param classesId   班级Id
-     * @param classesName 班级名称
+     * @param classes 新增参数
      * @return
      */
-    @ApiOperation(value = "#已实现 2020-08-05# 更改一个班级的信息（只能是创建班级的老师才可以修改）")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "classesId", value = "班级Id", paramType = "query", dataType = "long", required = true),
-            @ApiImplicitParam(name = "classesName", value = "班级名称", paramType = "query", dataType = "String", required = true)
-    })
-    @RequestMapping(value = "/update", method = RequestMethod.GET)
-    AiSportsResponse<Boolean> update(@NotNull @RequestParam("classesId") Long classesId, @NotBlank @RequestParam("classesName") String classesName);
+    @ApiOperation(value = "#已实现 图25# 更改一个班级的信息（只能是创建班级的老师才可以修改）")
+    @ApiImplicitParam(name = "classes", value = "修改参数", paramType = "body", dataType = "ClassesUpdateVo", required = true)
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    AiSportsResponse<Boolean> update(@RequestBody @Valid ClassesUpdateVo classes);
 
     /**
      * 查询当前用户的班级列表
@@ -73,7 +70,7 @@ public interface ClassesApi {
      * @param query 查询参数
      * @return
      */
-    @ApiOperation(value = "#已实现 2020-08-13# 查询一个班级中的学生列表")
+    @ApiOperation(value = "#已实现 图24# 查询一个班级中的学生列表")
     @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "ClassesQuery", required = true)
     @RequestMapping(value = "/find_student_by_classes_id", method = RequestMethod.POST)
     AiSportsResponse<IPage<UserSmallVo>> findStudentByClassesId(@RequestBody @Valid ClassesQuery query);

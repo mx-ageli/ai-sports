@@ -1,4 +1,4 @@
-package com.mx.ai.sports.system.query;
+package com.mx.ai.sports.course.query;
 
 
 import com.mx.ai.sports.common.entity.QueryRequest;
@@ -9,23 +9,22 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * 查询班级学生列表参数
+ * 课程查询条件
  *
  * @author Mengjiaxin
  * @date 2020/8/5 1:51 下午
  */
 @Data
-public class ClassesQuery implements Serializable {
+public class CourseQuery implements Serializable {
 
-
-    private static final long serialVersionUID = -7164471467593679607L;
+    private static final long serialVersionUID = 962330801132278243L;
 
     /**
-     * 班级Id
+     * 课程Id
      */
-    @NotNull(message = "班级Id不能为null")
-    @ApiModelProperty("班级Id")
-    private Long classesId;
+    @NotNull(message = "课程Id不能为null")
+    @ApiModelProperty("课程Id")
+    private Long courseId;
 
     /**
      * 分页参数

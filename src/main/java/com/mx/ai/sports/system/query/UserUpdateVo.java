@@ -1,4 +1,4 @@
-package com.mx.ai.sports.system.vo;
+package com.mx.ai.sports.system.query;
 
 
 import io.swagger.annotations.ApiModelProperty;

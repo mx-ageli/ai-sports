@@ -1,10 +1,10 @@
 package com.mx.ai.sports.app.api;
 
 import com.mx.ai.sports.common.entity.AiSportsResponse;
-import com.mx.ai.sports.course.entity.Course;
-import com.mx.ai.sports.course.entity.Run;
-import com.mx.ai.sports.course.entity.RunRule;
-import com.mx.ai.sports.system.vo.ClassesVo;
+import com.mx.ai.sports.course.query.RunRecordQuery;
+import com.mx.ai.sports.course.query.RunAddVo;
+import com.mx.ai.sports.course.vo.RunRecordVo;
+import com.mx.ai.sports.course.vo.RunRuleVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * 跑步相关接口
+ *
  * @author Mengjiaxin
  * @date 2020/8/3 2:24 下午
  */
@@ -34,9 +35,9 @@ public interface RunApi {
      * @return
      */
     @ApiOperation(value = "#未实现 图5# 保存跑步数据")
-    @ApiImplicitParam(name = "run", value = "新增参数", paramType = "body", dataType = "Run", required = true)
+    @ApiImplicitParam(name = "run", value = "新增参数", paramType = "body", dataType = "RunAddVo", required = true)
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    AiSportsResponse<Boolean> add(@RequestBody @Valid Run run);
+    AiSportsResponse<Boolean> add(@RequestBody @Valid RunAddVo run);
 
     /**
      * 查询合格的跑步规则
@@ -45,15 +46,16 @@ public interface RunApi {
      */
     @ApiOperation(value = "#未实现 图6# 查询合格的跑步规则")
     @RequestMapping(value = "/find_run_rule", method = RequestMethod.GET)
-    AiSportsResponse<List<RunRule>> findRunRule();
+    AiSportsResponse<List<RunRuleVo>> findRunRule();
 
     /**
      * 按照指定的时间区间查询跑步记录
-     *
+     * @param query
      * @return
      */
     @ApiOperation(value = "#未实现 图10# 按照指定的时间区间查询跑步记录")
-    @RequestMapping(value = "/find_run_history", method = RequestMethod.GET)
-    AiSportsResponse<List<Object>> findRunHistory();
+    @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "RunRecordQuery", required = true)
+    @RequestMapping(value = "/find_run_history", method = RequestMethod.POST)
+    AiSportsResponse<List<RunRecordVo>> findRunHistory(@RequestBody @Valid RunRecordQuery query);
 
 }

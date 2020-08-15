@@ -44,6 +44,12 @@ public class Classes implements Serializable {
     private Long schoolId;
 
     /**
+     * 头像，oss地址
+     */
+    @TableField("AVATAR")
+    private String avatar;
+
+    /**
      * 创建时间
      */
     @TableField("CREATE_TIME")

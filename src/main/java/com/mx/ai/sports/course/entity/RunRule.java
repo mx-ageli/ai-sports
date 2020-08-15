@@ -27,19 +27,13 @@ public class RunRule implements Serializable {
     private Long runRuleId;
 
     /**
-     * 跑步规则类型： 1大于等于多少公里，2大于等于的时长
-     */
-    @TableId(value = "RULE_TYPE")
-    private String ruleType;
-
-    /**
-     * 里程
+     * 里程,大于等于多少米
      */
     @TableField("MILEAGE")
-    private float mileage;
+    private Float mileage;
 
     /**
-     * 跑步时长(以秒为单位)
+     * 跑步时长(以秒为单位)，大于等于的时长
      */
     @TableField("RUN_TIME")
     private Long runTime;

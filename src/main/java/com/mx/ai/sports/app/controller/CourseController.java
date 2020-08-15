@@ -5,7 +5,12 @@ import com.mx.ai.sports.app.api.CourseApi;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.entity.QueryRequest;
-import com.mx.ai.sports.course.entity.Course;
+import com.mx.ai.sports.course.query.CourseQuery;
+import com.mx.ai.sports.course.query.StudentCourseQuery;
+import com.mx.ai.sports.course.vo.CourseNumVo;
+import com.mx.ai.sports.course.query.CourseUpdateVo;
+import com.mx.ai.sports.course.vo.CourseVo;
+import com.mx.ai.sports.course.vo.StudentCourseVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,34 +30,43 @@ import javax.validation.constraints.NotNull;
 @RestController("CourseApi")
 public class CourseController extends BaseRestController implements CourseApi {
 
-
     @Override
-    public AiSportsResponse<IPage<Object>> findMyPublish(@RequestBody @Valid QueryRequest query) {
+    public AiSportsResponse<IPage<CourseVo>> findMyPublish(@RequestBody @Valid QueryRequest query) {
         return null;
     }
 
     @Override
-    public AiSportsResponse<Boolean> add(@RequestBody @Valid Course course) {
+    public AiSportsResponse<Boolean> add(@RequestBody @Valid CourseUpdateVo course) {
         return null;
     }
 
     @Override
-    public AiSportsResponse<Boolean> update(@RequestBody @Valid Course course) {
+    public AiSportsResponse<Boolean> update(@RequestBody @Valid CourseUpdateVo course) {
         return null;
     }
 
     @Override
-    public AiSportsResponse<IPage<Object>> findHistoryAnalysis(@RequestBody @Valid QueryRequest query) {
+    public AiSportsResponse<IPage<Object>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query) {
         return null;
     }
 
     @Override
-    public AiSportsResponse<IPage<Object>> findAll(@RequestBody @Valid QueryRequest query) {
+    public AiSportsResponse<CourseNumVo> findNumById(@NotNull @RequestParam("courseId") Long courseId) {
         return null;
     }
 
     @Override
-    public AiSportsResponse<Object> findById(@NotNull @RequestParam("courseId") Long courseId) {
+    public AiSportsResponse<IPage<StudentCourseVo>> findStudentById(@RequestBody @Valid StudentCourseQuery query) {
+        return null;
+    }
+
+    @Override
+    public AiSportsResponse<IPage<CourseVo>> findAll(@RequestBody @Valid QueryRequest query) {
+        return null;
+    }
+
+    @Override
+    public AiSportsResponse<CourseVo> findById(@NotNull @RequestParam("courseId") Long courseId) {
         return null;
     }
 

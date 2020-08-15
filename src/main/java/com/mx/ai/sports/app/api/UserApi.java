@@ -3,7 +3,7 @@ package com.mx.ai.sports.app.api;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.common.utils.AccountValidatorUtil;
-import com.mx.ai.sports.system.vo.UserUpdateVo;
+import com.mx.ai.sports.system.query.UserUpdateVo;
 import com.mx.ai.sports.system.vo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
