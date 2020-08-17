@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mx.ai.sports.job.mapper.JobMapper">
+    <select id="queryList" resultType="com.mx.ai.sports.job.entity.Job">
+        SELECT JOB_ID          jobId,
+               BEAN_NAME       beanName,
+               METHOD_NAME     methodName,
+               PARAMS,
+               CRON_EXPRESSION cronExpression,
+               STATUS,
+               REMARK,
+               CREATE_TIME     createTime
+        FROM SYS_JOB
+        ORDER BY JOB_ID
+    </select>
+</mapper>

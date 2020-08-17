@@ -13,4 +13,6 @@ import com.mx.ai.sports.system.entity.User;
  */
 public interface ICourseService extends IService<Course> {
 
+
+
 }

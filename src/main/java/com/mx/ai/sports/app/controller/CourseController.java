@@ -2,16 +2,23 @@ package com.mx.ai.sports.app.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mx.ai.sports.app.api.CourseApi;
+import com.mx.ai.sports.common.annotation.Log;
+import com.mx.ai.sports.common.annotation.TeacherRole;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.entity.QueryRequest;
+import com.mx.ai.sports.course.converter.CourseConverter;
+import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.query.CourseQuery;
 import com.mx.ai.sports.course.query.StudentCourseQuery;
+import com.mx.ai.sports.course.service.ICourseService;
 import com.mx.ai.sports.course.vo.CourseNumVo;
 import com.mx.ai.sports.course.query.CourseUpdateVo;
 import com.mx.ai.sports.course.vo.CourseVo;
 import com.mx.ai.sports.course.vo.StudentCourseVo;
+import com.mx.ai.sports.job.service.IJobService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,19 +37,53 @@ import javax.validation.constraints.NotNull;
 @RestController("CourseApi")
 public class CourseController extends BaseRestController implements CourseApi {
 
+    @Autowired
+    private CourseConverter courseConverter;
+
+    @Autowired
+    private ICourseService courseService;
+
+    @Autowired
+    private IJobService jobService;
+
     @Override
     public AiSportsResponse<IPage<CourseVo>> findMyPublish(@RequestBody @Valid QueryRequest query) {
         return null;
     }
 
     @Override
-    public AiSportsResponse<Boolean> add(@RequestBody @Valid CourseUpdateVo course) {
-        return null;
+    @TeacherRole
+    @Log("老师创建课程")
+    public AiSportsResponse<Boolean> add(@RequestBody @Valid CourseUpdateVo updateVo) {
+
+        // TODO 判断限制只能是老师才能调用这个接口
+
+        // TODO 判断课程名称是否重复
+
+        // TODO 判断发布的课程时间是否与我之前发布的课程时间冲突， 先判断星期，判断时间
+
+        Course course = courseConverter.vo2Domain(updateVo);
+        course.setUserId(getCurrentUserId());
+
+//        courseService.save(course);
+
+        // 创建课程的定时任务
+        // jobService.createJob();
+        return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
     }
 
     @Override
-    public AiSportsResponse<Boolean> update(@RequestBody @Valid CourseUpdateVo course) {
-        return null;
+    @Log("老师修改课程")
+    public AiSportsResponse<Boolean> update(@RequestBody @Valid CourseUpdateVo updateVo) {
+        // TODO 判断课程名称是否重复
+
+        // TODO 判断发布的课程时间是否与我之前发布的课程时间冲突， 先判断星期，判断时间
+
+        Course course = courseConverter.vo2Domain(updateVo);
+        course.setUserId(getCurrentUserId());
+
+        courseService.saveOrUpdate(course);
+        return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
     }
 
     @Override

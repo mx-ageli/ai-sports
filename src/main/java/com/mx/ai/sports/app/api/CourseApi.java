@@ -47,24 +47,24 @@ public interface CourseApi {
     /**
      * 新增课程信息（仅限于老师使用)
      *
-     * @param course 新增参数
+     * @param updateVo 新增参数
      * @return
      */
     @ApiOperation(value = "#未实现 图30# 新增课程信息（仅限于老师使用)")
-    @ApiImplicitParam(name = "course", value = "新增参数", paramType = "body", dataType = "CourseUpdateVo", required = true)
+    @ApiImplicitParam(name = "updateVo", value = "新增参数", paramType = "body", dataType = "CourseUpdateVo", required = true)
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    AiSportsResponse<Boolean> add(@RequestBody @Valid CourseUpdateVo course);
+    AiSportsResponse<Boolean> add(@RequestBody @Valid CourseUpdateVo updateVo);
 
     /**
      * 修改课程信息（仅限于老师使用)
      *
-     * @param course 新增参数
+     * @param updateVo 修改参数
      * @return
      */
     @ApiOperation(value = "#未实现 图30# 修改课程信息（仅限于老师使用)")
-    @ApiImplicitParam(name = "course", value = "新增参数", paramType = "body", dataType = "CourseUpdateVo", required = true)
+    @ApiImplicitParam(name = "updateVo", value = "新增参数", paramType = "body", dataType = "CourseUpdateVo", required = true)
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    AiSportsResponse<Boolean> update(@RequestBody @Valid CourseUpdateVo course);
+    AiSportsResponse<Boolean> update(@RequestBody @Valid CourseUpdateVo updateVo);
 
     /**
      * 查询课程的完成情况历史统计分析（仅限于老师使用)

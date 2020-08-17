@@ -3,9 +3,11 @@ package com.mx.ai.sports.app.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mx.ai.sports.app.api.ClassesApi;
 import com.mx.ai.sports.common.annotation.Log;
+import com.mx.ai.sports.common.annotation.TeacherRole;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsConstant;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
+import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.system.entity.Classes;
 import com.mx.ai.sports.system.query.ClassesQuery;
 import com.mx.ai.sports.system.query.ClassesUpdateVo;
@@ -42,8 +44,9 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     private IUserService userService;
 
     @Override
+    @TeacherRole
     @Log("老师创建班级")
-    public AiSportsResponse<Boolean> add(@RequestBody @Valid ClassesUpdateVo classes) {
+    public AiSportsResponse<Boolean> add(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException {
         // 是否为老师用户, 不是老师直接抛异常
         if (!isTeacher()) {
             return new AiSportsResponse<Boolean>().message("当前登录用户没有权限操作！").fail().data(Boolean.FALSE);
@@ -66,8 +69,9 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     }
 
     @Override
+    @TeacherRole
     @Log("老师修改班级")
-    public AiSportsResponse<Boolean> update(@RequestBody @Valid ClassesUpdateVo classes) {
+    public AiSportsResponse<Boolean> update(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException {
         // 是否为老师用户, 不是老师直接抛异常
         if (!isTeacher()) {
             return new AiSportsResponse<Boolean>().message("当前登录用户没有权限操作！").fail().data(Boolean.FALSE);

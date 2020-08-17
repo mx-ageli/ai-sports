@@ -2,6 +2,7 @@ package com.mx.ai.sports.app.api;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
+import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.system.query.ClassesQuery;
 import com.mx.ai.sports.system.query.ClassesUpdateVo;
 import com.mx.ai.sports.system.vo.ClassesVo;
@@ -42,7 +43,7 @@ public interface ClassesApi {
     @ApiOperation(value = "#已实现 图27# 创建一个班级（只能是老师才能创建，创建后默认为当前班级的管理员）")
     @ApiImplicitParam(name = "classes", value = "新增参数", paramType = "body", dataType = "ClassesUpdateVo", required = true)
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    AiSportsResponse<Boolean> add(@RequestBody @Valid ClassesUpdateVo classes);
+    AiSportsResponse<Boolean> add(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException;
 
     /**
      * 更改一个班级的信息（只能是创建班级的老师才可以修改）
@@ -53,7 +54,7 @@ public interface ClassesApi {
     @ApiOperation(value = "#已实现 图25# 更改一个班级的信息（只能是创建班级的老师才可以修改）")
     @ApiImplicitParam(name = "classes", value = "修改参数", paramType = "body", dataType = "ClassesUpdateVo", required = true)
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    AiSportsResponse<Boolean> update(@RequestBody @Valid ClassesUpdateVo classes);
+    AiSportsResponse<Boolean> update(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException;
 
     /**
      * 查询当前用户的班级列表
@@ -62,7 +63,7 @@ public interface ClassesApi {
      */
     @ApiOperation(value = "#已实现 2020-08-05# 查询当前用户的班级列表")
     @RequestMapping(value = "/find_all", method = RequestMethod.GET)
-    AiSportsResponse<List<ClassesVo>> findAll();
+    AiSportsResponse<List<ClassesVo>> findAll() throws AiSportsException;
 
     /**
      * 查询一个班级中的学生列表
