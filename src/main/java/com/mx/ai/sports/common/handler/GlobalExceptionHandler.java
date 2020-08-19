@@ -7,8 +7,6 @@ import com.mx.ai.sports.common.exception.LimitAccessException;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authz.UnauthorizedException;
-import org.apache.shiro.session.ExpiredSessionException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -126,18 +124,6 @@ public class GlobalExceptionHandler {
     public AiSportsResponse handleLimitAccessException(LimitAccessException e) {
         log.error("LimitAccessException", e);
         return new AiSportsResponse().code(HttpStatus.TOO_MANY_REQUESTS).message(e.getMessage());
-    }
-
-    @ExceptionHandler(value = UnauthorizedException.class)
-    public AiSportsResponse handleUnauthorizedException(UnauthorizedException e) {
-        log.error("UnauthorizedException", e);
-        return new AiSportsResponse().code(HttpStatus.FORBIDDEN).message(e.getMessage());
-    }
-
-    @ExceptionHandler(value = ExpiredSessionException.class)
-    public AiSportsResponse handleExpiredSessionException(ExpiredSessionException e) {
-        log.error("ExpiredSessionException", e);
-        return new AiSportsResponse().code(HttpStatus.UNAUTHORIZED).message(e.getMessage());
     }
 
     @ExceptionHandler(value = FileDownloadException.class)

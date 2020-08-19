@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.mx.ai.sports.common.annotation.IsTime;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Date;
 
 /**
@@ -34,16 +34,16 @@ public class Course implements Serializable {
     private String courseName;
 
     /**
-     * 课程编号
-     */
-    @TableField("COURSE_NO")
-    private String courseNo;
-
-    /**
      * 创建时间
      */
     @TableField("CREATE_TIME")
     private Date createTime;
+
+    /**
+     * 修改时间
+     */
+    @TableField("UPDATE_TIME")
+    private Date updateTime;
 
     /**
      * 发布的老师Id
@@ -52,7 +52,7 @@ public class Course implements Serializable {
     private Long userId;
 
     /**
-     * 星期，分别用 1周一 2周二 ... 周天7 格式： 1,2,3,4
+     * 星期，分别用 1周日 2周一 3周二 4周三 5周四 6周五 7周六 ... 周天7 格式： 以逗号拼接 1,2,3,4,5,6,7
      */
     @TableId(value = "WEEK")
     private String week;
@@ -60,26 +60,24 @@ public class Course implements Serializable {
     /**
      * 课程的开始时间
      */
+    @IsTime(message = "时间格式不正确, 格式：HH:mm")
     @TableId(value = "START_TIME")
-    private Time startTime;
+    private String startTime;
 
     /**
      * 课程的结束时间
      */
+    @IsTime(message = "时间格式不正确, 格式：HH:mm")
     @TableId(value = "END_TIME")
-    private Time endTime;
+    private String endTime;
 
     /**
-     * 课程打卡的开始时间
+     * 课程打卡的时间
      */
-    @TableId(value = "SIGNED_START_TIME")
-    private Time signedStartTime;
+    @IsTime(message = "时间格式不正确, 格式：HH:mm")
+    @TableId(value = "SIGNED_TIME")
+    private String signedTime;
 
-    /**
-     * 课程打卡的结束时间
-     */
-    @TableId(value = "SIGNED_END_TIME")
-    private Time signedEndTime;
 
     /**
      * 打卡的坐标点
@@ -96,8 +94,8 @@ public class Course implements Serializable {
     /**
      * 以坐标点打卡的范围，以米为单位
      */
-    @TableId(value = "RANGE")
-    private Long range;
+    @TableId(value = "SCOPE")
+    private Long scope;
 
     /**
      * 课程对应的图片
@@ -105,6 +103,16 @@ public class Course implements Serializable {
     @TableId(value = "IMAGES")
     private String images;
 
+    /**
+     * 课程记录的任务Id
+     */
+    @TableId(value = "COURSE_JOB_ID")
+    private Long courseJobId;
 
+    /**
+     * 课程学生记录的任务Id
+     */
+    @TableId(value = "STUDENT_JOB_ID")
+    private Long studentJobId;
 
 }

@@ -4,11 +4,9 @@ package com.mx.ai.sports.common.utils;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.mx.ai.sports.system.vo.UserSimple;
-import com.mx.ai.sports.system.entity.User;
 import com.mx.ai.sports.common.entity.AiSportsConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 

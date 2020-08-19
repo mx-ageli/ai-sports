@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mx.ai.sports.course.mapper.CourseMapper">
+    <select id="findByCourseName" resultType="com.mx.ai.sports.course.entity.Course">
+        SELECT
+            ac.COURSE_ID AS courseId,
+            ac.COURSE_NAME AS courseName,
+            ac.CREATE_TIME AS createTime,
+            ac.UPDATE_TIME AS updateTime,
+            ac.USER_ID AS userId,
+            ac.`WEEK` AS `week`,
+            ac.START_TIME AS startTime,
+            ac.END_TIME AS endTime,
+            ac.SIGNED_TIME AS signedTime,
+            ac.LOCATION AS location,
+            ac.LOCATION_NAME AS locationName,
+            ac.SCOPE AS scope,
+            ac.IMAGES AS images,
+            ac.COURSE_JOB_ID AS courseJobId,
+            ac.STUDENT_JOB_ID AS studentJobId
+        FROM
+            APP_COURSE ac
+        WHERE
+            ac.COURSE_NAME = #{courseName}
+            <if test="courseId != null and courseId != ''">
+                AND ac.COURSE_ID != #{courseId}
+            </if>
+    </select>
+</mapper>

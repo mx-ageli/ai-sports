@@ -1,9 +1,13 @@
 package com.mx.ai.sports.common.utils;
 
+import com.mx.ai.sports.common.entity.AiSportsConstant;
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -21,6 +25,23 @@ public class DateUtil {
     public static final String FULL_TIME_SPLIT_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     public static final String CST_TIME_PATTERN = "EEE MMM dd HH:mm:ss zzz yyyy";
+
+    public static final String TIME_PATTERN = "HH:mm";
+
+    /**
+     * 根据星期和小时分钟，生成cron表达式
+     * @param weeks
+     * @param localTime
+     * @return
+     */
+    public static String getWeekCron(String[] weeks, LocalTime localTime) {
+        return "0" + AiSportsConstant.SPACE +
+                localTime.getMinute() + AiSportsConstant.SPACE +
+                localTime.getHour() + AiSportsConstant.SPACE +
+                "?" + AiSportsConstant.SPACE +
+                "*" + AiSportsConstant.SPACE +
+                StringUtils.join(weeks, ",") + AiSportsConstant.SPACE;
+    }
 
     public static String formatFullTime(LocalDateTime localDateTime) {
         return formatFullTime(localDateTime, FULL_TIME_PATTERN);

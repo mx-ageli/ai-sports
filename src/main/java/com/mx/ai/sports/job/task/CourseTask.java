@@ -1,10 +1,21 @@
 package com.mx.ai.sports.job.task;
 
+import com.mx.ai.sports.course.entity.CourseRecord;
+import com.mx.ai.sports.course.entity.RecordStudent;
+import com.mx.ai.sports.course.service.ICourseRecordService;
+import com.mx.ai.sports.course.service.ICourseStudentService;
+import com.mx.ai.sports.course.service.IRecordStudentService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 课程的任务调度
+ *
  * @author Mengjiaxin
  * @date 2020/8/17 10:26 下午
  */
@@ -12,18 +23,32 @@ import org.springframework.stereotype.Component;
 @Component
 public class CourseTask {
 
+
+    @Autowired
+    private ICourseRecordService courseRecordService;
+
+    @Autowired
+    private ICourseStudentService courseStudentService;
+
+    @Autowired
+    private IRecordStudentService recordStudentService;
+
     /**
      * 课程活动开始创建课程记录数据， 在打卡时间开始前5分钟创建
      * 根据课程Id创建课程记录
      * CourseRecord表
+     *
      * @param courseId
      */
-    public void courseRecordTask(String courseId){
-        // 一个课程活动在一天内只可能创建一次课程记录， 需要判断同一天是否已经创建了课程记录
-
+    public void courseRecordTask(String courseId) {
         // 创建课程记录
+        CourseRecord courseRecord = new CourseRecord();
+        courseRecord.setCreateTime(new Date());
+        courseRecord.setCourseId(Long.valueOf(courseId));
 
-        log.info("我是带参数的courseRecordTask方法，正在被执行，参数为：{}" , courseId);
+        courseRecordService.save(courseRecord);
+
+        log.info("创建课程记录，courseId:{}，courseRecordId:{}", courseId, courseRecord.getCourseRecordId());
     }
 
     /**
@@ -33,20 +58,34 @@ public class CourseTask {
      *
      * @param courseId
      */
-    public void courseStudentTask(Long courseId){
+    public void recordStudentTask(String courseId) {
+        Long longCourseId = Long.valueOf(courseId);
+        // 课程记录Id
+        Long courseRecordId = courseRecordService.findIdByNew(longCourseId);
+        // 本次课程报名的所有学生
+        List<Long> studentIds = courseStudentService.findByCourseId(longCourseId);
+        // 本次课程已经参与打卡的学生 已经打卡的学生会在课程记录中存在，这种数据无需再次添加
+        List<Long> currentStudentIds = recordStudentService.findByCourseId(longCourseId);
+        // 先将已经参与打卡的学生删除掉
+        studentIds.removeAll(currentStudentIds);
 
-        // 根据课程Id查询最新的课程记录，如果没有查询到，说明这次课程记录创建出现问题
+        List<RecordStudent> recordStudentList = new ArrayList<>();
+        for (Long studentId : studentIds) {
+            RecordStudent recordStudent = new RecordStudent();
+            recordStudent.setCourseId(longCourseId);
+            recordStudent.setCourseRecordId(courseRecordId);
+            recordStudent.setUserId(studentId);
+            recordStudent.setCreateTime(new Date());
+            // 默认缺席
+            recordStudent.setIsAbsent(Boolean.TRUE);
+            // 默认迟到
+            recordStudent.setIsLate(Boolean.TRUE);
+            recordStudentList.add(recordStudent);
+        }
+        recordStudentService.saveBatch(recordStudentList);
 
-        // 开始同步报名的学生到学生记录表中
-
-        // 已经打卡的学生会在课程记录中存在，这种数据无需再次添加
-
-
-
+        log.info("同步报名学生数据，courseId:{}", courseId);
     }
-
-
-
 
 
 }

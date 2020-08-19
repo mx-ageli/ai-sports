@@ -12,5 +12,12 @@ import com.mx.ai.sports.course.entity.CourseRecord;
  */
 public interface ICourseRecordService extends IService<CourseRecord> {
 
+    /**
+     * 获取课程最新的记录Id
+     *
+     * @param courseId 课程Id
+     * @return
+     */
+    Long findIdByNew(Long courseId);
 
 }

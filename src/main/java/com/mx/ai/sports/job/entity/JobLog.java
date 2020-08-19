@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wuwenze.poi.annotation.Excel;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -19,7 +18,6 @@ import java.util.Date;
  */
 @Data
 @TableName("SYS_JOB_LOG")
-@Excel("调度日志信息表")
 public class JobLog implements Serializable {
 
     // 任务执行成功

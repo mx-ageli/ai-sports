@@ -2,11 +2,11 @@ package com.mx.ai.sports.course.vo;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.mx.ai.sports.common.annotation.IsTime;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.sql.Time;
 
 /**
  * 课程信息
@@ -24,33 +24,26 @@ public class CourseVo implements Serializable {
     @ApiModelProperty("课程名称")
     private String courseName;
 
-    @ApiModelProperty("课程编号")
-    private String courseNo;
-
     @ApiModelProperty("发布的老师Id")
     private Long userId;
 
     @ApiModelProperty("发布的老师姓名")
     private String fullName;
 
-    @ApiModelProperty("星期，分别用 1周一 2周二 ... 周天7 格式： 1,2,3,4")
+    @ApiModelProperty("星期，分别用 1周日 2周一 3周二 4周三 5周四 6周五 7周六 ... 周天7 格式： 以逗号拼接 1,2,3,4,5,6,7")
     private String week;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "HH:mm", timezone = "GMT+8")
     @ApiModelProperty("课程的开始时间")
-    private Time startTime;
+    private String startTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "HH:mm", timezone = "GMT+8")
     @ApiModelProperty("课程的结束时间")
-    private Time endTime;
+    private String endTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @ApiModelProperty("课程打卡的开始时间")
-    private Time signedStartTime;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @ApiModelProperty("课程打卡的结束时间")
-    private Time signedEndTime;
+    @JsonFormat(pattern = "HH:mm", timezone = "GMT+8")
+    @ApiModelProperty("课程打卡的时间")
+    private String signedTime;
 
     @ApiModelProperty("打卡的坐标点")
     private String location;
@@ -59,7 +52,7 @@ public class CourseVo implements Serializable {
     private String locationName;
 
     @ApiModelProperty("以坐标点打卡的范围，以米为单位")
-    private Long range;
+    private Long scope;
 
     @ApiModelProperty("课程对应的图片")
     private String images;

@@ -25,16 +25,6 @@ public class BaseRestController<T> {
     @Autowired
     private IUserService userService;
 
-    /**
-     * 是否是老师
-     * @return
-     */
-    protected Boolean isTeacher(){
-        UserSimple userSimple = getCurrentUser();
-
-        return Objects.equals(RoleEnum.TEACHER.value(), userSimple.getRoleId());
-    }
-
     protected UserSimple getCurrentUser() {
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = Objects.requireNonNull(servletRequestAttributes).getRequest();

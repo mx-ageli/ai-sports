@@ -13,5 +13,12 @@ import java.util.List;
  * @date 2020/8/17 7:17 下午
  */
 public interface CourseMapper extends BaseMapper<Course> {
-	
+
+    /**
+     *
+     * @param courseId
+     * @param courseName
+     * @return
+     */
+    Course findByCourseName(Long courseId, String courseName);
 }

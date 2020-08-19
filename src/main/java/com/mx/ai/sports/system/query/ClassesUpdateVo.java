@@ -18,16 +18,12 @@ public class ClassesUpdateVo implements Serializable {
 
     private static final long serialVersionUID = -7420156191175904467L;
 
-    @ApiModelProperty("班级Id")
+    @ApiModelProperty("班级Id，新增时不用传")
     private Long classesId;
 
     @NotNull(message = "班级名称不能为null")
     @ApiModelProperty("班级名称")
     private String classesName;
-
-    @NotNull(message = "班主任的用户Id不能为null")
-    @ApiModelProperty("班主任的用户Id")
-    private Long userId;
 
     @NotNull(message = "头像不能为null")
     @ApiModelProperty("头像，oss地址")

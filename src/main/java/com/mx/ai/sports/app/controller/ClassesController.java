@@ -47,10 +47,6 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     @TeacherRole
     @Log("老师创建班级")
     public AiSportsResponse<Boolean> add(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException {
-        // 是否为老师用户, 不是老师直接抛异常
-        if (!isTeacher()) {
-            return new AiSportsResponse<Boolean>().message("当前登录用户没有权限操作！").fail().data(Boolean.FALSE);
-        }
         // 先查询是否已经存在
         Classes classesAdd = classesService.findByClassesName(classes.getClassesName());
         if (classesAdd != null) {
@@ -72,10 +68,6 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     @TeacherRole
     @Log("老师修改班级")
     public AiSportsResponse<Boolean> update(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException {
-        // 是否为老师用户, 不是老师直接抛异常
-        if (!isTeacher()) {
-            return new AiSportsResponse<Boolean>().message("当前登录用户没有权限操作！").fail().data(Boolean.FALSE);
-        }
         // 先查询这个班级是否是当前用户创建的
         Classes classesUpdate = classesService.getById(classes.getClassesId());
         if (classesUpdate == null) {

@@ -1,12 +1,13 @@
 package com.mx.ai.sports.course.query;
 
 
+import com.mx.ai.sports.common.annotation.IsTime;
+import com.mx.ai.sports.common.annotation.IsWeek;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.sql.Time;
 
 /**
  * 课程信息
@@ -33,46 +34,37 @@ public class CourseUpdateVo implements Serializable {
     private String courseName;
 
     /**
-     * 课程编号
-     */
-    @NotNull(message = "课程编号不能为null")
-    @ApiModelProperty("课程编号")
-    private String courseNo;
-
-    /**
-     * 星期，分别用 1周一 2周二 ... 周天7 格式： 1,2,3,4
+     * 星期，分别用 1周日 2周一 3周二 4周三 5周四 6周五 7周六 ... 周天7 格式： 以逗号拼接 1,2,3,4,5,6,7
      */
     @NotNull(message = "星期不能为null")
-    @ApiModelProperty("星期，分别用 1周一 2周二 ... 周天7 格式： 1,2,3,4")
+    @IsWeek(message = "星期不能为空，或者时间格式不正确， 格式： 以逗号拼接 1,2,3,4,5,6,7")
+    @ApiModelProperty("星期，分别用 1周日 2周一 3周二 4周三 5周四 6周五 7周六 ... 周天7 格式： 以逗号拼接 1,2,3,4,5,6,7")
     private String week;
 
     /**
      * 课程的开始时间
      */
     @NotNull(message = "课程的开始时间不能为null")
-    @ApiModelProperty("课程的开始时间")
-    private Time startTime;
+    @IsTime(message = "课程开始时间格式不正确, 格式：HH:mm")
+    @ApiModelProperty("课程开始时间")
+    private String startTime;
 
     /**
      * 课程的结束时间
      */
     @NotNull(message = "课程的结束时间不能为null")
-    @ApiModelProperty("课程的结束时间")
-    private Time endTime;
+    @IsTime(message = "课程结束时间格式不正确, 格式：HH:mm")
+    @ApiModelProperty("课程结束时间")
+    private String endTime;
 
     /**
-     * 课程打卡的开始时间
+     * 课程打卡的时间
      */
-    @NotNull(message = "课程打卡的开始时间不能为null")
-    @ApiModelProperty("课程打卡的开始时间")
-    private Time signedStartTime;
+    @NotNull(message = "课程打卡的时间不能为null")
+    @IsTime(message = "课程打卡的时间格式不正确, 格式：HH:mm")
+    @ApiModelProperty("课程打卡的时间")
+    private String signedTime;
 
-    /**
-     * 课程打卡的结束时间
-     */
-    @NotNull(message = "课程打卡的结束时间不能为null")
-    @ApiModelProperty("课程打卡的结束时间")
-    private Time signedEndTime;
 
     /**
      * 打卡的坐标点
@@ -93,7 +85,7 @@ public class CourseUpdateVo implements Serializable {
      */
     @NotNull(message = "以坐标点打卡的范围不能为null")
     @ApiModelProperty("以坐标点打卡的范围，以米为单位")
-    private Long range;
+    private Long scope;
 
     /**
      * 课程对应的图片

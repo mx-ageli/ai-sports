@@ -2,6 +2,7 @@ package com.mx.ai.sports.common.entity;
 
 /**
  * 项目的通用的常量
+ *
  * @author Mengjiaxin
  * @date 2020/7/14 4:00 下午
  */
@@ -30,6 +31,11 @@ public class AiSportsConstant {
      * 上传的图片类型
      */
     public static final String[] IMAGE_FILE_TYPE = {"png", "jpg", "jpeg"};
+
+    /**
+     * 星期范围
+     */
+    public static final String[] WEEK = {"0", "1", "2", "3", "4", "5", "6",};
 
 
     /**
@@ -69,9 +75,9 @@ public class AiSportsConstant {
     public static final String[] AUTH_PATH = {"api/user/v/", "api/monitor/v/"};
 
     /**
-     * 多张图片的分隔符
+     * 逗号分隔符
      */
-    public final static String IMG_SPLIT = ",";
+    public final static String SPLIT = ",";
 
     /**
      * json标识
@@ -88,5 +94,8 @@ public class AiSportsConstant {
      */
     public static final String DEFAULT_AVATAR = "/avatar/default.jpg";
 
-
+    /**
+     * 空格
+     */
+    public static final String SPACE = " ";
 }

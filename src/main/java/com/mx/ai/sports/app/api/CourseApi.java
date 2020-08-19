@@ -3,6 +3,7 @@ package com.mx.ai.sports.app.api;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.entity.QueryRequest;
+import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.query.CourseQuery;
 import com.mx.ai.sports.course.query.StudentCourseQuery;
 import com.mx.ai.sports.course.vo.CourseNumVo;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.text.ParseException;
 
 /**
  * 课程相关接口
@@ -47,24 +49,30 @@ public interface CourseApi {
     /**
      * 新增课程信息（仅限于老师使用)
      *
-     * @param updateVo 新增参数
+     * @param updateVo
      * @return
+     * @throws AiSportsException
      */
-    @ApiOperation(value = "#未实现 图30# 新增课程信息（仅限于老师使用)")
+    @ApiOperation(value = "#已实现 图30# 新增课程信息（仅限于老师使用)",
+            notes = "1、星期： 分别用 1周日 2周一 3周二 4周三 5周四 6周五 7周六 \n" +
+                    "2、小时格式时间： HH:mm 只需要小时和分钟 \n" +
+                    "3、时间范围：开始时间必须大于结束时间， 可打卡时间必须大于开始时间\n" +
+                    "4、当前课程正在进行中，不能修改! 请等本次课程结束后再修改！")
     @ApiImplicitParam(name = "updateVo", value = "新增参数", paramType = "body", dataType = "CourseUpdateVo", required = true)
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    AiSportsResponse<Boolean> add(@RequestBody @Valid CourseUpdateVo updateVo);
+    AiSportsResponse<Boolean> add(@RequestBody @Valid CourseUpdateVo updateVo) throws AiSportsException;
 
     /**
      * 修改课程信息（仅限于老师使用)
      *
-     * @param updateVo 修改参数
+     * @param updateVo
      * @return
+     * @throws AiSportsException
      */
-    @ApiOperation(value = "#未实现 图30# 修改课程信息（仅限于老师使用)")
+    @ApiOperation(value = "#已实现 图30# 修改课程信息（仅限于老师使用)")
     @ApiImplicitParam(name = "updateVo", value = "新增参数", paramType = "body", dataType = "CourseUpdateVo", required = true)
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    AiSportsResponse<Boolean> update(@RequestBody @Valid CourseUpdateVo updateVo);
+    AiSportsResponse<Boolean> update(@RequestBody @Valid CourseUpdateVo updateVo) throws AiSportsException;
 
     /**
      * 查询课程的完成情况历史统计分析（仅限于老师使用)
