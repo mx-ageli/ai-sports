@@ -108,8 +108,8 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements IJobS
         String methodName = "courseRecordTask";
 
         LocalTime startLocalTime = LocalTime.parse(course.getSignedTime());
-        // 在打卡时间的前五分钟创建
-        startLocalTime = startLocalTime.minusMinutes(5);
+        // 在打卡时间的前一分钟创建
+        startLocalTime = startLocalTime.minusMinutes(1);
         // 先创建课程记录数据任务
         return initJob(course, beanName, methodName, startLocalTime, " 创建课程记录数据任务");
     }

@@ -2,7 +2,6 @@ package com.mx.ai.sports.course.vo;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mx.ai.sports.common.annotation.IsTime;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -59,4 +58,7 @@ public class CourseVo implements Serializable {
 
     @ApiModelProperty("是否是今日课程")
     private Boolean isToday;
+
+    @ApiModelProperty("课程报名状态，1可报课 2不可报 3已报课 学生使用字段")
+    private String entryStatus;
 }

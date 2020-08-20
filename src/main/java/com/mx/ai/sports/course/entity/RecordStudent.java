@@ -46,6 +46,12 @@ public class RecordStudent implements Serializable {
     private Date createTime;
 
     /**
+     * 修改时间
+     */
+    @TableField("UPDATE_TIME")
+    private Date updateTime;
+
+    /**
      * 学生Id
      */
     @TableId(value = "USER_ID")

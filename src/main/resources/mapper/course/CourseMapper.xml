@@ -26,4 +26,58 @@
                 AND ac.COURSE_ID != #{courseId}
             </if>
     </select>
+
+    <select id="findAll" resultType="com.mx.ai.sports.course.vo.CourseVo">
+        SELECT
+            ac.COURSE_ID AS courseId,
+            ac.COURSE_NAME AS courseName,
+            ac.USER_ID AS userId,
+            su.FULL_NAME AS fullName,
+            ac.`WEEK` AS `week`,
+            ac.START_TIME AS startTime,
+            ac.END_TIME AS endTime,
+            ac.SIGNED_TIME AS signedTime,
+            ac.LOCATION AS location,
+            ac.LOCATION_NAME AS locationName,
+            ac.SCOPE AS scope,
+            ac.IMAGES AS images,
+        CASE WHEN `week` LIKE '%${week}%' THEN
+                1 ELSE 0
+            END AS isToday
+        FROM
+            APP_COURSE ac,
+            SYS_USER su
+        WHERE
+            su.USER_ID = ac.USER_ID
+            <if test="userId != null and userId != ''">
+                AND su.USER_ID = #{userId}
+            </if>
+        ORDER BY
+            isToday DESC
+    </select>
+
+    <select id="findById" resultType="com.mx.ai.sports.course.vo.CourseVo">
+        SELECT
+            ac.COURSE_ID AS courseId,
+            ac.COURSE_NAME AS courseName,
+            ac.USER_ID AS userId,
+            su.FULL_NAME AS fullName,
+            ac.`WEEK` AS `week`,
+            ac.START_TIME AS startTime,
+            ac.END_TIME AS endTime,
+            ac.SIGNED_TIME AS signedTime,
+            ac.LOCATION AS location,
+            ac.LOCATION_NAME AS locationName,
+            ac.SCOPE AS scope,
+            ac.IMAGES AS images,
+        CASE WHEN `week` LIKE '%${week}%' THEN
+                1 ELSE 0
+            END AS isToday
+        FROM
+            APP_COURSE ac,
+            SYS_USER su
+        WHERE
+            su.USER_ID = ac.USER_ID
+            AND ac.COURSE_ID = #{courseId}
+    </select>
 </mapper>

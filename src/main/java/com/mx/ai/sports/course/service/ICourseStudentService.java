@@ -22,4 +22,29 @@ public interface ICourseStudentService extends IService<CourseStudent> {
      */
     List<Long> findByCourseId(Long courseId);
 
+    /**
+     * 查询我的报名的课程
+     *
+     * @param userId 用户Id
+     * @return
+     */
+    List<Long> findByUserId(Long userId);
+
+    /**
+     * 查询学生的报名
+     *
+     * @param courseId 课程Id
+     * @return
+     */
+    CourseStudent findByUserCourseId(Long userId, Long courseId);
+
+
+    /**
+     * 删除
+     * @param userId
+     * @param courseId
+     * @return
+     */
+    Boolean remove(Long userId, Long courseId);
+
 }

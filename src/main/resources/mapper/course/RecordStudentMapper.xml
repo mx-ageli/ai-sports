@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mx.ai.sports.course.mapper.RecordStudentMapper">
+    <select id="findVoByCourseRecordId" resultType="com.mx.ai.sports.course.vo.StudentCourseVo">
+        SELECT
+            su.USER_ID AS userId,
+            su.SEX AS sex,
+            su.AVATAR AS avatar,
+            su.FULL_NAME AS fullName,
+            aps.IS_ABSENT AS isAbsent,
+            aps.IS_PASS AS isPass,
+            aps.IS_LATE AS isLate
+        FROM
+            SYS_USER su,
+            APP_RECORD_STUDENT aps
+        WHERE
+            su.USER_ID = aps.USER_ID
+            AND aps.COURSE_RECORD_ID = #{courseRecordId}
+        <if test="type == 2">
+            AND aps.IS_ABSENT = 1
+        </if>
+        <if test="type == 3">
+            AND aps.IS_PASS = 1
+        </if>
+        <if test="type == 4">
+            AND aps.IS_PASS = 0
+        </if>
+        ORDER BY
+            aps.UPDATE_TIME ASC
+    </select>
+</mapper>

@@ -23,6 +23,7 @@ public class CourseRecordServiceImpl extends ServiceImpl<CourseRecordMapper, Cou
 
     @Override
     public Long findIdByNew(Long courseId) {
+        // TODO 查询今日的课程
         CourseRecord courseRecord = this.baseMapper.selectOne(new LambdaQueryWrapper<CourseRecord>().eq(CourseRecord::getCourseId, courseId).orderByDesc(CourseRecord::getCreateTime));
         if (courseRecord == null) {
             return null;

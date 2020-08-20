@@ -1,7 +1,10 @@
 package com.mx.ai.sports.course.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.course.entity.Course;
+import com.mx.ai.sports.course.vo.CourseVo;
 import com.mx.ai.sports.system.entity.Classes;
 import com.mx.ai.sports.system.entity.School;
 import com.mx.ai.sports.system.entity.TeacherRegister;
@@ -26,4 +29,18 @@ public interface ICourseService extends IService<Course> {
      */
     Course findByCourseName(Long courseId, String courseName);
 
+    /**
+     * 查询所有的课程
+     * @param request
+     * @param userId
+     * @return
+     */
+    IPage<CourseVo> findAll(QueryRequest request, Long userId);
+
+    /**
+     * 查询课程详情
+     * @param courseId
+     * @return
+     */
+    CourseVo findById(Long courseId);
 }

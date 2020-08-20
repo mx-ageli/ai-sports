@@ -19,9 +19,9 @@ public class StudentCourseQuery implements Serializable {
 
     private static final long serialVersionUID = -6289608891436053475L;
 
-    @NotNull(message = "课程Id不能为null")
-    @ApiModelProperty("课程Id")
-    private Long courseId;
+    @NotNull(message = "课程记录Id不能为null")
+    @ApiModelProperty("课程记录Id")
+    private Long courseRecordId;
 
     @NotNull(message = "课程完成类型不能为null")
     @ApiModelProperty("课程完成类型：1全部 2缺席 3合格 4不合格")

@@ -33,4 +33,23 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
         }
         return courseStudentList.stream().map(CourseStudent::getUserId).collect(Collectors.toList());
     }
+
+    @Override
+    public List<Long> findByUserId(Long userId) {
+        List<CourseStudent> courseStudentList = this.baseMapper.selectList(new LambdaQueryWrapper<CourseStudent>().eq(CourseStudent::getUserId, userId));
+        if(CollectionUtils.isEmpty(courseStudentList)){
+            return new ArrayList<>();
+        }
+        return courseStudentList.stream().map(CourseStudent::getUserId).collect(Collectors.toList());
+    }
+
+    @Override
+    public CourseStudent findByUserCourseId(Long userId, Long courseId) {
+        return this.baseMapper.selectOne(new LambdaQueryWrapper<CourseStudent>().eq(CourseStudent::getCourseId, courseId).eq(CourseStudent::getUserId, userId));
+    }
+
+    @Override
+    public Boolean remove(Long userId, Long courseId) {
+        return this.baseMapper.delete(new LambdaQueryWrapper<CourseStudent>().eq(CourseStudent::getCourseId, courseId).eq(CourseStudent::getUserId, userId)) > 0;
+    }
 }

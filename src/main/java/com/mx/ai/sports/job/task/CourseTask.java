@@ -65,7 +65,7 @@ public class CourseTask {
         // 本次课程报名的所有学生
         List<Long> studentIds = courseStudentService.findByCourseId(longCourseId);
         // 本次课程已经参与打卡的学生 已经打卡的学生会在课程记录中存在，这种数据无需再次添加
-        List<Long> currentStudentIds = recordStudentService.findByCourseId(longCourseId);
+        List<Long> currentStudentIds = recordStudentService.findUserIdByCourseRecordId(courseRecordId);
         // 先将已经参与打卡的学生删除掉
         studentIds.removeAll(currentStudentIds);
 
@@ -76,6 +76,7 @@ public class CourseTask {
             recordStudent.setCourseRecordId(courseRecordId);
             recordStudent.setUserId(studentId);
             recordStudent.setCreateTime(new Date());
+            recordStudent.setUpdateTime(new Date());
             // 默认缺席
             recordStudent.setIsAbsent(Boolean.TRUE);
             // 默认迟到

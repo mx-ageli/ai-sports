@@ -6,18 +6,26 @@ import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.annotation.TeacherRole;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
+import com.mx.ai.sports.common.entity.EntryEnum;
 import com.mx.ai.sports.common.entity.QueryRequest;
+import com.mx.ai.sports.common.entity.RoleEnum;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.converter.CourseConverter;
 import com.mx.ai.sports.course.entity.Course;
+import com.mx.ai.sports.course.entity.CourseRecord;
+import com.mx.ai.sports.course.entity.CourseStudent;
 import com.mx.ai.sports.course.query.CourseQuery;
 import com.mx.ai.sports.course.query.CourseUpdateVo;
 import com.mx.ai.sports.course.query.StudentCourseQuery;
+import com.mx.ai.sports.course.service.ICourseRecordService;
 import com.mx.ai.sports.course.service.ICourseService;
+import com.mx.ai.sports.course.service.ICourseStudentService;
+import com.mx.ai.sports.course.service.IRecordStudentService;
 import com.mx.ai.sports.course.vo.CourseNumVo;
 import com.mx.ai.sports.course.vo.CourseVo;
 import com.mx.ai.sports.course.vo.StudentCourseVo;
 import com.mx.ai.sports.job.service.IJobService;
+import com.mx.ai.sports.system.vo.UserSimple;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,9 +34,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -50,9 +60,19 @@ public class CourseController extends BaseRestController implements CourseApi {
     @Autowired
     private IJobService jobService;
 
+    @Autowired
+    private ICourseRecordService courseRecordService;
+
+    @Autowired
+    private IRecordStudentService recordStudentService;
+
+    @Autowired
+    private ICourseStudentService courseStudentService;
+
     @Override
-    public AiSportsResponse<IPage<CourseVo>> findMyPublish(@RequestBody @Valid QueryRequest query) {
-        return null;
+    @TeacherRole
+    public AiSportsResponse<IPage<CourseVo>> findMyPublish(@RequestBody @Valid QueryRequest request) {
+        return new AiSportsResponse<IPage<CourseVo>>().success().data(courseService.findAll(request, getCurrentUserId()));
     }
 
     @Override
@@ -119,25 +139,6 @@ public class CourseController extends BaseRestController implements CourseApi {
         }
     }
 
-    /**
-     * 校验当前的课程时间数据的范围校验
-     *
-     * @throws AiSportsException
-     */
-    private void checkCourseTime(Course course) throws AiSportsException {
-        // 开始时间
-        LocalTime startTime = LocalTime.parse(course.getStartTime());
-        // 结束时间
-        LocalTime endTime = LocalTime.parse(course.getEndTime());
-        // 当前时间
-        LocalTime currentTime = LocalTime.now();
-        // 开始时间大于当前时间，当前时间小于当前时间，说明当前时间在两个时间范围内
-        // startTime > currentTime && currentTime > endTime = true
-        if (startTime.isBefore(currentTime) && currentTime.isBefore(endTime)) {
-            throw new AiSportsException("当前课程正在进行中，不能修改! 请等本次课程结束后再修改！");
-        }
-    }
-
     @Override
     @TeacherRole
     @Log("老师修改课程")
@@ -152,7 +153,9 @@ public class CourseController extends BaseRestController implements CourseApi {
         // 校验课程时间数据的范围校验
         checkUpdateCourseTime(updateVo);
         // 校验当前时间节点是否有已经开始的课程在进行，如果有不能进行修改
-        checkCourseTime(course);
+        if (isCheckStart(course.getWeek(), course.getStartTime(), course.getEndTime())) {
+            throw new AiSportsException("当前课程正在进行中，不能修改! 请等本次课程结束后再修改！");
+        }
 
         course.setUserId(getCurrentUserId());
         course.setCourseName(updateVo.getCourseName());
@@ -177,32 +180,123 @@ public class CourseController extends BaseRestController implements CourseApi {
     }
 
     @Override
-    public AiSportsResponse<IPage<Object>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query) {
-        return null;
+    @TeacherRole
+    public AiSportsResponse<CourseNumVo> findNumById(@NotNull @RequestParam("courseRecordId") Long courseRecordId) {
+        CourseRecord courseRecord = courseRecordService.getById(courseRecordId);
+        if (courseRecord == null) {
+            return new AiSportsResponse<CourseNumVo>().fail().message("课程记录Id不存在，没有查询到数据!");
+        }
+
+        CourseNumVo numVo = new CourseNumVo();
+        numVo.setAll(courseRecord.getAllCount());
+        numVo.setAbsent(courseRecord.getAbsentCount());
+        numVo.setNoPass(courseRecord.getNoPassCount());
+        numVo.setPass(courseRecord.getPassCount());
+
+        return new AiSportsResponse<CourseNumVo>().success().data(numVo);
     }
 
     @Override
-    public AiSportsResponse<CourseNumVo> findNumById(@NotNull @RequestParam("courseId") Long courseId) {
-        return null;
-    }
-
-    @Override
+    @TeacherRole
     public AiSportsResponse<IPage<StudentCourseVo>> findStudentById(@RequestBody @Valid StudentCourseQuery query) {
-        return null;
+        return new AiSportsResponse<IPage<StudentCourseVo>>().success().data(recordStudentService.findVoByCourseRecordId(query));
     }
 
     @Override
-    public AiSportsResponse<IPage<CourseVo>> findAll(@RequestBody @Valid QueryRequest query) {
+    public AiSportsResponse<IPage<CourseVo>> findAll(@RequestBody @Valid QueryRequest request) {
+        UserSimple user = getCurrentUser();
+        // 直接查询全部数据返回
+        if (Objects.equals(user.getRoleId(), RoleEnum.TEACHER.value())) {
+            return new AiSportsResponse<IPage<CourseVo>>().success().data(courseService.findAll(request, null));
+        } else {
+            IPage<CourseVo> coursePage = courseService.findAll(request, null);
+            // 学生需要遍历当前课程的状态 课程报名状态，1可报课 2不可报 3已报课
+            // 我已经报名的课程列表
+            List<Long> courseIds = courseStudentService.findByUserId(user.getUserId());
+
+            for (CourseVo courseVo : coursePage.getRecords()) {
+                // 默认为可以报课
+                courseVo.setEntryStatus(EntryEnum.OK.value());
+                // 如果课程已经开始了，设置状态为不可报名
+                if (isCheckStart(courseVo.getWeek(), courseVo.getStartTime(), courseVo.getEndTime())) {
+                    courseVo.setEntryStatus(EntryEnum.NO.value());
+                }
+                // 判断当前用户是否已经报名这个课程
+                if(courseIds.contains(courseVo.getCourseId())){
+                    courseVo.setEntryStatus(EntryEnum.ENTRY.value());
+                }
+            }
+            return new AiSportsResponse<IPage<CourseVo>>().success().data(coursePage);
+        }
+    }
+
+    @Override
+    public AiSportsResponse<IPage<CourseVo>> findMyEntry(@RequestBody @Valid QueryRequest request) {
+
         return null;
     }
 
     @Override
     public AiSportsResponse<CourseVo> findById(@NotNull @RequestParam("courseId") Long courseId) {
-        return null;
+        return new AiSportsResponse<CourseVo>().success().data(courseService.findById(courseId));
     }
 
     @Override
     public AiSportsResponse<Boolean> entry(@NotNull @RequestParam("courseId") Long courseId) {
+
+        Course course = courseService.getById(courseId);
+        if (course == null) {
+            return new AiSportsResponse<Boolean>().fail().message("课程Id不存在，没有查询到数据!");
+        }
+        // 课程是否已经开始
+        boolean isCheckStart = isCheckStart(course.getWeek(), course.getStartTime(), course.getEndTime());
+        Long userId = getCurrentUserId();
+        // 查询学生是否报名
+        CourseStudent courseStudent = courseStudentService.findByUserCourseId(userId, courseId);
+        // 如果已经报名了，就删除报名信息，取消报名
+        if (courseStudent != null) {
+            if (isCheckStart) {
+                new AiSportsResponse<Boolean>().fail().message("当前课程正在进行中，不能取消报名！请等课程结束后再试！");
+            }
+            return new AiSportsResponse<Boolean>().success().data(courseStudentService.remove(userId, courseId));
+        } else {  // 没有报名的话就报名
+            if (isCheckStart) {
+                new AiSportsResponse<Boolean>().fail().message("当前报名课程已经开始，不能报名！请等课程结束后再试！");
+            }
+            courseStudent = new CourseStudent();
+            courseStudent.setCourseId(courseId);
+            courseStudent.setUserId(userId);
+
+            return new AiSportsResponse<Boolean>().success().data(courseStudentService.save(courseStudent));
+        }
+    }
+
+
+    /**
+     * 校验课程是否已经开始
+     *
+     * @param weeks        星期
+     * @param startTimeStr 开始时间
+     * @param endTimeStr   结束时间
+     * @return
+     */
+    private boolean isCheckStart(String weeks, String startTimeStr, String endTimeStr) {
+        // 课程的开始时间
+        LocalTime startTime = LocalTime.parse(startTimeStr);
+        // 课程的结束时间
+        LocalTime endTime = LocalTime.parse(endTimeStr);
+        // 当前时间
+        LocalTime currentTime = LocalTime.now();
+        // 获取今天是星期几
+        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        // 判断今天是否课程执行的星期
+        boolean isCheckTime = weeks.contains(String.valueOf(week));
+        // 今天是否是执行日 startTime > currentTime && currentTime > endTime = true
+        return isCheckTime && startTime.isBefore(currentTime) && currentTime.isBefore(endTime);
+    }
+
+    @Override
+    public AiSportsResponse<IPage<Object>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query) {
         return null;
     }
 
