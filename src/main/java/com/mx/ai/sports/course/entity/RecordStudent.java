@@ -58,12 +58,6 @@ public class RecordStudent implements Serializable {
     private Long userId;
 
     /**
-     * 打卡Id 打卡Id为空说明为缺席
-     */
-    @TableId(value = "SIGNED_ID")
-    private Long signedId;
-
-    /**
      * 是否缺席
      */
     @TableField("IS_ABSENT")

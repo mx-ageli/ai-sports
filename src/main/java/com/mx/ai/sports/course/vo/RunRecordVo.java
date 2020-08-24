@@ -1,12 +1,11 @@
 package com.mx.ai.sports.course.vo;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.sql.Time;
-import java.util.Date;
 
 /**
  * 跑步记录信息
@@ -32,26 +31,8 @@ public class RunRecordVo implements Serializable {
     @ApiModelProperty("范围 平均每天健身里程")
     private Float avgMileage;
 
-    @ApiModelProperty("是否合格")
-    private Boolean isPass;
-
-    @ApiModelProperty("开始时间")
-    private Date startTime;
-
-    @ApiModelProperty("结束时间")
-    private Date endTime;
-
-    @ApiModelProperty("跑步结束的坐标点")
-    private String location;
-
-    @ApiModelProperty("跑步结束的坐标点的具体名称")
-    private String locationName;
-
-    @ApiModelProperty("跑步时长(以秒为单位)")
-    private Time runTime;
-
-    @ApiModelProperty("里程")
-    private float mileage;
+    @ApiModelProperty("跑步记录信息详情")
+    private IPage<RunRecordDetailVo> detailPage;
 
 
 }

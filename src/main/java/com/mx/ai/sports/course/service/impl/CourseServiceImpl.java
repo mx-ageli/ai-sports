@@ -47,4 +47,14 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
         return this.baseMapper.findById(week, courseId);
     }
+
+    @Override
+    public IPage<CourseVo> findMyEntry(QueryRequest request, Long userId) {
+        Page<CourseVo> page = new Page<>(request.getPageNum(), request.getPageSize());
+
+        // 获取今天是星期几
+        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+
+        return this.baseMapper.findMyEntry(page, week, userId);
+    }
 }

@@ -21,9 +21,7 @@ import com.mx.ai.sports.course.service.ICourseRecordService;
 import com.mx.ai.sports.course.service.ICourseService;
 import com.mx.ai.sports.course.service.ICourseStudentService;
 import com.mx.ai.sports.course.service.IRecordStudentService;
-import com.mx.ai.sports.course.vo.CourseNumVo;
-import com.mx.ai.sports.course.vo.CourseVo;
-import com.mx.ai.sports.course.vo.StudentCourseVo;
+import com.mx.ai.sports.course.vo.*;
 import com.mx.ai.sports.job.service.IJobService;
 import com.mx.ai.sports.system.vo.UserSimple;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +69,7 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     @Override
     @TeacherRole
-    public AiSportsResponse<IPage<CourseVo>> findMyPublish(@RequestBody @Valid QueryRequest request) {
+    public AiSportsResponse<IPage<CourseVo>> findMyPublish(@RequestBody @Valid QueryRequest request) throws AiSportsException {
         return new AiSportsResponse<IPage<CourseVo>>().success().data(courseService.findAll(request, getCurrentUserId()));
     }
 
@@ -222,7 +220,7 @@ public class CourseController extends BaseRestController implements CourseApi {
                     courseVo.setEntryStatus(EntryEnum.NO.value());
                 }
                 // 判断当前用户是否已经报名这个课程
-                if(courseIds.contains(courseVo.getCourseId())){
+                if (courseIds.contains(courseVo.getCourseId())) {
                     courseVo.setEntryStatus(EntryEnum.ENTRY.value());
                 }
             }
@@ -232,8 +230,7 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     @Override
     public AiSportsResponse<IPage<CourseVo>> findMyEntry(@RequestBody @Valid QueryRequest request) {
-
-        return null;
+        return new AiSportsResponse<IPage<CourseVo>>().success().data(courseService.findMyEntry(request, getCurrentUserId()));
     }
 
     @Override
@@ -296,12 +293,14 @@ public class CourseController extends BaseRestController implements CourseApi {
     }
 
     @Override
-    public AiSportsResponse<IPage<Object>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query) {
-        return null;
+    @TeacherRole
+    public AiSportsResponse<IPage<CourseRecordVo>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query) {
+        return new AiSportsResponse<IPage<CourseRecordVo>>().success().data(courseRecordService.findByCourseId(query.getRequest(), query.getCourseId()));
     }
 
     @Override
-    public AiSportsResponse<IPage<Object>> findCourseHistory(@RequestBody @Valid QueryRequest query) {
-        return null;
+    public AiSportsResponse<IPage<RecordStudentVo>> findCourseHistory(@RequestBody @Valid QueryRequest query) {
+
+        return new AiSportsResponse<IPage<RecordStudentVo>>().success().data(recordStudentService.findRecordStudentVo(query, getCurrentUserId()));
     }
 }

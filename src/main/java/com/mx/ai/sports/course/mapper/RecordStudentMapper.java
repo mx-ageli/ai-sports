@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mx.ai.sports.course.entity.RecordStudent;
+import com.mx.ai.sports.course.vo.RecordStudentVo;
 import com.mx.ai.sports.course.vo.StudentCourseVo;
 
 /**
@@ -22,5 +23,13 @@ public interface RecordStudentMapper extends BaseMapper<RecordStudent> {
      * @return
      */
     IPage<StudentCourseVo> findVoByCourseRecordId(Page<StudentCourseVo> page, Long courseRecordId, String type);
+
+    /**
+     *
+     * @param page
+     * @param userId
+     * @return
+     */
+    IPage<RecordStudentVo> findRecordStudentVo(Page<RecordStudentVo> page, Long userId);
 
 }

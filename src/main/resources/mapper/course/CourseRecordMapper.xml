@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mx.ai.sports.course.mapper.CourseRecordMapper">
+
+    <select id="findByCourseId" resultType="com.mx.ai.sports.course.vo.CourseRecordVo">
+
+        SELECT
+            acr.COURSE_RECORD_ID AS courseRecordId,
+            acr.COURSE_ID AS courseId,
+            acr.CREATE_TIME AS createTime,
+            acr.ALL_COUNT AS allCount,
+            acr.SINGED_COUNT AS singedCount,
+            acr.ABSENT_COUNT AS absentCount,
+            acr.LATE_COUNT AS lateCount,
+            acr.PASS_COUNT AS passCount,
+            acr.NO_PASS_COUNT AS noPassCount,
+        CASE
+                WHEN TO_DAYS( NOW( ) ) = TO_DAYS( acr.CREATE_TIME ) THEN
+                1 ELSE 0
+            END AS isToday
+        FROM
+            APP_COURSE_RECORD acr
+            WHERE acr.COURSE_ID = #{courseId}
+        ORDER BY
+            acr.CREATE_TIME DESC
+
+    </select>
+</mapper>

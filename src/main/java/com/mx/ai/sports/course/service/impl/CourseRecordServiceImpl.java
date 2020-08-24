@@ -1,15 +1,22 @@
 package com.mx.ai.sports.course.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.course.entity.CourseRecord;
 import com.mx.ai.sports.course.entity.CourseStudent;
 import com.mx.ai.sports.course.mapper.CourseRecordMapper;
 import com.mx.ai.sports.course.service.ICourseRecordService;
+import com.mx.ai.sports.course.vo.CourseRecordVo;
+import com.mx.ai.sports.course.vo.CourseVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 /**
  * @author Mengjiaxin
@@ -29,5 +36,12 @@ public class CourseRecordServiceImpl extends ServiceImpl<CourseRecordMapper, Cou
             return null;
         }
         return courseRecord.getCourseRecordId();
+    }
+
+    @Override
+    public IPage<CourseRecordVo> findByCourseId(QueryRequest request, Long courseId) {
+        Page<CourseRecordVo> page = new Page<>(request.getPageNum(), request.getPageSize());
+
+        return this.baseMapper.findByCourseId(page, courseId);
     }
 }

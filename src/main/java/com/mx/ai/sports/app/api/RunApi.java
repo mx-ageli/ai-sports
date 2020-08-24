@@ -31,22 +31,22 @@ public interface RunApi {
     /**
      * 保存跑步数据
      *
-     * @param run 新增参数
+     * @param runAddVo 新增参数
      * @return
      */
-    @ApiOperation(value = "#未实现 图5# 保存跑步数据")
-    @ApiImplicitParam(name = "run", value = "新增参数", paramType = "body", dataType = "RunAddVo", required = true)
+    @ApiOperation(value = "#已实现 图5# 保存跑步数据")
+    @ApiImplicitParam(name = "runAddVo", value = "新增参数", paramType = "body", dataType = "RunAddVo", required = true)
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    AiSportsResponse<Boolean> add(@RequestBody @Valid RunAddVo run);
+    AiSportsResponse<Boolean> add(@RequestBody @Valid RunAddVo runAddVo);
 
     /**
      * 查询合格的跑步规则
      *
      * @return
      */
-    @ApiOperation(value = "#未实现 图6# 查询合格的跑步规则")
+    @ApiOperation(value = "#已实现 图6# 查询合格的跑步规则")
     @RequestMapping(value = "/find_run_rule", method = RequestMethod.GET)
-    AiSportsResponse<List<RunRuleVo>> findRunRule();
+    AiSportsResponse<RunRuleVo> findRunRule();
 
     /**
      * 按照指定的时间区间查询跑步记录

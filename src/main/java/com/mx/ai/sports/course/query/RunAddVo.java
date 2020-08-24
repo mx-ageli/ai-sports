@@ -20,6 +20,9 @@ public class RunAddVo implements Serializable {
 
     private static final long serialVersionUID = 2423181785969332187L;
 
+    @ApiModelProperty("课程Id")
+    private Long courseId;
+
     @NotNull(message = "开始时间不能为null")
     @ApiModelProperty("开始时间")
     private Date startTime;
@@ -38,13 +41,13 @@ public class RunAddVo implements Serializable {
 
     @NotNull(message = "跑步时长不能为null")
     @ApiModelProperty("跑步时长(以秒为单位)")
-    private Time runTime;
+    private Long runTime;
 
     @NotNull(message = "里程不能为null")
     @ApiModelProperty("里程")
-    private float mileage;
+    private Float mileage;
 
     @NotNull(message = "配速不能为null")
     @ApiModelProperty("配速 km/h, 分钟/km")
-    private float speed;
+    private Float speed;
 }

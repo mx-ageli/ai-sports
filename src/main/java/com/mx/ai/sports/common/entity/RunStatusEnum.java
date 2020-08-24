@@ -9,24 +9,24 @@ public enum RunStatusEnum {
     /**
      * 1合格
      */
-    PASS(1L, "合格"),
+    PASS("1", "合格"),
 
     /**
      * 2不合格
      */
-    NO_PASS(2L, "不合格");
+    NO_PASS("2", "不合格");
 
-    private final Long value;
+    private final String value;
 
     private final String reasonPhrase;
 
 
-    RunStatusEnum(Long value, String reasonPhrase) {
+    RunStatusEnum(String value, String reasonPhrase) {
         this.value = value;
         this.reasonPhrase = reasonPhrase;
     }
 
-    public Long value() {
+    public String value() {
         return this.value;
     }
 

@@ -6,10 +6,8 @@ import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.query.CourseQuery;
 import com.mx.ai.sports.course.query.StudentCourseQuery;
-import com.mx.ai.sports.course.vo.CourseNumVo;
+import com.mx.ai.sports.course.vo.*;
 import com.mx.ai.sports.course.query.CourseUpdateVo;
-import com.mx.ai.sports.course.vo.CourseVo;
-import com.mx.ai.sports.course.vo.StudentCourseVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -43,7 +41,7 @@ public interface CourseApi {
     @ApiOperation(value = "#已实现 图12# 查询我发布的课程列表（仅限于老师使用)")
     @ApiImplicitParam(name = "request", value = "查询参数", paramType = "body", dataType = "QueryRequest", required = true)
     @RequestMapping(value = "/find_my_publish", method = RequestMethod.POST)
-    AiSportsResponse<IPage<CourseVo>> findMyPublish(@RequestBody @Valid QueryRequest request);
+    AiSportsResponse<IPage<CourseVo>> findMyPublish(@RequestBody @Valid QueryRequest request) throws AiSportsException;
 
     /**
      * 新增课程信息（仅限于老师使用)
@@ -113,7 +111,7 @@ public interface CourseApi {
      * @param request 查询参数
      * @return
      */
-    @ApiOperation(value = "#未实现 图14# 查询我已经报名的课程-今日课程会排在最前面")
+    @ApiOperation(value = "#已实现 图14# 查询我已经报名的课程-今日课程会排在最前面")
     @ApiImplicitParam(name = "request", value = "查询参数", paramType = "body", dataType = "QueryRequest", required = true)
     @RequestMapping(value = "/find_my_entry", method = RequestMethod.POST)
     AiSportsResponse<IPage<CourseVo>> findMyEntry(@RequestBody @Valid QueryRequest request);
@@ -148,10 +146,10 @@ public interface CourseApi {
      * @param query 查询参数
      * @return
      */
-    @ApiOperation(value = "#未实现 图32# 查询课程的完成情况历史统计分析（仅限于老师使用)")
+    @ApiOperation(value = "#已实现 图32# 查询课程的完成情况历史统计分析（仅限于老师使用)")
     @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "CourseQuery", required = true)
     @RequestMapping(value = "/find_history_analysis", method = RequestMethod.POST)
-    AiSportsResponse<IPage<Object>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query);
+    AiSportsResponse<IPage<CourseRecordVo>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query);
 
     /**
      * 查询上课的历史记录
@@ -159,8 +157,8 @@ public interface CourseApi {
      * @param query 查询参数
      * @return
      */
-    @ApiOperation(value = "#未实现 图16# 查询上课的历史记录")
+    @ApiOperation(value = "#已实现 图16# 查询上课的历史记录")
     @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "QueryRequest", required = true)
     @RequestMapping(value = "/find_course_history", method = RequestMethod.POST)
-    AiSportsResponse<IPage<Object>> findCourseHistory(@RequestBody @Valid QueryRequest query);
+    AiSportsResponse<IPage<RecordStudentVo>> findCourseHistory(@RequestBody @Valid QueryRequest query);
 }

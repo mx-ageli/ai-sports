@@ -17,15 +17,9 @@ public class RunRuleVo implements Serializable {
 
     private static final long serialVersionUID = 6236530944740290234L;
 
-    @ApiModelProperty("课程Id")
-    private Long runRuleId;
-
-    @ApiModelProperty("跑步规则类型： 1大于等于多少公里，2大于等于的时长")
-    private String ruleType;
-
-    @ApiModelProperty("里程")
+    @ApiModelProperty("里程 大于等于多少公里")
     private Float mileage;
 
-    @ApiModelProperty("跑步时长(以秒为单位)")
+    @ApiModelProperty("跑步时长(以秒为单位) 大于等于的时长")
     private Long runTime;
 }

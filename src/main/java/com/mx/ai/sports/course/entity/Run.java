@@ -79,20 +79,20 @@ public class Run implements Serializable {
      * 跑步时长(以秒为单位)
      */
     @TableField("RUN_TIME")
-    private Time runTime;
+    private Long runTime;
 
     /**
      * 里程
      */
     @TableField("MILEAGE")
-    private float mileage;
+    private Float mileage;
 
     /**
      * 配速 km/h, 分钟/km
      *
      */
     @TableField("SPEED")
-    private float speed;
+    private Float speed;
 
 
 

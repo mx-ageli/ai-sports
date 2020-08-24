@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.course.entity.RecordStudent;
 import com.mx.ai.sports.course.mapper.RecordStudentMapper;
 import com.mx.ai.sports.course.query.StudentCourseQuery;
 import com.mx.ai.sports.course.service.IRecordStudentService;
+import com.mx.ai.sports.course.vo.RecordStudentVo;
 import com.mx.ai.sports.course.vo.StudentCourseVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,5 +45,12 @@ public class RecordStudentServiceImpl extends ServiceImpl<RecordStudentMapper, R
         Page<StudentCourseVo> page = new Page<>(query.getRequest().getPageNum(), query.getRequest().getPageSize());
 
         return this.baseMapper.findVoByCourseRecordId(page, query.getCourseRecordId(), query.getType());
+    }
+
+    @Override
+    public IPage<RecordStudentVo> findRecordStudentVo(QueryRequest request, Long userId) {
+        Page<RecordStudentVo> page = new Page<>(request.getPageNum(), request.getPageSize());
+
+        return this.baseMapper.findRecordStudentVo(page, userId);
     }
 }

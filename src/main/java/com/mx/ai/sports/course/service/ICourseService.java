@@ -43,4 +43,12 @@ public interface ICourseService extends IService<Course> {
      * @return
      */
     CourseVo findById(Long courseId);
+
+    /**
+     * 查询学生报名的课程
+     * @param request
+     * @param currentUserId
+     * @return
+     */
+    IPage<CourseVo> findMyEntry(QueryRequest request, Long currentUserId);
 }

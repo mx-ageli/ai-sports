@@ -40,6 +40,12 @@ public class Signed implements Serializable {
     private Long courseId;
 
     /**
+     * 学生Id
+     */
+    @TableId(value = "USER_ID")
+    private Long userId;
+
+    /**
      * 创建时间
      */
     @TableField("CREATE_TIME")
@@ -68,6 +74,12 @@ public class Signed implements Serializable {
      */
     @TableId(value = "LOCATION")
     private String location;
+
+    /**
+     * 坐标点的名称
+     */
+    @TableId(value = "LOCATION_NAME")
+    private String locationName;
 
 
 }

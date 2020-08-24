@@ -2,8 +2,10 @@ package com.mx.ai.sports.course.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.course.entity.RecordStudent;
 import com.mx.ai.sports.course.query.StudentCourseQuery;
+import com.mx.ai.sports.course.vo.RecordStudentVo;
 import com.mx.ai.sports.course.vo.StudentCourseVo;
 
 import java.util.List;
@@ -31,4 +33,12 @@ public interface IRecordStudentService extends IService<RecordStudent> {
      * @return
      */
     IPage<StudentCourseVo> findVoByCourseRecordId(StudentCourseQuery query);
+
+    /**
+     * 查询学生全部的上课记录
+     *
+     * @param request 分页条件
+     * @return
+     */
+    IPage<RecordStudentVo> findRecordStudentVo(QueryRequest request, Long userId);
 }
