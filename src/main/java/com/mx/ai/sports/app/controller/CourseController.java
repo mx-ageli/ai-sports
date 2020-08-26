@@ -162,7 +162,8 @@ public class CourseController extends BaseRestController implements CourseApi {
         course.setStartTime(updateVo.getStartTime());
         course.setEndTime(updateVo.getEndTime());
         course.setSignedTime(updateVo.getSignedTime());
-        course.setLocation(updateVo.getLocation());
+        course.setLat(updateVo.getLat());
+        course.setLon(updateVo.getLon());
         course.setLocationName(updateVo.getLocationName());
         course.setScope(updateVo.getScope());
         course.setImages(updateVo.getImages());

@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Date;
 
 /**
@@ -29,8 +28,11 @@ public class RunRecordDetailVo implements Serializable {
     @ApiModelProperty("结束时间")
     private Date endTime;
 
-    @ApiModelProperty("跑步结束的坐标点")
-    private String location;
+    @ApiModelProperty("打卡的坐标点 纬度")
+    private String lat;
+
+    @ApiModelProperty("打卡的坐标点 经度")
+    private String lon;
 
     @ApiModelProperty("跑步结束的坐标点的具体名称")
     private String locationName;

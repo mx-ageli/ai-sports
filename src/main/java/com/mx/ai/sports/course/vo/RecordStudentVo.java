@@ -59,6 +59,12 @@ public class RecordStudentVo implements Serializable {
     @ApiModelProperty("打卡的坐标点")
     private String location;
 
+    @ApiModelProperty("打卡的坐标点 纬度")
+    private String lat;
+
+    @ApiModelProperty("打卡的坐标点 经度")
+    private String lon;
+
     @ApiModelProperty("坐标点的别名")
     private String locationName;
 

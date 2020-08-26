@@ -53,7 +53,8 @@ public class RunController extends BaseRestController implements RunApi {
         run.setCreateTime(new Date());
         run.setStartTime(runAddVo.getStartTime());
         run.setEndTime(runAddVo.getEndTime());
-        run.setLocation(runAddVo.getLocation());
+        run.setLat(runAddVo.getLat());
+        run.setLon(runAddVo.getLon());
         run.setLocationName(runAddVo.getLocationName());
         run.setRunTime(runAddVo.getRunTime());
         run.setMileage(runAddVo.getMileage());

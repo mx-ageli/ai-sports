@@ -64,10 +64,16 @@ public class Run implements Serializable {
     private String status;
 
     /**
-     * 跑步结束的坐标点
+     * 跑步结束的坐标点 纬度
      */
-    @TableField("LOCATION")
-    private String location;
+    @TableId(value = "LAT")
+    private String lat;
+
+    /**
+     * 跑步结束的坐标点 经度
+     */
+    @TableId(value = "LON")
+    private String lon;
 
     /**
      * 跑步结束的坐标点的具体名称

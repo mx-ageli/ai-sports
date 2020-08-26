@@ -6,7 +6,6 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Date;
 
 /**
@@ -31,9 +30,13 @@ public class RunAddVo implements Serializable {
     @ApiModelProperty("结束时间")
     private Date endTime;
 
-    @NotNull(message = "跑步结束的坐标点不能为null")
-    @ApiModelProperty("跑步结束的坐标点")
-    private String location;
+    @NotNull(message = "纬度不能为null")
+    @ApiModelProperty("跑步结束的坐标点 纬度")
+    private String lat;
+
+    @NotNull(message = "经度不能为null")
+    @ApiModelProperty("跑步结束的坐标点 经度")
+    private String lon;
 
     @NotNull(message = "跑步结束的坐标点的具体名称不能为null")
     @ApiModelProperty("跑步结束的坐标点的具体名称")

@@ -65,13 +65,19 @@ public class CourseUpdateVo implements Serializable {
     @ApiModelProperty("课程打卡的时间")
     private String signedTime;
 
+    /**
+     * 打卡的坐标点 纬度
+     */
+    @NotNull(message = "纬度不能为null")
+    @ApiModelProperty("打卡的坐标点 纬度")
+    private String lat;
 
     /**
-     * 打卡的坐标点
+     * 打卡的坐标点 经度
      */
-    @NotNull(message = "打卡的坐标点不能为null")
-    @ApiModelProperty("打卡的坐标点")
-    private String location;
+    @NotNull(message = "经度不能为null")
+    @ApiModelProperty("打卡的坐标点 经度")
+    private String lon;
 
     /**
      * 坐标点的别名
