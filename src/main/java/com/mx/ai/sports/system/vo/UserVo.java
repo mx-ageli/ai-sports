@@ -74,7 +74,7 @@ public class UserVo implements Serializable {
     /**
      * 角色Id
      */
-    @ApiModelProperty("角色Id")
+    @ApiModelProperty("角色Id 1 学生，2 老师")
     private Long roleId;
 
     /**
