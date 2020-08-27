@@ -29,7 +29,7 @@ public class CourseVo implements Serializable {
     @ApiModelProperty("发布的老师姓名")
     private String fullName;
 
-    @ApiModelProperty("星期，分别用 1周日 2周一 3周二 4周三 5周四 6周五 7周六 ... 周天7 格式： 以逗号拼接 1,2,3,4,5,6,7")
+    @ApiModelProperty("星期，分别用 1周日 2周一 3周二 4周三 5周四 6周五 7周六 格式： 以逗号拼接 1,2,3,4,5,6,7")
     private String week;
 
     @JsonFormat(pattern = "HH:mm", timezone = "GMT+8")
