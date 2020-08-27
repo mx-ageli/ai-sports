@@ -20,13 +20,11 @@
             sc.CLASSES_NAME AS classesName,
             ss.SCHOOL_NAME schoolName
         FROM
-            SYS_USER su,
-            SYS_CLASSES sc,
-            SYS_SCHOOL ss
+            SYS_USER su
+            LEFT JOIN SYS_CLASSES sc ON su.CLASSES_ID = sc.CLASSES_ID
+            LEFT JOIN SYS_SCHOOL ss ON su.SCHOOL_ID = ss.SCHOOL_ID
         WHERE
-            su.SCHOOL_ID = ss.SCHOOL_ID
-            AND su.CLASSES_ID = sc.CLASSES_ID
-            AND su.USER_ID = #{userId}
+            su.USER_ID = #{userId}
     </select>
     <select id="findByClassesId" resultType="com.mx.ai.sports.system.vo.UserSmallVo">
         SELECT

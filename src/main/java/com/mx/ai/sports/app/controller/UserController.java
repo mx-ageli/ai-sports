@@ -131,7 +131,7 @@ public class UserController extends BaseRestController implements UserApi {
 
     @Override
     @Log("获取手机验证码")
-    @Limit(key = "getCode", period = 60, count = 3, name = "获取手机验证码", prefix = "limit", limitType = LimitType.IP)
+    @Limit(key = "getCode", period = 10, count = 3, name = "获取手机验证码", prefix = "limit", limitType = LimitType.IP)
     public AiSportsResponse<Boolean> getCode(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile) throws AiSportsException {
         boolean isMobile = AccountValidatorUtil.isMobile(mobile);
         if (!isMobile) {
@@ -143,15 +143,18 @@ public class UserController extends BaseRestController implements UserApi {
         if (isExists) {
             // key存在，获取过期时间
             Long ttlMobile = jedisPoolUtil.ttl(keyMobile);
-            log.info("手机号:{}, 正在重复获取验证码, 间隔时间: {} 秒, 请求默认拒绝!", mobile, ttlMobile);
-            String msg = "获取验证码太过频繁, 请等待" + ttlMobile + "秒后再次获取！";
-            return new AiSportsResponse<Boolean>().message(msg).fail().data(Boolean.FALSE);
+            if(ttlMobile > 0){
+                log.info("手机号:{}, 正在重复获取验证码, 间隔时间: {} 秒, 请求默认拒绝!", mobile, ttlMobile);
+                String msg = "获取验证码太过频繁, 请等待" + ttlMobile + "秒后再次获取！";
+                return new AiSportsResponse<Boolean>().message(msg).fail().data(Boolean.FALSE);
+            }
         }
 
         String code = JwtTokenUtil.getRandomCode();
         code = "666666";
         log.info("手机号:{}, 获取验证码:{}", mobile, code);
 
+        // TODO 需要考虑事物的问题
         // 往redis中存放验证码，设置过期时间为五分钟
         jedisPoolUtil.set(mobile, code);
         jedisPoolUtil.expire(mobile, CODE_EXPIRE_TIME);
