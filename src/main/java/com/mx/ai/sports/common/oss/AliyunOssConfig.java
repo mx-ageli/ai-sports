@@ -21,7 +21,7 @@ public class AliyunOssConfig extends OssConfig {
     /**
      * 默认的aliyun oss 文件读取地址不能随便修改
      */
-    private final String accessPoint = ".oss-cn-beijing.aliyuncs.com";
+    private final String accessPoint = ".oss-cn-chengdu.aliyuncs.com";
 
     private String accessKeyId = "LTAI4FqD1WE7i5mPYsQ7UMrJ";
 

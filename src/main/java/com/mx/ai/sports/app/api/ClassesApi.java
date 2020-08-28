@@ -65,6 +65,15 @@ public interface ClassesApi {
     AiSportsResponse<List<ClassesVo>> findBySchoolId(@NotNull @RequestParam("schoolId") Long schoolId) ;
 
     /**
+     * 根据班级Id查询班级详情
+     *
+     * @return
+     */
+    @ApiOperation(value = "#已实现 2020-08-28# 根据班级Id查询班级详情")
+    @RequestMapping(value = "/find_by_id", method = RequestMethod.GET)
+    AiSportsResponse<ClassesVo> findById(@NotNull @RequestParam("classesId") Long classesId) ;
+
+    /**
      * 查询当前老师所创建的班级
      *
      * @return

@@ -56,7 +56,7 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     @Override
     @TeacherRole
     @Log("老师创建班级")
-    public AiSportsResponse<Boolean> add(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException{
+    public AiSportsResponse<Boolean> add(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException {
         // 先查询是否已经存在
         Classes classesAdd = classesService.findByClassesName(classes.getClassesName());
         if (classesAdd != null) {
@@ -79,7 +79,7 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     @Override
     @TeacherRole
     @Log("老师修改班级")
-    public AiSportsResponse<Boolean> update(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException{
+    public AiSportsResponse<Boolean> update(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException {
         // 先查询这个班级是否是当前用户创建的
         Classes classesUpdate = classesService.getById(classes.getClassesId());
         if (classesUpdate == null) {
@@ -105,9 +105,18 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     @Override
     @Log("查询班级列表")
     public AiSportsResponse<List<ClassesVo>> findBySchoolId(@NotNull @RequestParam("schoolId") Long schoolId) {
-
+        School school = schoolService.getById(schoolId);
+        if (school == null) {
+            return new AiSportsResponse<List<ClassesVo>>().fail().message("学校Id错误！");
+        }
 
         return new AiSportsResponse<List<ClassesVo>>().success().data(classesService.findBySchoolId(schoolId));
+    }
+
+    @Override
+    public AiSportsResponse<ClassesVo> findById(@NotNull @RequestParam("classesId") Long classesId) {
+
+        return new AiSportsResponse<ClassesVo>().success().data(classesService.findById(classesId));
     }
 
     @Override

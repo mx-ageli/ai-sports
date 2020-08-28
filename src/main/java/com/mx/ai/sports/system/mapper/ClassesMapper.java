@@ -30,4 +30,11 @@ public interface ClassesMapper extends BaseMapper<Classes> {
      * @return
      */
     List<ClassesVo> findBySchoolIdAndUserId(@Param("schoolId") Long schoolId, @Param("userId") Long userId);
+
+    /**
+     *
+     * @param classesId
+     * @return
+     */
+    ClassesVo findById(Long classesId);
 }

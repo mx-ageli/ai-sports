@@ -48,6 +48,5 @@ public interface IClassesService extends IService<Classes> {
     Classes findByClassesNameNotClassesId(Long classesId, String classesName);
 
 
-
-
+    ClassesVo findById(Long classesId);
 }

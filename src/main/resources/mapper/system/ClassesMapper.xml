@@ -31,4 +31,16 @@
             sc.CREATE_TIME ASC
 
     </select>
+    <select id="findById" resultType="com.mx.ai.sports.system.vo.ClassesVo">
+        SELECT
+            sc.CLASSES_ID AS classesId,
+            sc.CLASSES_NAME AS classesName,
+            su.USER_ID AS userId,
+            su.FULL_NAME AS teacherName
+        FROM
+            SYS_USER su
+            LEFT JOIN SYS_CLASSES sc ON su.USER_ID = sc.CLASSES_ID
+        WHERE
+            sc.CLASSES_ID = #{classesId}
+    </select>
 </mapper>

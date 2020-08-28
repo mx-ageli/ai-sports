@@ -42,4 +42,9 @@ public class ClassesServiceImpl extends ServiceImpl<ClassesMapper, Classes> impl
         return this.baseMapper.selectOne(new LambdaQueryWrapper<Classes>().eq(Classes::getClassesName, classesName).ne(Classes::getClassesId, classesId));
     }
 
+    @Override
+    public ClassesVo findById(Long classesId) {
+        return baseMapper.findById(classesId);
+    }
+
 }
