@@ -20,7 +20,7 @@ public class AiSportsResponse<T> implements Serializable {
     private static final long serialVersionUID = -4078639268249337246L;
 
     @ApiModelProperty("code")
-    private int code;
+    private int code = HttpStatus.OK.value();
 
     @ApiModelProperty(value = "描述")
     private String message;

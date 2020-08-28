@@ -120,4 +120,5 @@ public class Course implements Serializable {
     @TableId(value = "STUDENT_JOB_ID")
     private Long studentJobId;
 
+
 }

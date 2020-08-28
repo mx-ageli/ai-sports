@@ -161,4 +161,6 @@ public interface CourseApi {
     @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "QueryRequest", required = true)
     @RequestMapping(value = "/find_course_history", method = RequestMethod.POST)
     AiSportsResponse<IPage<RecordStudentVo>> findCourseHistory(@RequestBody @Valid QueryRequest query);
+
+    // TODO 结束课程或者开启课程
 }

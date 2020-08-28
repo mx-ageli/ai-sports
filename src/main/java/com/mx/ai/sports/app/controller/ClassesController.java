@@ -142,7 +142,7 @@ public class ClassesController extends BaseRestController implements ClassesApi 
             schoolVos.add(schoolVo);
         });
 
-        return new AiSportsResponse<List<SchoolVo>>().data(schoolVos);
+        return new AiSportsResponse<List<SchoolVo>>().success().data(schoolVos);
     }
 
     @Override
