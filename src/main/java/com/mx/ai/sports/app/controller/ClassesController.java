@@ -5,7 +5,6 @@ import com.mx.ai.sports.app.api.ClassesApi;
 import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.annotation.TeacherRole;
 import com.mx.ai.sports.common.controller.BaseRestController;
-import com.mx.ai.sports.common.entity.AiSportsConstant;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.system.entity.Classes;
@@ -114,6 +113,7 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     }
 
     @Override
+    @Log("根据班级Id查询班级详情")
     public AiSportsResponse<ClassesVo> findById(@NotNull @RequestParam("classesId") Long classesId) {
 
         return new AiSportsResponse<ClassesVo>().success().data(classesService.findById(classesId));
@@ -121,6 +121,7 @@ public class ClassesController extends BaseRestController implements ClassesApi 
 
     @Override
     @TeacherRole
+    @Log("查询当前老师所创建的班级")
     public AiSportsResponse<List<ClassesVo>> findByTeacher() throws AiSportsException {
 
         UserSimple userSimple = getCurrentUser();
@@ -129,8 +130,10 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     }
 
     @Override
+    @Log("查询所有的学校列表")
     public AiSportsResponse<List<SchoolVo>> findSchool() {
         List<School> schools = schoolService.list();
+
         if (CollectionUtils.isEmpty(schools)) {
             return new AiSportsResponse<List<SchoolVo>>().fail().message("后台数据错误，还没有创建学校！");
         }
@@ -146,8 +149,8 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     }
 
     @Override
+    @Log("查询一个班级中的学生列表")
     public AiSportsResponse<IPage<UserSmallVo>> findStudentByClassesId(@RequestBody @Valid ClassesQuery query) {
-
         Classes classes = classesService.getById(query.getClassesId());
         if (classes == null) {
             return new AiSportsResponse<IPage<UserSmallVo>>().fail().message("班级Id错误，没有查询到班级数据！");

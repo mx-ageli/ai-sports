@@ -1,6 +1,7 @@
 package com.mx.ai.sports.app.controller;
 
 import com.mx.ai.sports.app.api.TermApi;
+import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.system.service.ITermService;
@@ -26,6 +27,7 @@ public class TermController extends BaseRestController implements TermApi {
     private ITermService termService;
 
     @Override
+    @Log("查询所有的学期列表")
     public AiSportsResponse<List<TermVo>> findAll() {
 
         return new AiSportsResponse<List<TermVo>>().success().data(termService.findByCurrentDate());

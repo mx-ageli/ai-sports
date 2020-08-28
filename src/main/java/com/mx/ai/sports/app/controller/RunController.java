@@ -2,6 +2,7 @@ package com.mx.ai.sports.app.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mx.ai.sports.app.api.RunApi;
+import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.entity.RunStatusEnum;
@@ -41,6 +42,7 @@ public class RunController extends BaseRestController implements RunApi {
     private IRunService runService;
 
     @Override
+    @Log("保存跑步数据")
     public AiSportsResponse<Boolean> add(@RequestBody @Valid RunAddVo runAddVo) {
         // 开始时间小于结束时间
         if (runAddVo.getStartTime().after(runAddVo.getEndTime())) {
@@ -74,6 +76,7 @@ public class RunController extends BaseRestController implements RunApi {
     }
 
     @Override
+    @Log("查询合格的跑步规则")
     public AiSportsResponse<RunRuleVo> findRunRule() {
         RunRule runRule = runRuleService.getOne(new LambdaQueryWrapper<>());
         if (runRule == null) {
@@ -87,6 +90,7 @@ public class RunController extends BaseRestController implements RunApi {
     }
 
     @Override
+    @Log("按照指定的时间区间查询跑步记录")
     public AiSportsResponse<List<RunRecordVo>> findRunHistory(@RequestBody @Valid RunRecordQuery query) {
         return null;
     }

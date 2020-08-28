@@ -41,25 +41,28 @@ public class LogAspect {
 
     @Around("pointcut()")
     public Object around(ProceedingJoinPoint point) throws Throwable {
-        Object result;
+        Object result = null;
         long beginTime = System.currentTimeMillis();
-        // 执行方法
-        result = point.proceed();
-        HttpServletRequest request = HttpContextUtil.getHttpServletRequest();
-        // 设置 IP地址
-        String ip = IpUtil.getIpAddr(request);
-        // 执行时长(毫秒)
-        long time = System.currentTimeMillis() - beginTime;
-        if (aiSportsProperties.isOpenAopLog()) {
-            // 保存日志
-            UserSimple user = AiSportsUtil.getCurrentUser();
-            Log log = new Log();
-            if (user != null) {
-                log.setUsername(user.getUsername());
+        try {
+            // 执行方法
+            result = point.proceed();
+        } finally {
+            HttpServletRequest request = HttpContextUtil.getHttpServletRequest();
+            // 设置 IP地址
+            String ip = IpUtil.getIpAddr(request);
+            // 执行时长(毫秒)
+            long time = System.currentTimeMillis() - beginTime;
+            if (aiSportsProperties.isOpenAopLog()) {
+                // 保存日志
+                UserSimple user = AiSportsUtil.getCurrentUser();
+                Log log = new Log();
+                if (user != null) {
+                    log.setUsername(user.getUsername());
+                }
+                log.setIp(ip);
+                log.setTime(time);
+                logService.saveLog(point, log, result);
             }
-            log.setIp(ip);
-            log.setTime(time);
-            logService.saveLog(point, log, result);
         }
         return result;
     }
