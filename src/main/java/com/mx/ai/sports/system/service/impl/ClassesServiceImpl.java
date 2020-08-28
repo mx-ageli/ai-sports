@@ -33,6 +33,11 @@ public class ClassesServiceImpl extends ServiceImpl<ClassesMapper, Classes> impl
     }
 
     @Override
+    public List<ClassesVo> findBySchoolIdAndUserId(Long schoolId, Long userId) {
+        return baseMapper.findBySchoolIdAndUserId(schoolId, userId);
+    }
+
+    @Override
     public Classes findByClassesNameNotClassesId(Long classesId, String classesName) {
         return this.baseMapper.selectOne(new LambdaQueryWrapper<Classes>().eq(Classes::getClassesName, classesName).ne(Classes::getClassesId, classesId));
     }

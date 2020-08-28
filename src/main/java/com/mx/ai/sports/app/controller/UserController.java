@@ -4,10 +4,7 @@ import com.mx.ai.sports.app.api.UserApi;
 import com.mx.ai.sports.common.annotation.Limit;
 import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.controller.BaseRestController;
-import com.mx.ai.sports.common.entity.AiSportsConstant;
-import com.mx.ai.sports.common.entity.AiSportsResponse;
-import com.mx.ai.sports.common.entity.LimitType;
-import com.mx.ai.sports.common.entity.RoleEnum;
+import com.mx.ai.sports.common.entity.*;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.common.oss.OssUploadUtil;
 import com.mx.ai.sports.common.utils.*;
@@ -270,6 +267,11 @@ public class UserController extends BaseRestController implements UserApi {
                 user.setClassesId(userUpdateVo.getClassesId());
             }
             if (StringUtils.isNotBlank(userUpdateVo.getSex())) {
+                try {
+                    SexEnum.valueOf(userUpdateVo.getSex());
+                } catch (IllegalArgumentException e){
+                    return new AiSportsResponse<Boolean>().message("性别只能为 (1或者2) 1男 2女").fail();
+                }
                 user.setSex(userUpdateVo.getSex());
             }
             // 重置修改时间

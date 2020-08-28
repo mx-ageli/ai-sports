@@ -31,6 +31,14 @@ public interface IClassesService extends IService<Classes> {
     List<ClassesVo> findBySchoolId(Long schoolId);
 
     /**
+     * 通过学校Id和创建人查询班级列表
+     *
+     * @param schoolId 学校Id
+     * @return
+     */
+    List<ClassesVo> findBySchoolIdAndUserId(Long schoolId, Long userId);
+
+    /**
      * 通过班级名称查找班级, 排除传入的classesId
      *
      * @param classesId   排除classesId

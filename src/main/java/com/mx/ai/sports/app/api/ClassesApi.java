@@ -6,10 +6,10 @@ import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.system.query.ClassesQuery;
 import com.mx.ai.sports.system.query.ClassesUpdateVo;
 import com.mx.ai.sports.system.vo.ClassesVo;
+import com.mx.ai.sports.system.vo.SchoolVo;
 import com.mx.ai.sports.system.vo.UserSmallVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -57,13 +56,32 @@ public interface ClassesApi {
     AiSportsResponse<Boolean> update(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException;
 
     /**
-     * 查询当前用户的班级列表
+     * 查询一个学校下的所有班级
      *
      * @return
      */
-    @ApiOperation(value = "#已实现 2020-08-05# 查询当前用户的班级列表")
-    @RequestMapping(value = "/find_all", method = RequestMethod.GET)
-    AiSportsResponse<List<ClassesVo>> findAll() throws AiSportsException;
+    @ApiOperation(value = "#已实现 2020-08-28# 查询一个学校下的所有班级")
+    @RequestMapping(value = "/find_by_school_id", method = RequestMethod.GET)
+    AiSportsResponse<List<ClassesVo>> findBySchoolId(@NotNull @RequestParam("schoolId") Long schoolId) ;
+
+    /**
+     * 查询当前老师所创建的班级
+     *
+     * @return
+     */
+    @ApiOperation(value = "#已实现 2020-08-28# 查询当前老师所创建的班级")
+    @RequestMapping(value = "/find_by_teacher", method = RequestMethod.GET)
+    AiSportsResponse<List<ClassesVo>> findByTeacher() throws AiSportsException;
+
+    /**
+     * 查询所有的学校列表
+     *
+     * @return
+     */
+    @ApiOperation(value = "#已实现 2020-08-28# 查询所有的学校列表， 目前只有一个学校")
+    @RequestMapping(value = "/find_school", method = RequestMethod.GET)
+    AiSportsResponse<List<SchoolVo>> findSchool();
+
 
     /**
      * 查询一个班级中的学生列表

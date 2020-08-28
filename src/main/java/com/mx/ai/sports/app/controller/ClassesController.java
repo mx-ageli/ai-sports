@@ -9,19 +9,26 @@ import com.mx.ai.sports.common.entity.AiSportsConstant;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.system.entity.Classes;
+import com.mx.ai.sports.system.entity.School;
 import com.mx.ai.sports.system.query.ClassesQuery;
 import com.mx.ai.sports.system.query.ClassesUpdateVo;
 import com.mx.ai.sports.system.service.IClassesService;
+import com.mx.ai.sports.system.service.ISchoolService;
 import com.mx.ai.sports.system.service.IUserService;
 import com.mx.ai.sports.system.vo.ClassesVo;
+import com.mx.ai.sports.system.vo.SchoolVo;
 import com.mx.ai.sports.system.vo.UserSimple;
 import com.mx.ai.sports.system.vo.UserSmallVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -43,10 +50,13 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private ISchoolService schoolService;
+
     @Override
     @TeacherRole
     @Log("老师创建班级")
-    public AiSportsResponse<Boolean> add(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException {
+    public AiSportsResponse<Boolean> add(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException{
         // 先查询是否已经存在
         Classes classesAdd = classesService.findByClassesName(classes.getClassesName());
         if (classesAdd != null) {
@@ -67,7 +77,7 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     @Override
     @TeacherRole
     @Log("老师修改班级")
-    public AiSportsResponse<Boolean> update(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException {
+    public AiSportsResponse<Boolean> update(@RequestBody @Valid ClassesUpdateVo classes) throws AiSportsException{
         // 先查询这个班级是否是当前用户创建的
         Classes classesUpdate = classesService.getById(classes.getClassesId());
         if (classesUpdate == null) {
@@ -92,14 +102,45 @@ public class ClassesController extends BaseRestController implements ClassesApi 
 
     @Override
     @Log("查询班级列表")
-    public AiSportsResponse<List<ClassesVo>> findAll() {
-        UserSimple user = getCurrentUser();
+    public AiSportsResponse<List<ClassesVo>> findBySchoolId(@NotNull @RequestParam("schoolId") Long schoolId) {
 
-        return new AiSportsResponse<List<ClassesVo>>().success().data(classesService.findBySchoolId(user.getSchoolId()));
+
+        return new AiSportsResponse<List<ClassesVo>>().success().data(classesService.findBySchoolId(schoolId));
+    }
+
+    @Override
+    @TeacherRole
+    public AiSportsResponse<List<ClassesVo>> findByTeacher() throws AiSportsException {
+
+        UserSimple userSimple = getCurrentUser();
+
+        return new AiSportsResponse<List<ClassesVo>>().success().data(classesService.findBySchoolIdAndUserId(userSimple.getSchoolId(), userSimple.getUserId()));
+    }
+
+    @Override
+    public AiSportsResponse<List<SchoolVo>> findSchool() {
+        List<School> schools = schoolService.list();
+        if (CollectionUtils.isEmpty(schools)) {
+            return new AiSportsResponse<List<SchoolVo>>().fail().message("后台数据错误，还没有创建学校！");
+        }
+        List<SchoolVo> schoolVos = new ArrayList<>();
+        schools.forEach(school -> {
+            SchoolVo schoolVo = new SchoolVo();
+            schoolVo.setSchoolId(school.getSchoolId());
+            schoolVo.setSchoolName(school.getSchoolName());
+            schoolVos.add(schoolVo);
+        });
+
+        return new AiSportsResponse<List<SchoolVo>>().data(schoolVos);
     }
 
     @Override
     public AiSportsResponse<IPage<UserSmallVo>> findStudentByClassesId(@RequestBody @Valid ClassesQuery query) {
+
+        Classes classes = classesService.getById(query.getClassesId());
+        if (classes == null) {
+            return new AiSportsResponse<IPage<UserSmallVo>>().fail().message("班级Id错误，没有查询到班级数据！");
+        }
 
         return new AiSportsResponse<IPage<UserSmallVo>>().success().data(userService.findByClassesId(query));
     }
