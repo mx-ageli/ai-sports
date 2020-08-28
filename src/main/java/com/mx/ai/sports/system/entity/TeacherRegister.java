@@ -37,6 +37,12 @@ public class TeacherRegister implements Serializable {
     private String fullName;
 
     /**
+     * 学校Id
+     */
+    @TableField("SCHOOL_ID")
+    private Long schoolId;
+
+    /**
      * 是否已经注册
      */
     @TableField("IS_REGISTER")

@@ -140,7 +140,7 @@ public class UserController extends BaseRestController implements UserApi {
         if (isExists) {
             // key存在，获取过期时间
             Long ttlMobile = jedisPoolUtil.ttl(keyMobile);
-            if(ttlMobile > 0){
+            if (ttlMobile > 0) {
                 log.info("手机号:{}, 正在重复获取验证码, 间隔时间: {} 秒, 请求默认拒绝!", mobile, ttlMobile);
                 String msg = "获取验证码太过频繁, 请等待" + ttlMobile + "秒后再次获取！";
                 return new AiSportsResponse<Boolean>().message(msg).fail().data(Boolean.FALSE);
@@ -264,12 +264,13 @@ public class UserController extends BaseRestController implements UserApi {
                     return new AiSportsResponse<Boolean>().message("传入的班级Id错误！没有查询到相应的班级数据！").fail();
                 }
                 // 添加班级Id
-                user.setClassesId(userUpdateVo.getClassesId());
+                user.setClassesId(classes.getClassesId());
+                user.setSchoolId(classes.getSchoolId());
             }
             if (StringUtils.isNotBlank(userUpdateVo.getSex())) {
                 try {
                     SexEnum.valueOf(userUpdateVo.getSex());
-                } catch (IllegalArgumentException e){
+                } catch (IllegalArgumentException e) {
                     return new AiSportsResponse<Boolean>().message("性别只能为 (1或者2) 1男 2女").fail();
                 }
                 user.setSex(userUpdateVo.getSex());

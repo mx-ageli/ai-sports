@@ -84,11 +84,6 @@ public class AiSportsConstant {
      */
     public final static String JSON = "json";
 
-
-    /**
-     * 默认学校Id
-     */
-    public static final Long DEFAULT_SCHOOL_ID = 1L;
     /**
      * 默认头像
      */

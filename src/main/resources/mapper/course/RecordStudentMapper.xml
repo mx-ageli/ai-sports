@@ -45,7 +45,8 @@
             ars.IS_LATE AS isLate,
             ars.IS_PASS AS isPass,
             ac.COURSE_NAME AS courseName,
-            asi.LOCATION AS location,
+            asi.LAT AS lat,
+            asi.LON AS lon,
             asi.LOCATION_NAME AS locationName,
             ac.IMAGES AS images
         FROM

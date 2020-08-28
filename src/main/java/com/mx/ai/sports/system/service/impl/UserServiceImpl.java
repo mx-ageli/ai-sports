@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 
 import static com.mx.ai.sports.common.entity.AiSportsConstant.DEFAULT_AVATAR;
-import static com.mx.ai.sports.common.entity.AiSportsConstant.DEFAULT_SCHOOL_ID;
 
 /**
  * 用户Service
@@ -96,7 +95,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             user.setCreateTime(new Date());
             user.setModifyTime(new Date());
             user.setLastLoginTime(new Date());
-            user.setSchoolId(DEFAULT_SCHOOL_ID);
             user.setAvatar(aliyunOssConfig.getAccessUrl() + DEFAULT_AVATAR);
 
             // 检查这个用户是不是老师
@@ -106,7 +104,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 // 使用老师登记的姓名
                 user.setFullName(teacherRegister.getFullName());
                 user.setRoleId(RoleEnum.TEACHER.value());
-
+                user.setSchoolId(teacherRegister.getSchoolId());
                 teacherRegister.setIsRegister(Boolean.TRUE);
                 this.updateRegisterTeacher(teacherRegister);
             } else {

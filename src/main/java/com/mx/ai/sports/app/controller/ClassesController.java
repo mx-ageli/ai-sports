@@ -63,12 +63,14 @@ public class ClassesController extends BaseRestController implements ClassesApi 
             return new AiSportsResponse<Boolean>().message("班级已经存在！").fail().data(Boolean.FALSE);
         }
 
+        UserSimple userSimple = getCurrentUser();
+
         classesAdd = new Classes();
         classesAdd.setClassesName(classes.getClassesName());
         classesAdd.setCreateTime(new Date());
         classesAdd.setAvatar(classes.getAvatar());
-        classesAdd.setSchoolId(AiSportsConstant.DEFAULT_SCHOOL_ID);
-        classesAdd.setUserId(getCurrentUserId());
+        classesAdd.setSchoolId(userSimple.getSchoolId());
+        classesAdd.setUserId(userSimple.getUserId());
         classesService.save(classesAdd);
 
         return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
