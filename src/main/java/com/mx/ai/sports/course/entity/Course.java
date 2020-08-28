@@ -120,5 +120,9 @@ public class Course implements Serializable {
     @TableId(value = "STUDENT_JOB_ID")
     private Long studentJobId;
 
-
+    /**
+     * 状态 1=正常,2=暂停
+     */
+    @TableField("STATUS")
+    private String status;
 }

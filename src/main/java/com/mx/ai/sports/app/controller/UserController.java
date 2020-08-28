@@ -268,12 +268,12 @@ public class UserController extends BaseRestController implements UserApi {
                 user.setSchoolId(classes.getSchoolId());
             }
             if (StringUtils.isNotBlank(userUpdateVo.getSex())) {
-                try {
-                    SexEnum.valueOf(userUpdateVo.getSex());
-                } catch (IllegalArgumentException e) {
+
+                if (Objects.equals(userUpdateVo.getSex(), SexEnum.MALE.value()) || Objects.equals(userUpdateVo.getSex(), SexEnum.FEMALE.value())) {
+                    user.setSex(userUpdateVo.getSex());
+                } else {
                     return new AiSportsResponse<Boolean>().message("性别只能为 (1或者2) 1男 2女").fail();
                 }
-                user.setSex(userUpdateVo.getSex());
             }
             // 重置修改时间
             user.setModifyTime(new Date());

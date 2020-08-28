@@ -11,7 +11,9 @@ public enum EntryEnum {
 
     NO("2", "不可报"),
 
-    ENTRY("3", "已报课");
+    ENTRY("3", "已报课"),
+
+    FINISH("4", "已结束");
 
     private final String value;
 

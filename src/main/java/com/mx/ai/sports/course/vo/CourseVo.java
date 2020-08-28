@@ -62,6 +62,9 @@ public class CourseVo implements Serializable {
     @ApiModelProperty("是否是今日课程")
     private Boolean isToday;
 
-    @ApiModelProperty("课程报名状态，1可报课 2不可报 3已报课 学生使用字段")
+    @ApiModelProperty("课程报名状态，1可报课 2不可报 3已报课 4已结束 学生使用字段")
     private String entryStatus;
+
+    @ApiModelProperty("课程状态，1正常,2暂停")
+    private String status;
 }

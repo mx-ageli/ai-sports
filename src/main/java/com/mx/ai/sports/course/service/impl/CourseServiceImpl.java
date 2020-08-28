@@ -3,18 +3,27 @@ package com.mx.ai.sports.course.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.entity.QueryRequest;
+import com.mx.ai.sports.course.converter.CourseConverter;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.mapper.CourseMapper;
+import com.mx.ai.sports.course.query.CourseUpdateVo;
 import com.mx.ai.sports.course.service.ICourseService;
 import com.mx.ai.sports.course.vo.CourseVo;
 import com.mx.ai.sports.course.vo.StudentCourseVo;
+import com.mx.ai.sports.job.entity.Job;
+import com.mx.ai.sports.job.service.IJobService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author Mengjiaxin
@@ -24,6 +33,12 @@ import java.time.LocalDateTime;
 @Service("CourseService")
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> implements ICourseService {
+
+    @Autowired
+    private CourseConverter courseConverter;
+
+    @Autowired
+    private IJobService jobService;
 
     @Override
     public Course findByCourseName(Long courseId, String courseName) {
@@ -56,5 +71,50 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
 
         return this.baseMapper.findMyEntry(page, week, userId);
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean saveCourse(CourseUpdateVo updateVo, Long currentUserId) {
+        Course course = courseConverter.vo2Domain(updateVo);
+        course.setUserId(currentUserId);
+        course.setCreateTime(new Date());
+        course.setUpdateTime(new Date());
+
+        // 如果课程状态为空，默认为开启
+        if(StringUtils.isBlank(updateVo.getStatus())){
+            course.setStatus(Job.ScheduleStatus.NORMAL.getValue());
+        }
+
+        // 先保存课程数据
+        this.save(course);
+        // 如果课程状态为开启状态，就创建定时任务
+        if (Objects.equals(course.getStatus(), Job.ScheduleStatus.NORMAL.getValue())) {
+            // 创建课程相关的定时任务
+            course.setCourseJobId(jobService.createCourseRecordJob(course));
+            // 创建同步学生报名列表的任务
+            course.setStudentJobId(jobService.createRecordStudentJob(course));
+        }
+        // 更新课程任务
+        return this.saveOrUpdate(course);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean updateCourse(Course course, Long currentUserId) {
+        // 不管课程是什么状态，都先把以前的课程任务删除
+        jobService.deleteJobs(new String[]{course.getCourseJobId().toString(), course.getStudentJobId().toString()});
+
+        // 如果课程状态为开启状态，就创建定时任务
+        if (Objects.equals(course.getStatus(), Job.ScheduleStatus.NORMAL.getValue())) {
+            // 创建课程相关的定时任务
+            course.setCourseJobId(jobService.createCourseRecordJob(course));
+            // 创建同步学生报名列表的任务
+            course.setStudentJobId(jobService.createRecordStudentJob(course));
+        }
+
+        // 更新课程信息
+        return this.saveOrUpdate(course);
     }
 }

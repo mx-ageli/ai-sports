@@ -22,9 +22,11 @@ import com.mx.ai.sports.course.service.ICourseService;
 import com.mx.ai.sports.course.service.ICourseStudentService;
 import com.mx.ai.sports.course.service.IRecordStudentService;
 import com.mx.ai.sports.course.vo.*;
+import com.mx.ai.sports.job.entity.Job;
 import com.mx.ai.sports.job.service.IJobService;
 import com.mx.ai.sports.system.vo.UserSimple;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -81,20 +83,8 @@ public class CourseController extends BaseRestController implements CourseApi {
         checkCourseName(null, updateVo.getCourseName());
         // 校验课程时间数据的范围校验
         checkUpdateCourseTime(updateVo);
-
-        Course course = courseConverter.vo2Domain(updateVo);
-        course.setUserId(getCurrentUserId());
-        course.setCreateTime(new Date());
-        course.setUpdateTime(new Date());
-
-        // 先保存课程数据
-        courseService.save(course);
-        // 创建课程相关的定时任务
-        course.setCourseJobId(jobService.createCourseRecordJob(course));
-        // 创建同步学生报名列表的任务
-        course.setStudentJobId(jobService.createRecordStudentJob(course));
-        // 更新课程任务
-        return new AiSportsResponse<Boolean>().success().data(courseService.saveOrUpdate(course));
+        // 老师新增课程，并创建定时任务
+        return new AiSportsResponse<Boolean>().success().data(courseService.saveCourse(updateVo, getCurrentUserId()));
     }
 
     /**
@@ -154,8 +144,9 @@ public class CourseController extends BaseRestController implements CourseApi {
         if (isCheckStart(course.getWeek(), course.getStartTime(), course.getEndTime())) {
             throw new AiSportsException("当前课程正在进行中，不能修改! 请等本次课程结束后再修改！");
         }
+        Long userId = getCurrentUserId();
 
-        course.setUserId(getCurrentUserId());
+        course.setUserId(userId);
         course.setCourseName(updateVo.getCourseName());
         course.setUpdateTime(new Date());
         course.setWeek(updateVo.getWeek());
@@ -167,15 +158,11 @@ public class CourseController extends BaseRestController implements CourseApi {
         course.setLocationName(updateVo.getLocationName());
         course.setScope(updateVo.getScope());
         course.setImages(updateVo.getImages());
-
-        // 先把以前的课程任务删除
-        jobService.deleteJobs(new String[]{course.getCourseJobId().toString(), course.getStudentJobId().toString()});
-        // 创建课程相关的定时任务
-        course.setCourseJobId(jobService.createCourseRecordJob(course));
-        // 创建同步学生报名列表的任务
-        course.setStudentJobId(jobService.createRecordStudentJob(course));
+        if(StringUtils.isNotBlank(updateVo.getStatus())){
+            course.setStatus(updateVo.getStatus());
+        }
         // 更新课程信息
-        return new AiSportsResponse<Boolean>().success().data(courseService.saveOrUpdate(course));
+        return new AiSportsResponse<Boolean>().success().data(courseService.updateCourse(course, userId));
     }
 
     @Override
@@ -223,6 +210,10 @@ public class CourseController extends BaseRestController implements CourseApi {
                 // 判断当前用户是否已经报名这个课程
                 if (courseIds.contains(courseVo.getCourseId())) {
                     courseVo.setEntryStatus(EntryEnum.ENTRY.value());
+                }
+                // 判断课程是否暂停状态
+                if(Objects.equals(courseVo.getStatus(), Job.ScheduleStatus.PAUSE.getValue())){
+                    courseVo.setEntryStatus(EntryEnum.FINISH.value());
                 }
             }
             return new AiSportsResponse<IPage<CourseVo>>().success().data(coursePage);

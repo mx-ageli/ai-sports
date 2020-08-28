@@ -100,4 +100,10 @@ public class CourseUpdateVo implements Serializable {
     @ApiModelProperty("课程对应的图片")
     private String images;
 
+    /**
+     * 课程状态 1=正常,2=暂停
+     */
+    @ApiModelProperty("课程状态 1=正常,2=暂停")
+    private String status;
+
 }

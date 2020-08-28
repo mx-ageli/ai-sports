@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.course.entity.Course;
+import com.mx.ai.sports.course.query.CourseUpdateVo;
 import com.mx.ai.sports.course.vo.CourseVo;
 import com.mx.ai.sports.system.entity.Classes;
 import com.mx.ai.sports.system.entity.School;
@@ -51,4 +52,20 @@ public interface ICourseService extends IService<Course> {
      * @return
      */
     IPage<CourseVo> findMyEntry(QueryRequest request, Long currentUserId);
+
+    /**
+     * 老师新增课程，并创建定时任务
+     * @param updateVo
+     * @return
+     */
+    Boolean saveCourse(CourseUpdateVo updateVo, Long currentUserId);
+
+    /**
+     * 老师修改课程，并创建定时任务
+     * @param course
+     * @return
+     */
+    Boolean updateCourse(Course course, Long currentUserId);
+
+
 }
