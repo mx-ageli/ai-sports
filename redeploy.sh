@@ -12,7 +12,7 @@ mvn clean install -Dmaven.test.skip=true
 #nohup java -agentlib:jdwp=transport=dt_socket,address=8100,server=y,suspend=n -jar test-web.jar > /root/logs/test.log &
 
 #杀死原来的java进程
-./kill.sh ai-sports-1.0-SNAPSHOT.jar
+./kill.sh ai-sports
 
 nohup java -jar /home/AiSports/ai-sports/target/ai-sports-1.0-SNAPSHOT.jar&
 #监控日志
