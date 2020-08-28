@@ -40,7 +40,7 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
         if(CollectionUtils.isEmpty(courseStudentList)){
             return new ArrayList<>();
         }
-        return courseStudentList.stream().map(CourseStudent::getUserId).collect(Collectors.toList());
+        return courseStudentList.stream().map(CourseStudent::getCourseId).collect(Collectors.toList());
     }
 
     @Override
