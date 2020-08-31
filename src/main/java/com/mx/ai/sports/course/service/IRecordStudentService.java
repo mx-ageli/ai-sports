@@ -41,4 +41,11 @@ public interface IRecordStudentService extends IService<RecordStudent> {
      * @return
      */
     IPage<RecordStudentVo> findRecordStudentVo(QueryRequest request, Long userId);
+
+    /**
+     *
+     * @param courseRecordId
+     * @param userId
+     */
+    RecordStudent findByCourseRecordIdAndUserId(Long courseRecordId, Long userId);
 }

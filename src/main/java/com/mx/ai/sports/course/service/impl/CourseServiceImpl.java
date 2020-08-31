@@ -83,10 +83,11 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         course.setUpdateTime(new Date());
 
         // 如果课程状态为空，默认为开启
-        if(StringUtils.isBlank(updateVo.getStatus())){
+        if (StringUtils.isBlank(updateVo.getStatus())) {
             course.setStatus(Job.ScheduleStatus.NORMAL.getValue());
+        } else {
+            course.setStatus(updateVo.getStatus());
         }
-
         // 先保存课程数据
         this.save(course);
         // 如果课程状态为开启状态，就创建定时任务

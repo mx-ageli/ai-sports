@@ -151,6 +151,8 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements IJobS
         String beanName = "courseTask";
         String methodName = "recordStudentTask";
         LocalTime startLocalTime = LocalTime.parse(course.getStartTime());
+        // 在开始时间的前一分钟创建
+        startLocalTime = startLocalTime.minusMinutes(1);
         // 开始时间时才创建
         return initJob(course, beanName, methodName, startLocalTime, " 创建学生课程参加记录数据任务");
     }

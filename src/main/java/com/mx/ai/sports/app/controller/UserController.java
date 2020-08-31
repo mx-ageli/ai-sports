@@ -228,14 +228,15 @@ public class UserController extends BaseRestController implements UserApi {
     @Override
     @Log("系统注册老师用户")
     public AiSportsResponse<Boolean> systemRegisterTeacher(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
-                                                           @NotBlank @RequestParam("fullName") String fullName) {
+                                                           @NotBlank @RequestParam("fullName") String fullName,
+                                                           @NotNull @RequestParam("schoolId") Long schoolId) {
 
         TeacherRegister register = userService.findTeacherRegisterByUsername(mobile);
         if (register != null) {
             return new AiSportsResponse<Boolean>().message("用户已经为注册老师，不需要重复注册。").fail();
         }
 
-        return new AiSportsResponse<Boolean>().success().data(userService.registerTeacher(mobile, fullName));
+        return new AiSportsResponse<Boolean>().success().data(userService.registerTeacher(mobile, fullName, schoolId));
     }
 
     @Override

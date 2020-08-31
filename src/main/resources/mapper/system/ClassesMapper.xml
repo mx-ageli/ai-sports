@@ -6,10 +6,11 @@
             sc.CLASSES_ID AS classesId,
             sc.CLASSES_NAME AS classesName,
             su.USER_ID AS userId,
+            sc.AVATAR AS avatar,
             su.FULL_NAME AS teacherName
         FROM
             SYS_USER su
-            LEFT JOIN SYS_CLASSES sc ON su.USER_ID = sc.CLASSES_ID
+            LEFT JOIN SYS_CLASSES sc ON su.USER_ID = sc.USER_ID
         WHERE
             sc.SCHOOL_ID = #{schoolId}
         ORDER BY
@@ -19,13 +20,15 @@
         SELECT
             sc.CLASSES_ID AS classesId,
             sc.CLASSES_NAME AS classesName,
+            sc.AVATAR AS avatar,
             su.USER_ID AS userId,
             su.FULL_NAME AS teacherName
         FROM
             SYS_USER su
-            LEFT JOIN SYS_CLASSES sc ON su.USER_ID = sc.CLASSES_ID
+            LEFT JOIN SYS_CLASSES sc ON su.USER_ID = sc.USER_ID
         WHERE
             sc.SCHOOL_ID = #{schoolId}
+        AND
             sc.USER_ID = #{userId}
         ORDER BY
             sc.CREATE_TIME ASC
@@ -36,10 +39,11 @@
             sc.CLASSES_ID AS classesId,
             sc.CLASSES_NAME AS classesName,
             su.USER_ID AS userId,
+            sc.AVATAR AS avatar,
             su.FULL_NAME AS teacherName
         FROM
             SYS_USER su
-            LEFT JOIN SYS_CLASSES sc ON su.USER_ID = sc.CLASSES_ID
+            LEFT JOIN SYS_CLASSES sc ON su.USER_ID = sc.USER_ID
         WHERE
             sc.CLASSES_ID = #{classesId}
     </select>

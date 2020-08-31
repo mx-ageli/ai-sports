@@ -91,7 +91,7 @@ public interface CourseApi {
     @ApiOperation(value = "#已实现 图44# 查询某一个课程的完成情的学生列表（仅限于老师使用)")
     @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "StudentCourseQuery", required = true)
     @RequestMapping(value = "/find_student_by_id", method = RequestMethod.POST)
-    AiSportsResponse<IPage<StudentCourseVo>> findStudentById(@RequestBody @Valid StudentCourseQuery query);
+    AiSportsResponse<IPage<StudentCourseVo>> findStudentById(@RequestBody @Valid StudentCourseQuery query) throws AiSportsException;
 
 
     /**
@@ -149,7 +149,7 @@ public interface CourseApi {
     @ApiOperation(value = "#已实现 图32# 查询课程的完成情况历史统计分析（仅限于老师使用)")
     @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "CourseQuery", required = true)
     @RequestMapping(value = "/find_history_analysis", method = RequestMethod.POST)
-    AiSportsResponse<IPage<CourseRecordVo>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query);
+    AiSportsResponse<IPage<CourseRecordVo>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query) throws AiSportsException;
 
     /**
      * 查询上课的历史记录

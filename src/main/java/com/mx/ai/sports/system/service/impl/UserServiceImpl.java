@@ -6,14 +6,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.RoleEnum;
 import com.mx.ai.sports.common.oss.AliyunOssConfig;
+import com.mx.ai.sports.system.converter.UserConverter;
 import com.mx.ai.sports.system.entity.School;
 import com.mx.ai.sports.system.entity.TeacherRegister;
 import com.mx.ai.sports.system.entity.User;
+import com.mx.ai.sports.system.mapper.ClassesMapper;
 import com.mx.ai.sports.system.mapper.SchoolMapper;
 import com.mx.ai.sports.system.mapper.TeacherRegisterMapper;
 import com.mx.ai.sports.system.mapper.UserMapper;
 import com.mx.ai.sports.system.query.ClassesQuery;
 import com.mx.ai.sports.system.service.IUserService;
+import com.mx.ai.sports.system.vo.ClassesVo;
 import com.mx.ai.sports.system.vo.UserSmallVo;
 import com.mx.ai.sports.system.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Objects;
 
 import static com.mx.ai.sports.common.entity.AiSportsConstant.DEFAULT_AVATAR;
 
@@ -44,6 +48,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Autowired
     private AliyunOssConfig aliyunOssConfig;
 
+    @Autowired
+    private ClassesMapper classesMapper;
+
+    @Autowired
+    private UserConverter userConverter;
+
     @Override
     public User findByUsername(String username) {
 
@@ -57,11 +67,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public Boolean registerTeacher(String username, String fullName) {
+    public Boolean registerTeacher(String username, String fullName, Long schoolId) {
         TeacherRegister register = new TeacherRegister();
         register.setUsername(username);
         register.setFullName(fullName);
         register.setIsRegister(Boolean.FALSE);
+        register.setSchoolId(schoolId);
 
         return teacherRegisterMapper.insert(register) > 0;
     }
@@ -124,7 +135,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public UserVo findVoById(Long userId) {
 
-        return baseMapper.findVoById(userId);
+        UserVo userVo = baseMapper.findVoById(userId);
+        if(Objects.equals(userVo.getRoleId(), RoleEnum.STUDENT.value()) && userVo.getClassesId() != null){
+            ClassesVo classesVo = classesMapper.findById(userVo.getClassesId());
+            userVo.setClasses(classesVo);
+        }
+
+        return userVo;
     }
 
     @Override

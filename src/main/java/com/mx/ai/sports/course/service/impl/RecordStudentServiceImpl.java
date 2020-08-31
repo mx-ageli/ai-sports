@@ -53,4 +53,10 @@ public class RecordStudentServiceImpl extends ServiceImpl<RecordStudentMapper, R
 
         return this.baseMapper.findRecordStudentVo(page, userId);
     }
+
+    @Override
+    public RecordStudent findByCourseRecordIdAndUserId(Long courseRecordId, Long userId) {
+        return this.baseMapper.selectOne(new LambdaQueryWrapper<RecordStudent>().eq(RecordStudent::getCourseRecordId, courseRecordId)
+                .eq(RecordStudent::getUserId, userId));
+    }
 }

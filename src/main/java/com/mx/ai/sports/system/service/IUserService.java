@@ -38,7 +38,7 @@ public interface IUserService extends IService<User> {
      * @param fullName 姓名
      * @return
      */
-    Boolean registerTeacher(String username, String fullName);
+    Boolean registerTeacher(String username, String fullName, Long schoolId);
 
     /**
      * 更新注册老师信息

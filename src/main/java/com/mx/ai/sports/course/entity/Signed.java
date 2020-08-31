@@ -55,13 +55,13 @@ public class Signed implements Serializable {
      * 上课打卡时间
      */
     @TableId(value = "START_TIME")
-    private Time startTime;
+    private Date startTime;
 
     /**
      * 下课打卡时间
      */
     @TableId(value = "END_TIME")
-    private Time endTime;
+    private Date endTime;
 
     /**
      * 是否迟到

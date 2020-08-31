@@ -1,6 +1,7 @@
 package com.mx.ai.sports.system.vo;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -92,14 +93,15 @@ public class UserVo implements Serializable {
     /**
      * 班级Id
      */
+    @JsonIgnore
     @ApiModelProperty("班级Id")
     private Long classesId;
 
     /**
      * 班级名称
      */
-    @ApiModelProperty("班级名称")
-    private String classesName;
+    @ApiModelProperty("班级信息，只有学生才有值")
+    private ClassesVo classes;
 
     /**
      * 学号

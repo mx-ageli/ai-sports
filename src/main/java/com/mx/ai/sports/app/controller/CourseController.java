@@ -159,7 +159,7 @@ public class CourseController extends BaseRestController implements CourseApi {
         course.setLocationName(updateVo.getLocationName());
         course.setScope(updateVo.getScope());
         course.setImages(updateVo.getImages());
-        if(StringUtils.isNotBlank(updateVo.getStatus())){
+        if (StringUtils.isNotBlank(updateVo.getStatus())) {
             course.setStatus(updateVo.getStatus());
         }
         // 更新课程信息
@@ -187,7 +187,7 @@ public class CourseController extends BaseRestController implements CourseApi {
     @Override
     @TeacherRole
     @Log("查询某一个课程的完成情的学生列表")
-    public AiSportsResponse<IPage<StudentCourseVo>> findStudentById(@RequestBody @Valid StudentCourseQuery query) {
+    public AiSportsResponse<IPage<StudentCourseVo>> findStudentById(@RequestBody @Valid StudentCourseQuery query) throws AiSportsException{
         return new AiSportsResponse<IPage<StudentCourseVo>>().success().data(recordStudentService.findVoByCourseRecordId(query));
     }
 
@@ -216,7 +216,7 @@ public class CourseController extends BaseRestController implements CourseApi {
                     courseVo.setEntryStatus(EntryEnum.ENTRY.value());
                 }
                 // 判断课程是否暂停状态
-                if(Objects.equals(courseVo.getStatus(), Job.ScheduleStatus.PAUSE.getValue())){
+                if (Objects.equals(courseVo.getStatus(), Job.ScheduleStatus.PAUSE.getValue())) {
                     courseVo.setEntryStatus(EntryEnum.FINISH.value());
                 }
             }
@@ -252,12 +252,12 @@ public class CourseController extends BaseRestController implements CourseApi {
         // 如果已经报名了，就删除报名信息，取消报名
         if (courseStudent != null) {
             if (isCheckStart) {
-                new AiSportsResponse<Boolean>().fail().message("当前课程正在进行中，不能取消报名！请等课程结束后再试！");
+                return new AiSportsResponse<Boolean>().fail().message("当前课程正在进行中，不能取消报名！请等课程结束后再试！");
             }
             return new AiSportsResponse<Boolean>().success().data(courseStudentService.remove(userId, courseId));
         } else {  // 没有报名的话就报名
             if (isCheckStart) {
-                new AiSportsResponse<Boolean>().fail().message("当前报名课程已经开始，不能报名！请等课程结束后再试！");
+                return new AiSportsResponse<Boolean>().fail().message("当前报名课程已经开始，不能报名！请等课程结束后再试！");
             }
             courseStudent = new CourseStudent();
             courseStudent.setCourseId(courseId);
@@ -294,7 +294,7 @@ public class CourseController extends BaseRestController implements CourseApi {
     @Override
     @TeacherRole
     @Log("查询课程的完成情况历史统计分析")
-    public AiSportsResponse<IPage<CourseRecordVo>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query) {
+    public AiSportsResponse<IPage<CourseRecordVo>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query) throws AiSportsException{
         return new AiSportsResponse<IPage<CourseRecordVo>>().success().data(courseRecordService.findByCourseId(query.getRequest(), query.getCourseId()));
     }
 

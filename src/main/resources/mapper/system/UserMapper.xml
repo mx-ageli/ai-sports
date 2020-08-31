@@ -17,11 +17,9 @@
             su.SCHOOL_ID AS schoolId,
             su.CLASSES_ID AS classesId,
             su.SNO AS sno,
-            sc.CLASSES_NAME AS classesName,
             ss.SCHOOL_NAME schoolName
         FROM
             SYS_USER su
-            LEFT JOIN SYS_CLASSES sc ON su.CLASSES_ID = sc.CLASSES_ID
             LEFT JOIN SYS_SCHOOL ss ON su.SCHOOL_ID = ss.SCHOOL_ID
         WHERE
             su.USER_ID = #{userId}

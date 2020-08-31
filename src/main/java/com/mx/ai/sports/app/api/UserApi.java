@@ -102,11 +102,13 @@ public interface UserApi {
     @ApiOperation(value = "#已实现 2020-08-05# 将单个手机号设置为老师，这个接口只是后台用来添加老师，以后将支持批量导入老师")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "mobile", value = "手机号", paramType = "query", dataType = "String", required = true),
-            @ApiImplicitParam(name = "fullName", value = "老师姓名", paramType = "query", dataType = "String", required = true)
+            @ApiImplicitParam(name = "fullName", value = "老师姓名", paramType = "query", dataType = "String", required = true),
+            @ApiImplicitParam(name = "schoolId", value = "学校Id", paramType = "query", dataType = "Long", required = true)
     })
     @RequestMapping(value = "/v/system_register_teacher", method = RequestMethod.GET)
     AiSportsResponse<Boolean> systemRegisterTeacher(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
-                                                    @NotBlank @RequestParam("fullName") String fullName);
+                                                    @NotBlank @RequestParam("fullName") String fullName,
+                                                    @NotNull @RequestParam("schoolId") Long schoolId);
 
     /**
      * 学生更新个人信息，只能修改学号、姓名、班级、性别。都是非必填字段，各项传值才修改，不传的不修改。

@@ -46,6 +46,14 @@ public class CourseTask {
         courseRecord.setCreateTime(new Date());
         courseRecord.setCourseId(Long.valueOf(courseId));
 
+        // 现将报名的总人数先统计到课程记录表中
+        // 统计课程报名的总人数， 这里有可能没有学生报名这个课程，就为0
+        List<Long> userIds = courseStudentService.findByCourseId(Long.valueOf(courseId));
+        Long allCount = (long) userIds.size();
+        courseRecord.setAllCount(allCount);
+        // 默认认为所有人都是缺席
+        courseRecord.setAbsentCount(allCount);
+
         courseRecordService.save(courseRecord);
 
         log.info("创建课程记录，courseId:{}，courseRecordId:{}", courseId, courseRecord.getCourseRecordId());

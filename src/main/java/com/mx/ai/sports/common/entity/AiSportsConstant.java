@@ -35,7 +35,7 @@ public class AiSportsConstant {
     /**
      * 星期范围
      */
-    public static final String[] WEEK = {"0", "1", "2", "3", "4", "5", "6",};
+    public static final String[] WEEK = {"1", "2", "3", "4", "5", "6", "7"};
 
 
     /**
