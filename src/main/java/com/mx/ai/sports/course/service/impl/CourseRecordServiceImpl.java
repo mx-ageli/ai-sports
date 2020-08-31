@@ -5,13 +5,16 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.QueryRequest;
+import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.CourseRecord;
 import com.mx.ai.sports.course.entity.CourseStudent;
 import com.mx.ai.sports.course.mapper.CourseRecordMapper;
 import com.mx.ai.sports.course.service.ICourseRecordService;
+import com.mx.ai.sports.course.service.ICourseService;
 import com.mx.ai.sports.course.vo.CourseRecordVo;
 import com.mx.ai.sports.course.vo.CourseVo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,14 +30,17 @@ import java.time.LocalDateTime;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class CourseRecordServiceImpl extends ServiceImpl<CourseRecordMapper, CourseRecord> implements ICourseRecordService {
 
+    @Autowired
+    private ICourseService courseService;
 
     @Override
-    public Long findIdByNew(Long courseId) {
-        // TODO 查询今日的课程
+    public Long findIdByNow(Long courseId) {
+        // 查询课程最新的课程记录Id
         CourseRecord courseRecord = this.baseMapper.selectOne(new LambdaQueryWrapper<CourseRecord>().eq(CourseRecord::getCourseId, courseId).orderByDesc(CourseRecord::getCreateTime));
         if (courseRecord == null) {
             return null;
         }
+
         return courseRecord.getCourseRecordId();
     }
 

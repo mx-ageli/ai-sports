@@ -22,7 +22,7 @@ public interface ICourseRecordService extends IService<CourseRecord> {
      * @param courseId 课程Id
      * @return
      */
-    Long findIdByNew(Long courseId);
+    Long findIdByNow(Long courseId);
 
     /**
      * 查询课程的记录

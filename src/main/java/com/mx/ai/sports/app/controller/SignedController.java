@@ -4,6 +4,7 @@ import com.mx.ai.sports.app.api.SignedApi;
 import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
+import com.mx.ai.sports.course.converter.SignedConverter;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.CourseStudent;
 import com.mx.ai.sports.course.entity.Signed;
@@ -12,12 +13,15 @@ import com.mx.ai.sports.course.service.ICourseRecordService;
 import com.mx.ai.sports.course.service.ICourseService;
 import com.mx.ai.sports.course.service.ICourseStudentService;
 import com.mx.ai.sports.course.service.ISignedService;
+import com.mx.ai.sports.course.vo.SignedVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
@@ -44,6 +48,29 @@ public class SignedController extends BaseRestController implements SignedApi {
 
     @Autowired
     private ICourseStudentService courseStudentService;
+
+    @Autowired
+    private SignedConverter signedConverter;
+
+    @Override
+    @Log("通过课程Id查询我最近的一次打卡记录")
+    public AiSportsResponse<SignedVo> findLastByCourseId(@NotNull @RequestParam("courseId") Long courseId) {
+        Signed signed = signedService.findLastByCourseId(courseId, getCurrentUserId());
+        if (signed == null) {
+            return new AiSportsResponse<SignedVo>().fail().message("没到查询到打卡记录！");
+        }
+        return new AiSportsResponse<SignedVo>().success().data(signedConverter.domain2Vo(signed));
+    }
+
+    @Override
+    @Log("通过课程记录Id查询我以往的课程打卡记录")
+    public AiSportsResponse<SignedVo> findByCourseRecordId(@NotNull @RequestParam("courseRecordId") Long courseRecordId) {
+        Signed signed = signedService.findByCourseRecordId(courseRecordId, getCurrentUserId());
+        if (signed == null) {
+            return new AiSportsResponse<SignedVo>().fail().message("没到查询到打卡记录！");
+        }
+        return new AiSportsResponse<SignedVo>().success().data(signedConverter.domain2Vo(signed));
+    }
 
     @Override
     @Log("打卡")
@@ -79,7 +106,7 @@ public class SignedController extends BaseRestController implements SignedApi {
         }
 
         // 查询到当前课程记录Id
-        Long courseRecordId = courseRecordService.findIdByNew(signedAddVo.getCourseId());
+        Long courseRecordId = courseRecordService.findIdByNow(signedAddVo.getCourseId());
         // 学生的打卡记录
         Signed signed = signedService.findByCourseRecordId(courseRecordId, userId);
 
@@ -98,9 +125,9 @@ public class SignedController extends BaseRestController implements SignedApi {
             signed.setCreateTime(new Date());
             signed.setStartTime(new Date());
             signed.setIsLate(false);
-            signed.setLat(signed.getLat());
-            signed.setLon(signed.getLon());
-            signed.setLocationName(signed.getLocationName());
+            signed.setLat(signedAddVo.getLat());
+            signed.setLon(signedAddVo.getLon());
+            signed.setLocationName(signedAddVo.getLocationName());
 
             // 当前时间 > 课程的开始时间 打迟到卡
             if (currentTime.isAfter(startTime)) {

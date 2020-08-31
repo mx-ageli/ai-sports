@@ -69,7 +69,7 @@ public class CourseTask {
     public void recordStudentTask(String courseId) {
         Long longCourseId = Long.valueOf(courseId);
         // 课程记录Id
-        Long courseRecordId = courseRecordService.findIdByNew(longCourseId);
+        Long courseRecordId = courseRecordService.findIdByNow(longCourseId);
         // 本次课程报名的所有学生
         List<Long> studentIds = courseStudentService.findByCourseId(longCourseId);
         // 本次课程已经参与打卡的学生 已经打卡的学生会在课程记录中存在，这种数据无需再次添加

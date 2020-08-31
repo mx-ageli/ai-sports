@@ -34,6 +34,7 @@ public class SignedServiceImpl extends ServiceImpl<SignedMapper, Signed> impleme
     @Autowired
     private ICourseRecordService courseRecordService;
 
+
     @Override
     public Signed findByCourseRecordId(Long courseRecordId, Long userId) {
         return this.baseMapper.selectOne(new LambdaQueryWrapper<Signed>().eq(Signed::getCourseRecordId, courseRecordId).eq(Signed::getUserId, userId));
@@ -77,5 +78,12 @@ public class SignedServiceImpl extends ServiceImpl<SignedMapper, Signed> impleme
             courseRecordService.saveOrUpdate(courseRecord);
         }
         return isSuccess;
+    }
+
+    @Override
+    public Signed findLastByCourseId(Long courseId, Long userId) {
+        Long courseRecordId = courseRecordService.findIdByNow(courseId);
+
+        return this.baseMapper.selectOne(new LambdaQueryWrapper<Signed>().eq(Signed::getCourseRecordId, courseRecordId).eq(Signed::getUserId, userId));
     }
 }

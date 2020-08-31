@@ -27,4 +27,12 @@ public interface ISignedService extends IService<Signed> {
      * @return
      */
     Boolean saveSigned(Signed signed);
+
+    /**
+     * 查询用户最近的打卡记录
+     * @param courseId
+     * @param userId
+     * @return
+     */
+    Signed findLastByCourseId(Long courseId, Long userId);
 }
