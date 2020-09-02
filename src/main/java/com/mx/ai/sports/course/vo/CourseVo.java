@@ -67,4 +67,7 @@ public class CourseVo implements Serializable {
 
     @ApiModelProperty("课程状态，1正常,2暂停")
     private String status;
+
+    @ApiModelProperty("报名人数")
+    private Long allCount;
 }

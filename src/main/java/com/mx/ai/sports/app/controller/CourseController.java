@@ -205,22 +205,32 @@ public class CourseController extends BaseRestController implements CourseApi {
             List<Long> courseIds = courseStudentService.findByUserId(user.getUserId());
 
             for (CourseVo courseVo : coursePage.getRecords()) {
-                // 默认为可以报课
-                courseVo.setEntryStatus(EntryEnum.OK.value());
-                // 如果课程已经开始了，设置状态为不可报名
-                if (isCheckStart(courseVo.getWeek(), courseVo.getStartTime(), courseVo.getEndTime())) {
-                    courseVo.setEntryStatus(EntryEnum.NO.value());
-                }
-                // 判断当前用户是否已经报名这个课程
-                if (courseIds.contains(courseVo.getCourseId())) {
-                    courseVo.setEntryStatus(EntryEnum.ENTRY.value());
-                }
-                // 判断课程是否暂停状态
-                if (Objects.equals(courseVo.getStatus(), Job.ScheduleStatus.PAUSE.getValue())) {
-                    courseVo.setEntryStatus(EntryEnum.FINISH.value());
-                }
+                // 赋值课程状态
+                setEntryStatus(courseIds, courseVo);
             }
             return new AiSportsResponse<IPage<CourseVo>>().success().data(coursePage);
+        }
+    }
+
+    /**
+     * 赋值课程状态
+     * @param courseIds
+     * @param courseVo
+     */
+    private void setEntryStatus(List<Long> courseIds, CourseVo courseVo) {
+        // 默认为可以报课
+        courseVo.setEntryStatus(EntryEnum.OK.value());
+        // 如果课程已经开始了，设置状态为不可报名
+        if (isCheckStart(courseVo.getWeek(), courseVo.getStartTime(), courseVo.getEndTime())) {
+            courseVo.setEntryStatus(EntryEnum.NO.value());
+        }
+        // 判断当前用户是否已经报名这个课程
+        if (courseIds.contains(courseVo.getCourseId())) {
+            courseVo.setEntryStatus(EntryEnum.ENTRY.value());
+        }
+        // 判断课程是否暂停状态
+        if (Objects.equals(courseVo.getStatus(), Job.ScheduleStatus.PAUSE.getValue())) {
+            courseVo.setEntryStatus(EntryEnum.FINISH.value());
         }
     }
 
@@ -233,7 +243,18 @@ public class CourseController extends BaseRestController implements CourseApi {
     @Override
     @Log("查询课程详细信息")
     public AiSportsResponse<CourseVo> findById(@NotNull @RequestParam("courseId") Long courseId) {
-        return new AiSportsResponse<CourseVo>().success().data(courseService.findById(courseId));
+
+        UserSimple user = getCurrentUser();
+        CourseVo courseVo = courseService.findById(courseId);
+        // 直接查询全部数据返回
+        if (Objects.equals(user.getRoleId(), RoleEnum.TEACHER.value())) {
+            return new AiSportsResponse<CourseVo>().success().data(courseVo);
+        }
+        // 我已经报名的课程列表
+        List<Long> courseIds = courseStudentService.findByUserId(user.getUserId());
+        // 赋值课程状态
+        setEntryStatus(courseIds, courseVo);
+        return new AiSportsResponse<CourseVo>().success().data(courseVo);
     }
 
     @Override
