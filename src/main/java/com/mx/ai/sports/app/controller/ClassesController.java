@@ -85,7 +85,7 @@ public class ClassesController extends BaseRestController implements ClassesApi 
             return new AiSportsResponse<Boolean>().message("班级Id错误，没有查询到班级数据！").fail().data(Boolean.FALSE);
         } else if (!Objects.equals(classesUpdate.getUserId(), getCurrentUserId())) {
             return new AiSportsResponse<Boolean>().message("当前登录用户没有权限操作其他老师创建的班级！").fail().data(Boolean.FALSE);
-        } else if (Objects.equals(classesUpdate.getClassesName(), classes.getClassesName())) {
+        } else if (Objects.equals(classesUpdate.getClassesName(), classes.getClassesName()) && Objects.equals(classesUpdate.getAvatar(), classes.getAvatar())) {
             // 如果修改的名称与数据库中名称一致，则不需要重复修改
             return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
         }
