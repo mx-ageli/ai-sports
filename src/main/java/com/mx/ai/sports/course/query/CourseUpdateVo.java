@@ -106,4 +106,10 @@ public class CourseUpdateVo implements Serializable {
     @ApiModelProperty("课程状态 1=正常,2=暂停")
     private String status;
 
+    /**
+     * 课程简介
+     */
+    @NotNull(message = "课程简介不能为null")
+    @ApiModelProperty("课程简介")
+    private String content;
 }

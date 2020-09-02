@@ -70,4 +70,7 @@ public class CourseVo implements Serializable {
 
     @ApiModelProperty("报名人数")
     private Long allCount;
+
+    @ApiModelProperty("课程简介")
+    private String content;
 }

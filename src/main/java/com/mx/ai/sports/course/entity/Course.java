@@ -125,4 +125,12 @@ public class Course implements Serializable {
      */
     @TableField("STATUS")
     private String status;
+
+    /**
+     * 课程简介
+     */
+    @TableField("CONTENT")
+    private String content;
+
+
 }
