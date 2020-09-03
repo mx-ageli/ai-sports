@@ -49,7 +49,7 @@
             ac.IMAGES AS images,
             ac.STATUS AS STATUS,
             CASE
-            WHEN `week` LIKE '%3%' THEN
+            WHEN `week` LIKE '%${week}%' THEN
             1 ELSE 0
             END AS isToday,
             COUNT( acs.USER_ID ) allCount
@@ -82,7 +82,7 @@
             ac.SCOPE AS scope,
             ac.IMAGES AS images,
             ac.STATUS AS STATUS,
-        CASE WHEN `week` LIKE '%3%' THEN
+        CASE WHEN `week` LIKE '%${week}%' THEN
             1 ELSE 0
             END AS isToday,
             COUNT( acs.USER_ID ) allCount
