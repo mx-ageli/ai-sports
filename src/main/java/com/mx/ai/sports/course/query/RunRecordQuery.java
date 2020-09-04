@@ -1,6 +1,7 @@
 package com.mx.ai.sports.course.query;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mx.ai.sports.common.entity.QueryRequest;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -28,8 +29,8 @@ public class RunRecordQuery implements Serializable {
     @ApiModelProperty("时间范围 结束时间")
     private Date endTime;
 
-    @ApiModelProperty("是否合格，不传查询全部，1查询合格，2查询不合格")
-    private String isPass;
+    @ApiModelProperty("跑步状态，不传查询全部，1查询合格，2查询不合格")
+    private String status;
 
     @NotNull(message = "分页参数不能为null")
     @ApiModelProperty(value = "分页参数")

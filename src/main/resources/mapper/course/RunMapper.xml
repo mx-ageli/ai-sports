@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mx.ai.sports.course.mapper.RunMapper">
+
+    <select id="getRunRecordCountVo" resultType="com.mx.ai.sports.course.vo.RunRecordVo">
+        <![CDATA[
+        SELECT
+            COUNT( ar.RUN_ID ) AS allCount,
+            DATEDIFF( #{endTime}, #{startTime} ) / COUNT( ar.RUN_ID ) AS avgCount,
+            SUM( ar.RUN_TIME ) AS allRunTime,
+            SUM( ar.MILEAGE ) AS allMileage
+        FROM
+            APP_RUN ar
+        WHERE
+            ar.USER_ID = #{userId}
+        AND ar.CREATE_TIME > #{startTime}
+        AND ar.CREATE_TIME < #{endTime}
+        ]]>
+    </select>
+
+    <select id="findRunRecordDetailVo" resultType="com.mx.ai.sports.course.vo.RunRecordDetailVo">
+
+        SELECT
+            ac.COURSE_ID AS courseId,
+            ar.COURSE_RECORD_ID AS courseRecordId,
+            ac.COURSE_NAME AS courseName,
+            ac.IMAGES AS images,
+            ac.LAT AS lat,
+            ac.LON AS lon,
+            ac.LOCATION_NAME AS locationName,
+            ar.`STATUS` AS `status`,
+            ar.START_TIME AS startTime,
+            ar.END_TIME AS endTime,
+            ar.MILEAGE AS mileage,
+            ar.RUN_TIME AS runTime
+        FROM
+            APP_RUN ar
+        LEFT JOIN APP_COURSE ac ON ar.COURSE_ID = ac.COURSE_ID
+        WHERE
+            ar.USER_ID = #{userId}
+        <![CDATA[
+        AND ar.CREATE_TIME > #{startTime}
+        AND ar.CREATE_TIME < #{endTime}
+        ]]>
+        <if test="status != null and status != ''">
+            AND ar.`STATUS` = #{status}
+        </if>
+        ORDER BY
+            ar.CREATE_TIME DESC
+
+    </select>
+</mapper>

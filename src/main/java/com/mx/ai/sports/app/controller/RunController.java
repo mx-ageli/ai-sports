@@ -5,9 +5,11 @@ import com.mx.ai.sports.app.api.RunApi;
 import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
+import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.RunRule;
 import com.mx.ai.sports.course.query.RunAddVo;
 import com.mx.ai.sports.course.query.RunRecordQuery;
+import com.mx.ai.sports.course.service.ICourseService;
 import com.mx.ai.sports.course.service.IRunRuleService;
 import com.mx.ai.sports.course.service.IRunService;
 import com.mx.ai.sports.course.vo.RunRecordVo;
@@ -18,7 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 /**
@@ -37,12 +40,35 @@ public class RunController extends BaseRestController implements RunApi {
     @Autowired
     private IRunService runService;
 
+    @Autowired
+    private ICourseService courseService;
+
     @Override
     @Log("保存跑步数据")
     public AiSportsResponse<Boolean> add(@RequestBody @Valid RunAddVo runAddVo) {
+
+        Course course = courseService.getById(runAddVo.getCourseId());
+        if (course == null) {
+            return new AiSportsResponse<Boolean>().fail().message("课程Id不存在，没有查询到数据!");
+        }
         // 开始时间小于结束时间
         if (runAddVo.getStartTime().after(runAddVo.getEndTime())) {
             return new AiSportsResponse<Boolean>().fail().message("结束时间不能小于开始时间！");
+        }
+
+        // 获取今天是星期几
+        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        // 课程的开始时间
+        LocalTime startTime = LocalTime.parse(course.getStartTime());
+        // 当前时间
+        LocalTime currentTime = LocalTime.now();
+
+        if (!course.getWeek().contains(String.valueOf(week))) {
+            return new AiSportsResponse<Boolean>().fail().message("当前课程还没有到上课时间，不能保存跑步数据！");
+        }
+        // 当前时间 < 开始时间
+        if (currentTime.isBefore(startTime)) {
+            return new AiSportsResponse<Boolean>().fail().message("当前课程还没有到上课时间，不能保存跑步数据！");
         }
 
         RunRule runRule = runRuleService.getOne(new LambdaQueryWrapper<>());
@@ -69,8 +95,9 @@ public class RunController extends BaseRestController implements RunApi {
 
     @Override
     @Log("按照指定的时间区间查询跑步记录")
-    public AiSportsResponse<List<RunRecordVo>> findRunHistory(@RequestBody @Valid RunRecordQuery query) {
-        return null;
+    public AiSportsResponse<RunRecordVo> findRunHistory(@RequestBody @Valid RunRecordQuery query) {
+
+        return new AiSportsResponse<RunRecordVo>().success().data(runService.getRunRecordVo(getCurrentUserId(), query));
     }
 
 }

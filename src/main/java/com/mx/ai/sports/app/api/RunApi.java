@@ -53,9 +53,9 @@ public interface RunApi {
      * @param query
      * @return
      */
-    @ApiOperation(value = "#未实现 图10# 按照指定的时间区间查询跑步记录")
+    @ApiOperation(value = "#已实现 图10# 按照指定的时间区间查询跑步记录")
     @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "RunRecordQuery", required = true)
     @RequestMapping(value = "/find_run_history", method = RequestMethod.POST)
-    AiSportsResponse<List<RunRecordVo>> findRunHistory(@RequestBody @Valid RunRecordQuery query);
+    AiSportsResponse<RunRecordVo> findRunHistory(@RequestBody @Valid RunRecordQuery query);
 
 }

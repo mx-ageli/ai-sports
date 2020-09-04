@@ -38,11 +38,13 @@ public class RecordStudentVo implements Serializable {
     @ApiModelProperty("学生Id")
     private Long userId;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @ApiModelProperty("上课的打卡时间")
-    private Time startTime;
+    private Date startTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @ApiModelProperty("下课的打卡时间")
-    private Time endTime;
+    private Date endTime;
 
     @ApiModelProperty("是否缺席")
     private Boolean isAbsent;

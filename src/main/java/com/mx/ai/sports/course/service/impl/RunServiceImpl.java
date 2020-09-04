@@ -1,15 +1,22 @@
 package com.mx.ai.sports.course.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.RunStatusEnum;
-import com.mx.ai.sports.course.entity.Run;
-import com.mx.ai.sports.course.entity.RunLocation;
-import com.mx.ai.sports.course.entity.RunRule;
+import com.mx.ai.sports.course.entity.*;
 import com.mx.ai.sports.course.mapper.RunMapper;
 import com.mx.ai.sports.course.query.RunAddVo;
 import com.mx.ai.sports.course.query.RunLocationAddVo;
+import com.mx.ai.sports.course.query.RunRecordQuery;
+import com.mx.ai.sports.course.service.ICourseRecordService;
+import com.mx.ai.sports.course.service.IRecordStudentService;
 import com.mx.ai.sports.course.service.IRunLocationService;
 import com.mx.ai.sports.course.service.IRunService;
+import com.mx.ai.sports.course.vo.RunRecordDetailVo;
+import com.mx.ai.sports.course.vo.RunRecordVo;
+import com.mx.ai.sports.course.vo.StudentCourseVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Mengjiaxin
@@ -31,6 +39,12 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
 
     @Autowired
     private IRunLocationService runLocationService;
+
+    @Autowired
+    private ICourseRecordService courseRecordService;
+
+    @Autowired
+    private IRecordStudentService recordStudentService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -46,15 +60,24 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         run.setMileage(runAddVo.getMileage());
         run.setSpeed(runAddVo.getSpeed());
         run.setStatus(RunStatusEnum.NO_PASS.value());
+        // 对应最新的课程记录Id
+        Long courseRecordId = courseRecordService.findIdByNow(runAddVo.getCourseId());
+
+        run.setCourseRecordId(courseRecordId);
 
         // 查询当前这次跑步是否满足规则，满足就合格
-        if(runRule.getMileage() > runAddVo.getMileage() && runRule.getRunTime() > runAddVo.getRunTime()){
+        if (runAddVo.getMileage() > runRule.getMileage() && runAddVo.getRunTime() > runRule.getRunTime()) {
             run.setStatus(RunStatusEnum.PASS.value());
         }
         this.save(run);
 
+
+        // 重新计算学生的合格状态
+        calcPass(userId, run, courseRecordId);
+
+
         List<RunLocation> runList = new ArrayList<>();
-        for(RunLocationAddVo addVo : runAddVo.getLocation()){
+        for (RunLocationAddVo addVo : runAddVo.getLocation()) {
             RunLocation runLocation = new RunLocation();
             runLocation.setLat(addVo.getLat());
             runLocation.setLon(addVo.getLon());
@@ -64,5 +87,43 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         }
 
         return runLocationService.saveBatch(runList);
+    }
+
+    @Override
+    public RunRecordVo getRunRecordVo(Long currentUserId, RunRecordQuery query) {
+
+        RunRecordVo runRecordVo = baseMapper.getRunRecordCountVo(currentUserId, query.getStartTime(), query.getEndTime());
+
+        Page<RunRecordDetailVo> page = new Page<>(query.getRequest().getPageNum(), query.getRequest().getPageSize());
+
+        IPage<RunRecordDetailVo> detailPage = baseMapper.findRunRecordDetailVo(page, currentUserId, query.getStartTime(), query.getEndTime(), query.getStatus());
+
+        runRecordVo.setDetailPage(detailPage);
+
+        return runRecordVo;
+    }
+
+    /**
+     * 重新计算学生的合格状态
+     *
+     * @param userId
+     * @param run
+     * @param courseRecordId
+     */
+    private void calcPass(Long userId, Run run, Long courseRecordId) {
+        // 需要将是否合格保存到学生记录表中
+        RecordStudent recordStudent = recordStudentService.getOne(new LambdaQueryWrapper<RecordStudent>().eq(RecordStudent::getUserId, userId).eq(RecordStudent::getCourseRecordId, courseRecordId));
+        recordStudent.setIsPass(Objects.equals(run.getStatus(), RunStatusEnum.PASS.value()));
+        recordStudentService.saveOrUpdate(recordStudent);
+
+        // 还需要重新统计课程记录的合格人数
+        CourseRecord courseRecord = courseRecordService.getById(courseRecordId);
+        if (recordStudent.getIsPass()) {
+            // 合格人数+1
+            courseRecord.setPassCount(courseRecord.getPassCount() + 1);
+        } else {
+            // 不合格人数+1
+            courseRecord.setNoPassCount(courseRecord.getNoPassCount() + 1);
+        }
     }
 }
