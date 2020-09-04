@@ -30,7 +30,7 @@ public class TermServiceImpl extends ServiceImpl<TermMapper, Term> implements IT
     @Override
     public List<TermVo> findByCurrentDate() {
 
-        List<Term> termList = this.baseMapper.selectList(new LambdaQueryWrapper<Term>().le(Term::getBeginTime, new Date()));
+        List<Term> termList = this.baseMapper.selectList(new LambdaQueryWrapper<Term>().le(Term::getBeginTime, new Date()).orderByDesc(Term::getBeginTime));
         return termConverter.domain2Vos(termList);
     }
 }
