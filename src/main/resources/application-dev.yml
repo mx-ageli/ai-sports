@@ -68,13 +68,3 @@ jetcache:
         maxTotal: 50
       host: 127.0.0.1
       port: 6379
-
-ekb:
-  http-url: http://127.0.0.1/
-  pay:
-    wxpay:
-      appID: wx4ce44ceb3b361d05
-      mchID: 1579582011
-      key: 2b9b31f42d0f4bffb0419679580abc20
-      certPath: cert/apiclient_cert.p12
-      notifyUrl: http://47.99.115.187/api/order/student/wx_pay_success

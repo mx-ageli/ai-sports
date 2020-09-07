@@ -8,6 +8,8 @@ import com.mx.ai.sports.system.vo.UserSmallVo;
 import com.mx.ai.sports.system.vo.UserVo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * 用户Mapper
  *
@@ -31,4 +33,11 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     IPage<UserSmallVo> findByClassesId(Page<User> page, @Param("classesId") Long classesId);
+
+    /**
+     *
+     * @param schoolId
+     * @return
+     */
+    List<String> findStudentDeviceBySchoolId(Long schoolId);
 }

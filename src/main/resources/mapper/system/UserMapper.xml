@@ -36,5 +36,14 @@
         WHERE
             su.CLASSES_ID = #{classesId}
     </select>
+    <select id="findStudentDeviceBySchoolId" resultType="java.lang.String">
+        SELECT DISTINCT
+            ( DEVICE_ID )
+        FROM
+            SYS_USER
+        WHERE
+            SCHOOL_ID = #{schoolId}
+            AND ROLE_ID = 1
+    </select>
 
 </mapper>

@@ -1,5 +1,7 @@
 package com.mx.ai.sports.app.controller;
 
+import cn.jiguang.common.resp.APIConnectionException;
+import cn.jiguang.common.resp.APIRequestException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mx.ai.sports.app.api.CourseApi;
 import com.mx.ai.sports.common.annotation.Log;
@@ -84,8 +86,24 @@ public class CourseController extends BaseRestController implements CourseApi {
         checkCourseName(null, updateVo.getCourseName());
         // 校验课程时间数据的范围校验
         checkUpdateCourseTime(updateVo);
-        // 老师新增课程，并创建定时任务
-        return new AiSportsResponse<Boolean>().success().data(courseService.saveCourse(updateVo, getCurrentUserId()));
+
+        try {
+            // 老师新增课程，并创建定时任务
+            courseService.saveCourse(updateVo, getCurrentUserId());
+        } catch (APIConnectionException e) {
+            log.error("推送服务：连接错误. ", e);
+
+            return new AiSportsResponse<Boolean>().fail().message("推送服务：连接错误.");
+        } catch (APIRequestException e) {
+            log.error("JPush服务器的错误响应。.", e);
+            log.info("HTTP Status: " + e.getStatus());
+            log.info("Error Code: " + e.getErrorCode());
+            log.info("Error Message: " + e.getErrorMessage());
+            log.info("Msg ID: " + e.getMsgId());
+
+            return new AiSportsResponse<Boolean>().fail().message("JPush服务器的错误响应.");
+        }
+        return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
     }
 
     /**
@@ -116,15 +134,15 @@ public class CourseController extends BaseRestController implements CourseApi {
         LocalTime endTime = LocalTime.parse(updateVo.getEndTime());
         // 打卡时间
         LocalTime signedTime = LocalTime.parse(updateVo.getSignedTime());
-        // 开始时间必须大于结束时间
+        // 开始时间必须在结束时间之前
         // startTime < endTime = true
         if (startTime.isAfter(endTime)) {
-            throw new AiSportsException("开始时间必须大于结束时间!");
+            throw new AiSportsException("开始时间必须在结束时间之前!");
         }
-        // 可打卡时间必须大于开始时间
+        // 打卡时间必须在开始时间之前
         // signedTime < startTime = true
         if (signedTime.isAfter(startTime)) {
-            throw new AiSportsException("可打卡时间必须大于开始时间!");
+            throw new AiSportsException("打卡时间必须在开始时间之前!");
         }
     }
 

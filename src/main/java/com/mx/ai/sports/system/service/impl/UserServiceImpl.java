@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import static com.mx.ai.sports.common.entity.AiSportsConstant.DEFAULT_AVATAR;
@@ -148,5 +149,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public IPage<UserSmallVo> findByClassesId(ClassesQuery query) {
         Page<User> page = new Page<>(query.getRequest().getPageNum(), query.getRequest().getPageSize());
         return baseMapper.findByClassesId(page, query.getClassesId());
+    }
+
+    @Override
+    public List<String> findStudentDeviceBySchoolId(Long schoolId) {
+        return baseMapper.findStudentDeviceBySchoolId(schoolId);
     }
 }

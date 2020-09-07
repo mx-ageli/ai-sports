@@ -2,13 +2,11 @@ package com.mx.ai.sports.course.vo;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mx.ai.sports.course.query.RunLocationAddVo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 跑步记录信息

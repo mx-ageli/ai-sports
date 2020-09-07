@@ -1,5 +1,7 @@
 package com.mx.ai.sports.course.service;
 
+import cn.jiguang.common.resp.APIConnectionException;
+import cn.jiguang.common.resp.APIRequestException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mx.ai.sports.common.entity.QueryRequest;
@@ -16,6 +18,7 @@ import java.util.List;
 
 /**
  * 课程Service
+ *
  * @author Mengjiaxin
  * @date 2020/8/7 4:39 下午
  */
@@ -24,7 +27,7 @@ public interface ICourseService extends IService<Course> {
     /**
      * 通过课程名称查找课程, 如果courseId不为空就排除
      *
-     * @param courseId 排除的课程Id
+     * @param courseId   排除的课程Id
      * @param courseName 课程名称
      * @return
      */
@@ -32,6 +35,7 @@ public interface ICourseService extends IService<Course> {
 
     /**
      * 查询所有的课程
+     *
      * @param request
      * @param userId
      * @return
@@ -40,6 +44,7 @@ public interface ICourseService extends IService<Course> {
 
     /**
      * 查询课程详情
+     *
      * @param courseId
      * @return
      */
@@ -47,6 +52,7 @@ public interface ICourseService extends IService<Course> {
 
     /**
      * 查询学生报名的课程
+     *
      * @param request
      * @param currentUserId
      * @return
@@ -55,13 +61,15 @@ public interface ICourseService extends IService<Course> {
 
     /**
      * 老师新增课程，并创建定时任务
+     *
      * @param updateVo
      * @return
      */
-    Boolean saveCourse(CourseUpdateVo updateVo, Long currentUserId);
+    Boolean saveCourse(CourseUpdateVo updateVo, Long currentUserId) throws APIConnectionException, APIRequestException;
 
     /**
      * 老师修改课程，并创建定时任务
+     *
      * @param course
      * @return
      */

@@ -57,10 +57,10 @@ sms:
   templateCode: SMS_177247817
 
 jpush:
-  masterSecret: c53cc7015e8c636593e71805
-  appKey: 7c79ff0be8a56c37e88591ee
-  title: 考吧
-  largeIcon: http://www.jiguang.cn/largeIcon.jpg
+  masterSecret: 92a46aae6d26194e8f82a79c
+  appKey: c7610c3e196114d160f3e8ac
+  title: Ai体育
+  largeIcon: http://ai-sports.oss-cn-chengdu.aliyuncs.com/upload/1599446583118/logo.png
 
 
 #在使用@ApiModelProperty注解在字段上时，如果字段的类型为Long或是int类型，那么程序启动后，访问swagger-ui.html的页面，程序会报错:

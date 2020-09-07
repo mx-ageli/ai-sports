@@ -53,7 +53,7 @@ public interface CourseApi {
     @ApiOperation(value = "#已实现 图30# 新增课程信息（仅限于老师使用)",
             notes = "1、星期： 分别用 1周日 2周一 3周二 4周三 5周四 6周五 7周六 \n" +
                     "2、小时格式时间： HH:mm 只需要小时和分钟 \n" +
-                    "3、时间范围：开始时间必须大于结束时间， 可打卡时间必须大于开始时间\n" +
+                    "3、时间范围：开始时间必须在结束时间之前， 可打卡时间必须在开始时间之前\n" +
                     "4、当前课程正在进行中，不能修改! 请等本次课程结束后再修改！")
     @ApiImplicitParam(name = "updateVo", value = "新增参数", paramType = "body", dataType = "CourseUpdateVo", required = true)
     @RequestMapping(value = "/add", method = RequestMethod.POST)

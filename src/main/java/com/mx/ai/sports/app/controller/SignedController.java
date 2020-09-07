@@ -57,7 +57,7 @@ public class SignedController extends BaseRestController implements SignedApi {
     public AiSportsResponse<SignedVo> findLastByCourseId(@NotNull @RequestParam("courseId") Long courseId) {
         Signed signed = signedService.findLastByCourseId(courseId, getCurrentUserId());
         if (signed == null) {
-            return new AiSportsResponse<SignedVo>().fail().message("没到查询到打卡记录！");
+            return new AiSportsResponse<SignedVo>().success().message("没到查询到打卡记录！");
         }
         return new AiSportsResponse<SignedVo>().success().data(signedConverter.domain2Vo(signed));
     }
@@ -67,7 +67,7 @@ public class SignedController extends BaseRestController implements SignedApi {
     public AiSportsResponse<SignedVo> findByCourseRecordId(@NotNull @RequestParam("courseRecordId") Long courseRecordId) {
         Signed signed = signedService.findByCourseRecordId(courseRecordId, getCurrentUserId());
         if (signed == null) {
-            return new AiSportsResponse<SignedVo>().fail().message("没到查询到打卡记录！");
+            return new AiSportsResponse<SignedVo>().success().message("没到查询到打卡记录！");
         }
         return new AiSportsResponse<SignedVo>().success().data(signedConverter.domain2Vo(signed));
     }

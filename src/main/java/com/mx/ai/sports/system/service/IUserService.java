@@ -9,6 +9,8 @@ import com.mx.ai.sports.system.query.ClassesQuery;
 import com.mx.ai.sports.system.vo.UserSmallVo;
 import com.mx.ai.sports.system.vo.UserVo;
 
+import java.util.List;
+
 /**
  * 用户Service
  *
@@ -82,4 +84,11 @@ public interface IUserService extends IService<User> {
      * @return
      */
     IPage<UserSmallVo> findByClassesId(ClassesQuery query);
+
+    /**
+     * 查询学校下面所有学生的设备Id
+     * @param schoolId
+     * @return
+     */
+    List<String> findStudentDeviceBySchoolId(Long schoolId);
 }
