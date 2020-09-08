@@ -45,9 +45,12 @@
             ars.IS_LATE AS isLate,
             ars.IS_PASS AS isPass,
             ac.COURSE_NAME AS courseName,
-            asi.LAT AS lat,
-            asi.LON AS lon,
-            asi.LOCATION_NAME AS locationName,
+            asi.START_LAT AS startLat,
+            asi.START_LON AS startLon,
+            asi.START_LOCATION_NAME AS startLocationName,
+            asi.END_LAT AS endLat,
+            asi.END_LON AS endLon,
+            asi.END_LOCATION_NAME AS endLocationName,
             ac.IMAGES AS images
         FROM
             APP_COURSE ac

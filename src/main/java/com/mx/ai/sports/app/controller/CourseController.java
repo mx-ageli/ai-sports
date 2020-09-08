@@ -25,7 +25,6 @@ import com.mx.ai.sports.course.service.ICourseStudentService;
 import com.mx.ai.sports.course.service.IRecordStudentService;
 import com.mx.ai.sports.course.vo.*;
 import com.mx.ai.sports.job.entity.Job;
-import com.mx.ai.sports.job.service.IJobService;
 import com.mx.ai.sports.system.vo.UserSimple;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -54,13 +53,7 @@ import java.util.Objects;
 public class CourseController extends BaseRestController implements CourseApi {
 
     @Autowired
-    private CourseConverter courseConverter;
-
-    @Autowired
     private ICourseService courseService;
-
-    @Autowired
-    private IJobService jobService;
 
     @Autowired
     private ICourseRecordService courseRecordService;
@@ -343,5 +336,11 @@ public class CourseController extends BaseRestController implements CourseApi {
     public AiSportsResponse<IPage<RecordStudentVo>> findCourseHistory(@RequestBody @Valid QueryRequest query) {
 
         return new AiSportsResponse<IPage<RecordStudentVo>>().success().data(recordStudentService.findRecordStudentVo(query, getCurrentUserId()));
+    }
+
+    @Override
+    @Log("查询我报名的正在进行的课程")
+    public AiSportsResponse<List<CourseVo>> findMyEntryByCurrent() {
+        return new AiSportsResponse<List<CourseVo>>().success().data(courseService.findMyEntryByCurrent(getCurrentUserId()));
     }
 }

@@ -134,4 +134,29 @@
             temp.courseId
 
     </select>
+    <select id="findMyEntryByCurrent" resultType="com.mx.ai.sports.course.vo.CourseVo">
+        SELECT
+            ac.COURSE_ID AS courseId,
+            ac.COURSE_NAME AS courseName,
+            ac.CONTENT AS content,
+            ac.USER_ID AS userId,
+            ac.`WEEK` AS `week`,
+            ac.START_TIME AS startTime,
+            ac.END_TIME AS endTime,
+            ac.SIGNED_TIME AS signedTime,
+            ac.LAT AS lat,
+            ac.LON AS lon,
+            ac.LOCATION_NAME AS locationName,
+            ac.SCOPE AS scope,
+            ac.IMAGES AS images,
+            ac.`STATUS` AS `status`
+        FROM
+            APP_COURSE ac,
+            APP_COURSE_STUDENT acs
+        WHERE
+            acs.COURSE_ID = ac.COURSE_ID
+            AND acs.USER_ID = #{userId}
+            AND ac.`WEEK` LIKE '%${week}%'
+            AND ac.STATUS = 1
+    </select>
 </mapper>

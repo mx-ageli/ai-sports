@@ -8,6 +8,7 @@ import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.query.CourseUpdateVo;
 import com.mx.ai.sports.course.vo.CourseVo;
+import com.mx.ai.sports.course.vo.RecordStudentVo;
 import com.mx.ai.sports.system.entity.Classes;
 import com.mx.ai.sports.system.entity.School;
 import com.mx.ai.sports.system.entity.TeacherRegister;
@@ -76,4 +77,10 @@ public interface ICourseService extends IService<Course> {
     Boolean updateCourse(Course course, Long currentUserId);
 
 
+    /**
+     * 查询我报名的正在进行的课程
+     * @param
+     * @return
+     */
+    List<CourseVo> findMyEntryByCurrent(Long currentUserId);
 }

@@ -9,14 +9,12 @@ import cn.jpush.api.push.model.Message;
 import cn.jpush.api.push.model.Platform;
 import cn.jpush.api.push.model.PushPayload;
 import cn.jpush.api.push.model.audience.Audience;
-import cn.jpush.api.push.model.notification.AndroidNotification;
-import cn.jpush.api.push.model.notification.Notification;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.configure.JPushConfigProperties;
-import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.entity.QueryRequest;
+import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.converter.CourseConverter;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.mapper.CourseMapper;
@@ -36,7 +34,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Mengjiaxin
@@ -78,6 +78,13 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     public CourseVo findById(Long courseId) {
         // 获取今天是星期几
         int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+
+        Course course = getById(courseId);
+        try {
+            courseAddPush(1L, course);
+        } catch (APIConnectionException | APIRequestException e) {
+            e.printStackTrace();
+        }
 
         return this.baseMapper.findById(week, courseId);
     }
@@ -140,6 +147,18 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         return this.saveOrUpdate(course);
     }
 
+    @Override
+    public List<CourseVo> findMyEntryByCurrent(Long currentUserId) {
+
+        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        // 当前时间
+        LocalTime localTime = LocalTime.now();
+        // 查询到今天我报名的课程
+        List<CourseVo> courseVos = this.baseMapper.findMyEntryByCurrent(week, currentUserId);
+
+        return courseVos.stream().filter(e -> localTime.isAfter(LocalTime.parse(e.getStartTime())) && localTime.isBefore(LocalTime.parse(e.getEndTime()))).collect(Collectors.toList());
+    }
+
     /**
      * 老师创建课程后给当前学校的所有学生推送消息
      *
@@ -165,11 +184,17 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         Message message = Message.newBuilder().setMsgContent(content)
                 .setTitle("有新的课程发布啦！")
                 .addExtras(extras).build();
-        PushPayload payload = PushPayload.newBuilder().setPlatform(Platform.android_ios())
-                .setMessage(message)
-                .setAudience(Audience.registrationId(deviceIds)).build();
+        PushPayload payload = PushPayload.newBuilder().setPlatform(Platform.all())
+                                .setAudience(Audience.all())
+                .setMessage(message).build();
+
 
         PushResult result = jpushClient.sendPush(payload);
+//        PushPayload pushPayload = PushPayload.newBuilder().setPlatform(Platform.all())
+//                .setMessage(Message.content("有新的课程发布啦!!!"))
+//                .setAudience(Audience.registrationId(deviceIds)).build();
+//
+//        PushResult result = jpushClient.sendPush(pushPayload);
 
         log.info("课程创建成功后，消息推送成功! userId：{}, courseId:{}, courseName:{}, result:{}", userId, course.getCourseId(), course.getCourseName(), result);
 

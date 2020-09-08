@@ -70,22 +70,40 @@ public class Signed implements Serializable {
     private Boolean isLate;
 
     /**
-     * 打卡的坐标点 纬度
+     * 上课打卡的坐标点 纬度
      */
-    @TableId(value = "LAT")
-    private String lat;
+    @TableId(value = "START_LAT")
+    private String startLat;
 
     /**
-     * 打卡的坐标点 经度
+     * 上课打卡的坐标点 经度
      */
-    @TableId(value = "LON")
-    private String lon;
+    @TableId(value = "START_LON")
+    private String startLon;
 
     /**
-     * 坐标点的名称
+     * 上课坐标点的名称
      */
-    @TableId(value = "LOCATION_NAME")
-    private String locationName;
+    @TableId(value = "START_LOCATION_NAME")
+    private String startLocationName;
 
+
+    /**
+     * 下课打卡的坐标点 纬度
+     */
+    @TableId(value = "END_LAT")
+    private String endLat;
+
+    /**
+     * 下课打卡的坐标点 经度
+     */
+    @TableId(value = "END_LON")
+    private String endLon;
+
+    /**
+     * 下课坐标点的名称
+     */
+    @TableId(value = "END_LOCATION_NAME")
+    private String endLocationName;
 
 }

@@ -125,9 +125,9 @@ public class SignedController extends BaseRestController implements SignedApi {
             signed.setCreateTime(new Date());
             signed.setStartTime(new Date());
             signed.setIsLate(false);
-            signed.setLat(signedAddVo.getLat());
-            signed.setLon(signedAddVo.getLon());
-            signed.setLocationName(signedAddVo.getLocationName());
+            signed.setStartLat(signedAddVo.getLat());
+            signed.setStartLon(signedAddVo.getLon());
+            signed.setStartLocationName(signedAddVo.getLocationName());
 
             // 当前时间 > 课程的开始时间 打迟到卡
             if (currentTime.isAfter(startTime)) {
@@ -145,9 +145,9 @@ public class SignedController extends BaseRestController implements SignedApi {
 
             // 正常打下课卡
             signed.setEndTime(new Date());
-            signed.setLat(signed.getLat());
-            signed.setLon(signed.getLon());
-            signed.setLocationName(signed.getLocationName());
+            signed.setEndLat(signedAddVo.getLat());
+            signed.setEndLon(signedAddVo.getLon());
+            signed.setEndLocationName(signedAddVo.getLocationName());
 
         }
         // 保存打卡记录

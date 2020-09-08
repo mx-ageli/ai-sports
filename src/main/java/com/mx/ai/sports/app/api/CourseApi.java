@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * 课程相关接口
@@ -162,4 +163,12 @@ public interface CourseApi {
     @RequestMapping(value = "/find_course_history", method = RequestMethod.POST)
     AiSportsResponse<IPage<RecordStudentVo>> findCourseHistory(@RequestBody @Valid QueryRequest query);
 
+    /**
+     * 查询我报名的正在进行的课程
+     *
+     * @return
+     */
+    @ApiOperation(value = "#已实现 # 查询我报名的正在进行的课程")
+    @RequestMapping(value = "/find_my_entry_by_current", method = RequestMethod.GET)
+    AiSportsResponse<List<CourseVo>> findMyEntryByCurrent();
 }
