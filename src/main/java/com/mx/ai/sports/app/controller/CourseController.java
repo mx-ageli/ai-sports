@@ -19,12 +19,15 @@ import com.mx.ai.sports.course.entity.CourseStudent;
 import com.mx.ai.sports.course.query.CourseQuery;
 import com.mx.ai.sports.course.query.CourseUpdateVo;
 import com.mx.ai.sports.course.query.StudentCourseQuery;
+import com.mx.ai.sports.course.query.UserCourseQuery;
 import com.mx.ai.sports.course.service.ICourseRecordService;
 import com.mx.ai.sports.course.service.ICourseService;
 import com.mx.ai.sports.course.service.ICourseStudentService;
 import com.mx.ai.sports.course.service.IRecordStudentService;
 import com.mx.ai.sports.course.vo.*;
 import com.mx.ai.sports.job.entity.Job;
+import com.mx.ai.sports.system.entity.User;
+import com.mx.ai.sports.system.service.IUserService;
 import com.mx.ai.sports.system.vo.UserSimple;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -63,6 +66,9 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     @Autowired
     private ICourseStudentService courseStudentService;
+
+    @Autowired
+    private IUserService userService;
 
     @Override
     @TeacherRole
@@ -186,7 +192,7 @@ public class CourseController extends BaseRestController implements CourseApi {
     @Override
     @TeacherRole
     @Log("查询某一个课程的完成情的学生列表")
-    public AiSportsResponse<IPage<StudentCourseVo>> findStudentById(@RequestBody @Valid StudentCourseQuery query) throws AiSportsException{
+    public AiSportsResponse<IPage<StudentCourseVo>> findStudentById(@RequestBody @Valid StudentCourseQuery query) throws AiSportsException {
         return new AiSportsResponse<IPage<StudentCourseVo>>().success().data(recordStudentService.findVoByCourseRecordId(query));
     }
 
@@ -213,6 +219,7 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     /**
      * 赋值课程状态
+     *
      * @param courseIds
      * @param courseVo
      */
@@ -319,15 +326,25 @@ public class CourseController extends BaseRestController implements CourseApi {
     @Override
     @TeacherRole
     @Log("查询课程的完成情况历史统计分析")
-    public AiSportsResponse<IPage<CourseRecordVo>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query) throws AiSportsException{
+    public AiSportsResponse<IPage<CourseRecordVo>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query) throws AiSportsException {
         return new AiSportsResponse<IPage<CourseRecordVo>>().success().data(courseRecordService.findByCourseId(query.getRequest(), query.getCourseId()));
     }
 
     @Override
     @Log("查询上课的历史记录")
-    public AiSportsResponse<IPage<RecordStudentVo>> findCourseHistory(@RequestBody @Valid QueryRequest query) {
+    public AiSportsResponse<IPage<RecordStudentVo>> findCourseHistory(@RequestBody @Valid UserCourseQuery query) {
+        Long userId = getCurrentUserId();
+        if (Objects.nonNull(query.getUserId())) {
+            User user = userService.getById(query.getUserId());
+            if (user == null) {
+                return new AiSportsResponse<IPage<RecordStudentVo>>().fail().message("用户Id不存在！");
+            }
 
-        return new AiSportsResponse<IPage<RecordStudentVo>>().success().data(recordStudentService.findRecordStudentVo(query, getCurrentUserId()));
+            if (!Objects.equals(RoleEnum.STUDENT.value(), user.getRoleId())) {
+                return new AiSportsResponse<IPage<RecordStudentVo>>().fail().message("用户Id必须是学生！");
+            }
+        }
+        return new AiSportsResponse<IPage<RecordStudentVo>>().success().data(recordStudentService.findRecordStudentVo(query.getRequest(), userId));
     }
 
     @Override

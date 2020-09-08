@@ -6,6 +6,7 @@ import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.query.CourseQuery;
 import com.mx.ai.sports.course.query.StudentCourseQuery;
+import com.mx.ai.sports.course.query.UserCourseQuery;
 import com.mx.ai.sports.course.vo.*;
 import com.mx.ai.sports.course.query.CourseUpdateVo;
 import io.swagger.annotations.Api;
@@ -159,9 +160,9 @@ public interface CourseApi {
      * @return
      */
     @ApiOperation(value = "#已实现 图16# 查询上课的历史记录")
-    @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "QueryRequest", required = true)
-    @RequestMapping(value = "/find_course_history", method = RequestMethod.POST)// TODO 添加userId参数
-    AiSportsResponse<IPage<RecordStudentVo>> findCourseHistory(@RequestBody @Valid QueryRequest query);
+    @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "UserCourseQuery", required = true)
+    @RequestMapping(value = "/find_course_history", method = RequestMethod.POST)
+    AiSportsResponse<IPage<RecordStudentVo>> findCourseHistory(@RequestBody @Valid UserCourseQuery query);
 
     /**
      * 查询我报名的正在进行的课程
