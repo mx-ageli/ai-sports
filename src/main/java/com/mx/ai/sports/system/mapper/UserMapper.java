@@ -39,5 +39,5 @@ public interface UserMapper extends BaseMapper<User> {
      * @param schoolId
      * @return
      */
-    List<String> findStudentDeviceBySchoolId(Long schoolId);
+    List<User> findStudentBySchoolId(Long schoolId);
 }

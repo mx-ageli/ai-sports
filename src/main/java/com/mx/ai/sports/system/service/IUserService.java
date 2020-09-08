@@ -86,9 +86,9 @@ public interface IUserService extends IService<User> {
     IPage<UserSmallVo> findByClassesId(ClassesQuery query);
 
     /**
-     * 查询学校下面所有学生的设备Id
+     * 查询学校下面所有学生Id和设备Id
      * @param schoolId
      * @return
      */
-    List<String> findStudentDeviceBySchoolId(Long schoolId);
+    List<User> findStudentBySchoolId(Long schoolId);
 }

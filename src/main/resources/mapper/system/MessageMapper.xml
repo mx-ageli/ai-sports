@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mx.ai.sports.system.mapper.MessageMapper">
+
+    <select id="findMyMessage" resultType="com.mx.ai.sports.system.vo.MessageVo">
+        SELECT
+            sm.MESSAGE_ID AS messageId,
+            sm.TITLE AS title,
+            sm.CONTENT AS content,
+            sm.CREATE_TIME AS createTime,
+            sm.TYPE AS type,
+            sm.`STATUS` AS `status`,
+            sm.COURSE_ID AS courseId,
+            su.USER_ID AS userId
+        FROM
+            SYS_MESSAGE sm,
+            SYS_USER_MESSAGE su
+        WHERE
+            sm.MESSAGE_ID = su.MESSAGE_ID
+            AND su.USER_ID = #{userId}
+        ORDER BY
+            sm.CREATE_TIME DESC
+    </select>
+</mapper>

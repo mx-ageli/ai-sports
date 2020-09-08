@@ -152,7 +152,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public List<String> findStudentDeviceBySchoolId(Long schoolId) {
-        return baseMapper.findStudentDeviceBySchoolId(schoolId);
+    public List<User> findStudentBySchoolId(Long schoolId) {
+        return baseMapper.findStudentBySchoolId(schoolId);
     }
 }

@@ -25,6 +25,7 @@ import com.mx.ai.sports.course.vo.StudentCourseVo;
 import com.mx.ai.sports.job.entity.Job;
 import com.mx.ai.sports.job.service.IJobService;
 import com.mx.ai.sports.system.entity.User;
+import com.mx.ai.sports.system.service.IMessageService;
 import com.mx.ai.sports.system.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -54,10 +55,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     private IJobService jobService;
 
     @Autowired
-    private IUserService userService;
-
-    @Autowired
-    private JPushConfigProperties jPushConfigProperties;
+    private IMessageService messageService;
 
     @Override
     public Course findByCourseName(Long courseId, String courseName) {
@@ -75,16 +73,13 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     }
 
     @Override
-    public CourseVo findById(Long courseId) {
+    public CourseVo findById(Long courseId) throws AiSportsException {
         // 获取今天是星期几
         int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
 
         Course course = getById(courseId);
-        try {
-            courseAddPush(1L, course);
-        } catch (APIConnectionException | APIRequestException e) {
-            e.printStackTrace();
-        }
+
+        messageService.courseAddPush(1L, course);
 
         return this.baseMapper.findById(week, courseId);
     }
@@ -102,7 +97,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean saveCourse(CourseUpdateVo updateVo, Long currentUserId) throws APIConnectionException, APIRequestException {
+    public Boolean saveCourse(CourseUpdateVo updateVo, Long currentUserId) throws AiSportsException{
         Course course = courseConverter.vo2Domain(updateVo);
         course.setUserId(currentUserId);
         course.setCreateTime(new Date());
@@ -124,7 +119,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
             course.setStudentJobId(jobService.createRecordStudentJob(course));
         }
         // 推送发布新课程的消息
-        courseAddPush(currentUserId, course);
+        messageService.courseAddPush(currentUserId, course);
         // 更新课程任务
         return this.saveOrUpdate(course);
     }
@@ -159,45 +154,4 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         return courseVos.stream().filter(e -> localTime.isAfter(LocalTime.parse(e.getStartTime())) && localTime.isBefore(LocalTime.parse(e.getEndTime()))).collect(Collectors.toList());
     }
 
-    /**
-     * 老师创建课程后给当前学校的所有学生推送消息
-     *
-     * @param userId 老师Id
-     * @param course 课程信息
-     * @return
-     */
-    private Boolean courseAddPush(Long userId, Course course) throws APIConnectionException, APIRequestException {
-        ClientConfig config = ClientConfig.getInstance();
-
-        JPushClient jpushClient = new JPushClient(jPushConfigProperties.getMasterSecret(), jPushConfigProperties.getAppKey(), null, config);
-
-        User user = userService.getById(userId);
-        // 查询这个老师对应的学校下面所有的学生
-        List<String> deviceIds = userService.findStudentDeviceBySchoolId(user.getSchoolId());
-
-        Map<String, String> extras = new HashMap<>(3);
-        extras.put("courseId", course.getCourseId().toString());
-        extras.put("courseName", course.getCourseName());
-        extras.put("userName", user.getFullName());
-
-        String content = user.getFullName() + "老师，发布了<" + course.getCourseName() + ">课程，快去报名吧！";
-        Message message = Message.newBuilder().setMsgContent(content)
-                .setTitle("有新的课程发布啦！")
-                .addExtras(extras).build();
-        PushPayload payload = PushPayload.newBuilder().setPlatform(Platform.all())
-                                .setAudience(Audience.all())
-                .setMessage(message).build();
-
-
-        PushResult result = jpushClient.sendPush(payload);
-//        PushPayload pushPayload = PushPayload.newBuilder().setPlatform(Platform.all())
-//                .setMessage(Message.content("有新的课程发布啦!!!"))
-//                .setAudience(Audience.registrationId(deviceIds)).build();
-//
-//        PushResult result = jpushClient.sendPush(pushPayload);
-
-        log.info("课程创建成功后，消息推送成功! userId：{}, courseId:{}, courseName:{}, result:{}", userId, course.getCourseId(), course.getCourseName(), result);
-
-        return Boolean.TRUE;
-    }
 }

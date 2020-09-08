@@ -36,9 +36,8 @@
         WHERE
             su.CLASSES_ID = #{classesId}
     </select>
-    <select id="findStudentDeviceBySchoolId" resultType="java.lang.String">
-        SELECT DISTINCT
-            ( DEVICE_ID )
+    <select id="findStudentBySchoolId" resultType="com.mx.ai.sports.system.entity.User">
+        SELECT USER_ID, DEVICE_ID
         FROM
             SYS_USER
         WHERE

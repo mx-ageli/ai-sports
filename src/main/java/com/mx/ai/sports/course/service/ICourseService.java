@@ -5,6 +5,7 @@ import cn.jiguang.common.resp.APIRequestException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mx.ai.sports.common.entity.QueryRequest;
+import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.query.CourseUpdateVo;
 import com.mx.ai.sports.course.vo.CourseVo;
@@ -49,7 +50,7 @@ public interface ICourseService extends IService<Course> {
      * @param courseId
      * @return
      */
-    CourseVo findById(Long courseId);
+    CourseVo findById(Long courseId) throws AiSportsException;
 
     /**
      * 查询学生报名的课程
@@ -66,7 +67,7 @@ public interface ICourseService extends IService<Course> {
      * @param updateVo
      * @return
      */
-    Boolean saveCourse(CourseUpdateVo updateVo, Long currentUserId) throws APIConnectionException, APIRequestException;
+    Boolean saveCourse(CourseUpdateVo updateVo, Long currentUserId) throws AiSportsException;
 
     /**
      * 老师修改课程，并创建定时任务
@@ -79,6 +80,7 @@ public interface ICourseService extends IService<Course> {
 
     /**
      * 查询我报名的正在进行的课程
+     *
      * @param
      * @return
      */

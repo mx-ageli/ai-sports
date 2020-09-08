@@ -160,7 +160,7 @@ public interface CourseApi {
      */
     @ApiOperation(value = "#已实现 图16# 查询上课的历史记录")
     @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "QueryRequest", required = true)
-    @RequestMapping(value = "/find_course_history", method = RequestMethod.POST)
+    @RequestMapping(value = "/find_course_history", method = RequestMethod.POST)// TODO 添加userId参数
     AiSportsResponse<IPage<RecordStudentVo>> findCourseHistory(@RequestBody @Valid QueryRequest query);
 
     /**

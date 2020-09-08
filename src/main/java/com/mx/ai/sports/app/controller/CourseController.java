@@ -80,22 +80,9 @@ public class CourseController extends BaseRestController implements CourseApi {
         // 校验课程时间数据的范围校验
         checkUpdateCourseTime(updateVo);
 
-        try {
-            // 老师新增课程，并创建定时任务
-            courseService.saveCourse(updateVo, getCurrentUserId());
-        } catch (APIConnectionException e) {
-            log.error("推送服务：连接错误. ", e);
+        // 老师新增课程，并创建定时任务
+        courseService.saveCourse(updateVo, getCurrentUserId());
 
-            return new AiSportsResponse<Boolean>().fail().message("推送服务：连接错误.");
-        } catch (APIRequestException e) {
-            log.error("JPush服务器的错误响应。.", e);
-            log.info("HTTP Status: " + e.getStatus());
-            log.info("Error Code: " + e.getErrorCode());
-            log.info("Error Message: " + e.getErrorMessage());
-            log.info("Msg ID: " + e.getMsgId());
-
-            return new AiSportsResponse<Boolean>().fail().message("JPush服务器的错误响应.");
-        }
         return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
     }
 
@@ -257,7 +244,12 @@ public class CourseController extends BaseRestController implements CourseApi {
     public AiSportsResponse<CourseVo> findById(@NotNull @RequestParam("courseId") Long courseId) {
 
         UserSimple user = getCurrentUser();
-        CourseVo courseVo = courseService.findById(courseId);
+        CourseVo courseVo = null;
+        try {
+            courseVo = courseService.findById(courseId);
+        } catch (AiSportsException e) {
+            e.printStackTrace();
+        }
         // 直接查询全部数据返回
         if (Objects.equals(user.getRoleId(), RoleEnum.TEACHER.value())) {
             return new AiSportsResponse<CourseVo>().success().data(courseVo);
