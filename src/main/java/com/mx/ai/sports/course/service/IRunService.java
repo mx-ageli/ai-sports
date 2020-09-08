@@ -8,6 +8,9 @@ import com.mx.ai.sports.course.query.RunAddVo;
 import com.mx.ai.sports.course.query.RunRecordQuery;
 import com.mx.ai.sports.course.vo.RunRecordVo;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 跑步记录
  * @author Mengjiaxin
@@ -32,4 +35,5 @@ public interface IRunService extends IService<Run> {
      */
     RunRecordVo getRunRecordVo(Long currentUserId, RunRecordQuery query);
 
+    Map<Long, Run> findByCourseRecordIds(Long userId, List<Long> courseRecordIds);
 }

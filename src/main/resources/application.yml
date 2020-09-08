@@ -53,7 +53,7 @@ sms:
   regionId: cn-hangzhou
   accessKeyId: LTAI4FqD1WE7i5mPYsQ7UMrJ
   accessKeySecret: 6sKjUKKQ8tNp12qDukJZuCpjcpU87P
-  signName: 考吧
+  signName: Ai体育Pro
   templateCode: SMS_177247817
 
 jpush:

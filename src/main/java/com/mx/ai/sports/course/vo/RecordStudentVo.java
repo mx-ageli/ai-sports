@@ -79,5 +79,17 @@ public class RecordStudentVo implements Serializable {
     @ApiModelProperty("课程对应的图片")
     private String images;
 
+    @ApiModelProperty("跑步时长(以秒为单位)")
+    private Long runTime;
+
+    @ApiModelProperty("完成里程")
+    private Float mileage;
+
+    @ApiModelProperty("规则设定里程")
+    private Float ruleMileage;
+
+    @ApiModelProperty("规则设定跑步时长")
+    private Long ruleRunTime;
+
 
 }

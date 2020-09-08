@@ -6,12 +6,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.course.entity.RecordStudent;
+import com.mx.ai.sports.course.entity.Run;
 import com.mx.ai.sports.course.mapper.RecordStudentMapper;
 import com.mx.ai.sports.course.query.StudentCourseQuery;
 import com.mx.ai.sports.course.service.IRecordStudentService;
+import com.mx.ai.sports.course.service.IRunService;
 import com.mx.ai.sports.course.vo.RecordStudentVo;
 import com.mx.ai.sports.course.vo.StudentCourseVo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +22,10 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- *
  * @author Mengjiaxin
  * @date 2020/8/17 7:18 下午
  */
@@ -31,10 +34,13 @@ import java.util.stream.Collectors;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class RecordStudentServiceImpl extends ServiceImpl<RecordStudentMapper, RecordStudent> implements IRecordStudentService {
 
+    @Autowired
+    private IRunService runService;
+
     @Override
     public List<Long> findUserIdByCourseRecordId(Long courseRecordId) {
         List<RecordStudent> recordStudentList = this.baseMapper.selectList(new LambdaQueryWrapper<RecordStudent>().eq(RecordStudent::getCourseRecordId, courseRecordId));
-        if(CollectionUtils.isEmpty(recordStudentList)){
+        if (CollectionUtils.isEmpty(recordStudentList)) {
             return new ArrayList<>();
         }
         return recordStudentList.stream().map(RecordStudent::getUserId).collect(Collectors.toList());
@@ -51,7 +57,24 @@ public class RecordStudentServiceImpl extends ServiceImpl<RecordStudentMapper, R
     public IPage<RecordStudentVo> findRecordStudentVo(QueryRequest request, Long userId) {
         Page<RecordStudentVo> page = new Page<>(request.getPageNum(), request.getPageSize());
 
-        return this.baseMapper.findRecordStudentVo(page, userId);
+        IPage<RecordStudentVo> recordPage = this.baseMapper.findRecordStudentVo(page, userId);
+
+        if (!CollectionUtils.isEmpty(recordPage.getRecords())) {
+            List<Long> courseRecordIds = recordPage.getRecords().stream().map(RecordStudentVo::getCourseRecordId).collect(Collectors.toList());
+            Map<Long, Run> runMap = runService.findByCourseRecordIds(userId, courseRecordIds);
+
+            for (RecordStudentVo vo : recordPage.getRecords()){
+                if(runMap.containsKey(vo.getCourseRecordId())){
+                    Run run = runMap.get(vo.getCourseRecordId());
+                    vo.setMileage(run.getMileage());
+                    vo.setRunTime(run.getRunTime());
+                    vo.setRuleMileage(run.getRuleMileage());
+                    vo.setRuleRunTime(run.getRuleRunTime());
+                }
+            }
+        }
+
+        return recordPage;
     }
 
     @Override

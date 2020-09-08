@@ -70,24 +70,6 @@ public class Run implements Serializable {
     private String status;
 
     /**
-     * 跑步结束的坐标点 纬度
-     */
-    @TableId(value = "LAT")
-    private String lat;
-
-    /**
-     * 跑步结束的坐标点 经度
-     */
-    @TableId(value = "LON")
-    private String lon;
-
-    /**
-     * 跑步结束的坐标点的具体名称
-     */
-    @TableField("LOCATION_NAME")
-    private String locationName;
-
-    /**
      * 跑步时长(以秒为单位)
      */
     @TableField("RUN_TIME")
@@ -106,6 +88,16 @@ public class Run implements Serializable {
     @TableField("SPEED")
     private Float speed;
 
+    /**
+     * 里程,大于等于多少米
+     */
+    @TableField("RULE_MILEAGE")
+    private Float ruleMileage;
 
+    /**
+     * 跑步时长(以秒为单位)，大于等于的时长
+     */
+    @TableField("RULE_RUN_TIME")
+    private Long ruleRunTime;
 
 }

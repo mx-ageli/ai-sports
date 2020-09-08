@@ -22,11 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Mengjiaxin
@@ -58,6 +58,8 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         run.setEndTime(runAddVo.getEndTime());
         run.setRunTime(runAddVo.getRunTime());
         run.setMileage(runAddVo.getMileage());
+        run.setRuleRunTime(runRule.getRunTime());
+        run.setRuleMileage(runRule.getMileage());
         run.setSpeed(runAddVo.getSpeed());
         run.setStatus(RunStatusEnum.NO_PASS.value());
         // 对应最新的课程记录Id
@@ -71,10 +73,8 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         }
         this.save(run);
 
-
         // 重新计算学生的合格状态
         calcPass(userId, run, courseRecordId);
-
 
         List<RunLocation> runList = new ArrayList<>();
         for (RunLocationAddVo addVo : runAddVo.getLocation()) {
@@ -101,6 +101,15 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         runRecordVo.setDetailPage(detailPage);
 
         return runRecordVo;
+    }
+
+    @Override
+    public Map<Long, Run> findByCourseRecordIds(Long userId, List<Long> courseRecordIds) {
+        List<Run> runList = baseMapper.selectList(new LambdaQueryWrapper<Run>().eq(Run::getUserId, userId).in(Run::getCourseRecordId, courseRecordIds));
+        if (CollectionUtils.isEmpty(runList)) {
+            return new HashMap<>(0);
+        }
+        return runList.stream().collect(Collectors.toMap(Run::getCourseRecordId, Function.identity(), (e1, e2) -> e1));
     }
 
     /**

@@ -32,7 +32,9 @@
             ar.START_TIME AS startTime,
             ar.END_TIME AS endTime,
             ar.MILEAGE AS mileage,
-            ar.RUN_TIME AS runTime
+            ar.RUN_TIME AS runTime,
+            ar.RULE_MILEAGE AS mileage,
+            ar.RULE_RUN_TIME AS runTime
         FROM
             APP_RUN ar
         LEFT JOIN APP_COURSE ac ON ar.COURSE_ID = ac.COURSE_ID

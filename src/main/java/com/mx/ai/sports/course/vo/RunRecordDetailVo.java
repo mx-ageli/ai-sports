@@ -58,5 +58,11 @@ public class RunRecordDetailVo implements Serializable {
     @ApiModelProperty("里程")
     private Float mileage;
 
+    @ApiModelProperty("规则设定里程")
+    private Float ruleMileage;
+
+    @ApiModelProperty("规则设定跑步时长")
+    private Long ruleRunTime;
+
 
 }
