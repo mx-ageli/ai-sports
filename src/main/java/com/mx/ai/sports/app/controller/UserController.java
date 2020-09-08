@@ -149,7 +149,7 @@ public class UserController extends BaseRestController implements UserApi {
         }
 
         String code = JwtTokenUtil.getRandomCode();
-//        code = "666666";
+        code = "666666";
         log.info("手机号:{}, 获取验证码:{}", mobile, code);
 
         // TODO 需要考虑事物的问题
@@ -162,12 +162,12 @@ public class UserController extends BaseRestController implements UserApi {
         jedisPoolUtil.expire(keyMobile, CODE_DATE_OUT_VALUE);
 
         // 给手机号发送短信验证码
-        try {
-            smsUtil.sendCode(mobile, code);
-        } catch (ClientException e) {
-            log.info("手机号:{}, 发送短信验证码失败，短信服务器异常！", mobile);
-            return new AiSportsResponse<Boolean>().fail().message("发送短信验证码失败！短信服务器异常！");
-        }
+//        try {
+//            smsUtil.sendCode(mobile, code);
+//        } catch (ClientException e) {
+//            log.info("手机号:{}, 发送短信验证码失败，短信服务器异常！", mobile);
+//            return new AiSportsResponse<Boolean>().fail().message("发送短信验证码失败！短信服务器异常！");
+//        }
 
         return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
     }
