@@ -139,7 +139,7 @@ public class SignedController extends BaseRestController implements SignedApi {
                 return new AiSportsResponse<Boolean>().fail().message("已经打卡完成，无需重复打卡！");
             }
             // 当前时间 < 打卡时间 不能打卡
-            if (currentTime.isBefore(endTime)) {
+            if (currentTime.isBefore(startTime)) {
                 return new AiSportsResponse<Boolean>().fail().message("课程还没有开始，不能打下课卡！");
             }
 

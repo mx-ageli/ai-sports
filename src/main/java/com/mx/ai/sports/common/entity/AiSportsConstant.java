@@ -72,7 +72,7 @@ public class AiSportsConstant {
     /**
      * 不需要token验证的路径
      */
-    public static final String[] AUTH_PATH = {"api/user/v/", "api/monitor/v/"};
+    public static final String[] AUTH_PATH = {"api/user/v/", "api/monitor/v/", "api/replace/v/"};
 
     /**
      * 逗号分隔符

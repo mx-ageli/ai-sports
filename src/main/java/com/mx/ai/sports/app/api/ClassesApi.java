@@ -61,8 +61,9 @@ public interface ClassesApi {
      * @return
      */
     @ApiOperation(value = "#已实现 2020-08-28# 查询一个学校下的所有班级")
+    @ApiImplicitParam(name = "schoolId", value = "学校Id", paramType = "query", dataType = "long", required = true)
     @RequestMapping(value = "/find_by_school_id", method = RequestMethod.GET)
-    AiSportsResponse<List<ClassesVo>> findBySchoolId(@NotNull @RequestParam("schoolId") Long schoolId) ;
+    AiSportsResponse<List<ClassesVo>> findBySchoolId(@NotNull @RequestParam("schoolId") Long schoolId);
 
     /**
      * 根据班级Id查询班级详情
@@ -70,8 +71,9 @@ public interface ClassesApi {
      * @return
      */
     @ApiOperation(value = "#已实现 2020-08-28# 根据班级Id查询班级详情")
+    @ApiImplicitParam(name = "classesId", value = "班级Id", paramType = "query", dataType = "long", required = true)
     @RequestMapping(value = "/find_by_id", method = RequestMethod.GET)
-    AiSportsResponse<ClassesVo> findById(@NotNull @RequestParam("classesId") Long classesId) ;
+    AiSportsResponse<ClassesVo> findById(@NotNull @RequestParam("classesId") Long classesId);
 
     /**
      * 查询当前老师所创建的班级
