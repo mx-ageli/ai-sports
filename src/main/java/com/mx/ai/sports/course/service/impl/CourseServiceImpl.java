@@ -73,13 +73,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     }
 
     @Override
-    public CourseVo findById(Long courseId) throws AiSportsException {
+    public CourseVo findById(Long courseId) {
         // 获取今天是星期几
         int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
-
-        Course course = getById(courseId);
-
-        messageService.courseAddPush(1L, course);
 
         return this.baseMapper.findById(week, courseId);
     }
@@ -97,7 +93,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean saveCourse(CourseUpdateVo updateVo, Long currentUserId) throws AiSportsException{
+    public Boolean saveCourse(CourseUpdateVo updateVo, Long currentUserId) throws AiSportsException {
         Course course = courseConverter.vo2Domain(updateVo);
         course.setUserId(currentUserId);
         course.setCreateTime(new Date());
@@ -117,6 +113,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
             course.setCourseJobId(jobService.createCourseRecordJob(course));
             // 创建同步学生报名列表的任务
             course.setStudentJobId(jobService.createRecordStudentJob(course));
+            // 创建课程开始前的消息推送任务
+            course.setStartJobId(jobService.createCourseStartJob(course));
+
         }
         // 推送发布新课程的消息
         messageService.courseAddPush(currentUserId, course);
@@ -127,19 +126,40 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateCourse(Course course, Long currentUserId) {
-        // 不管课程是什么状态，都先把以前的课程任务删除
-        jobService.deleteJobs(new String[]{course.getCourseJobId().toString(), course.getStudentJobId().toString()});
-
+        // 先删除任务
+        deleteJobs(course);
         // 如果课程状态为开启状态，就创建定时任务
         if (Objects.equals(course.getStatus(), Job.ScheduleStatus.NORMAL.getValue())) {
             // 创建课程相关的定时任务
             course.setCourseJobId(jobService.createCourseRecordJob(course));
             // 创建同步学生报名列表的任务
             course.setStudentJobId(jobService.createRecordStudentJob(course));
+            // 创建课程开始前的消息推送任务
+            course.setStartJobId(jobService.createCourseStartJob(course));
         }
-
         // 更新课程信息
         return this.saveOrUpdate(course);
+    }
+
+    /**
+     * 先删除任务
+     *
+     * @param course
+     */
+    private void deleteJobs(Course course) {
+        String[] jobIds = new String[3];
+        if (Objects.nonNull(course.getCourseJobId())) {
+            jobIds[0] = Objects.toString(course.getCourseJobId());
+        }
+        if (Objects.nonNull(course.getStudentJobId())) {
+            jobIds[1] = Objects.toString(course.getStudentJobId());
+        }
+        if (Objects.nonNull(course.getStartJobId())) {
+            jobIds[2] = Objects.toString(course.getStartJobId());
+        }
+
+        // 不管课程是什么状态，都先把以前的课程任务删除
+        jobService.deleteJobs(jobIds);
     }
 
     @Override

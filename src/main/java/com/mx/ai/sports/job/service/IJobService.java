@@ -32,6 +32,13 @@ public interface IJobService extends IService<Job> {
      */
     Long createRecordStudentJob(Course course);
 
+    /**
+     * 课程开始前的消息推送
+     * @param course
+     * @return
+     */
+    Long createCourseStartJob(Course course);
+
 
     void updateJob(Job job);
 

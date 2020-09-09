@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.course.entity.CourseStudent;
 import com.mx.ai.sports.course.mapper.CourseStudentMapper;
 import com.mx.ai.sports.course.service.ICourseStudentService;
+import com.mx.ai.sports.system.entity.User;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, CourseStudent> implements ICourseStudentService {
 
 
+
     @Override
     public List<Long> findByCourseId(Long courseId) {
         List<CourseStudent> courseStudentList = this.baseMapper.selectList(new LambdaQueryWrapper<CourseStudent>().eq(CourseStudent::getCourseId, courseId));
@@ -32,6 +35,11 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
             return new ArrayList<>();
         }
         return courseStudentList.stream().map(CourseStudent::getUserId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> findUserByCourseId(Long courseId) {
+        return this.baseMapper.findUserByCourseId(courseId);
     }
 
     @Override

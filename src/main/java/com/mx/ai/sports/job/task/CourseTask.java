@@ -1,10 +1,14 @@
 package com.mx.ai.sports.job.task;
 
+import com.mx.ai.sports.common.exception.AiSportsException;
+import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.CourseRecord;
 import com.mx.ai.sports.course.entity.RecordStudent;
 import com.mx.ai.sports.course.service.ICourseRecordService;
+import com.mx.ai.sports.course.service.ICourseService;
 import com.mx.ai.sports.course.service.ICourseStudentService;
 import com.mx.ai.sports.course.service.IRecordStudentService;
+import com.mx.ai.sports.system.service.IMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,6 +36,12 @@ public class CourseTask {
 
     @Autowired
     private IRecordStudentService recordStudentService;
+
+    @Autowired
+    private ICourseService courseService;
+
+    @Autowired
+    private IMessageService messageService;
 
     /**
      * 课程活动开始创建课程记录数据， 在打卡时间开始前5分钟创建
@@ -94,6 +104,21 @@ public class CourseTask {
         recordStudentService.saveBatch(recordStudentList);
 
         log.info("同步报名学生数据，courseId:{}", courseId);
+    }
+
+    /**
+     * 课程开始前的消息推送
+     *
+     * @param courseId
+     */
+    public void courseStartTask(String courseId) {
+        Course course = courseService.getById(courseId);
+        try {
+            messageService.courseStartPush(course);
+        } catch (AiSportsException e) {
+            log.error("课程开始前的消息推送发生异常！异常:{}", e.getMessage());
+        }
+        log.info("课程开始前的消息推送成功，courseId:{}", courseId);
     }
 
 

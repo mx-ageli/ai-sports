@@ -50,7 +50,7 @@ public interface ICourseService extends IService<Course> {
      * @param courseId
      * @return
      */
-    CourseVo findById(Long courseId) throws AiSportsException;
+    CourseVo findById(Long courseId);
 
     /**
      * 查询学生报名的课程

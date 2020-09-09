@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mx.ai.sports.course.mapper.CourseStudentMapper">
+
+
+    <select id="findUserByCourseId" resultType="com.mx.ai.sports.system.entity.User">
+        SELECT
+            su.USER_ID,
+            su.DEVICE_ID
+        FROM
+            SYS_USER su,
+            APP_COURSE_STUDENT acs
+        WHERE
+            su.USER_ID = acs.USER_ID
+            AND acs.COURSE_ID = #{courseId}
+            AND ROLE_ID = 1
+    </select>
+</mapper>

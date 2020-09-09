@@ -3,6 +3,7 @@ package com.mx.ai.sports.course.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.CourseStudent;
+import com.mx.ai.sports.system.entity.User;
 
 import java.util.List;
 
@@ -21,6 +22,14 @@ public interface ICourseStudentService extends IService<CourseStudent> {
      * @return
      */
     List<Long> findByCourseId(Long courseId);
+
+    /**
+     * 根据课程Id查询所有报名的学生
+     *
+     * @param courseId 课程Id
+     * @return
+     */
+    List<User> findUserByCourseId(Long courseId);
 
     /**
      * 查询我的报名的课程

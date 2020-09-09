@@ -121,6 +121,12 @@ public class Course implements Serializable {
     private Long studentJobId;
 
     /**
+     * 课程开始前的推送的任务Id
+     */
+    @TableId(value = "START_JOB_ID")
+    private Long startJobId;
+
+    /**
      * 状态 1=正常,2=暂停
      */
     @TableField("STATUS")

@@ -8,6 +8,7 @@ import cn.jpush.api.push.PushResult;
 import cn.jpush.api.push.model.Platform;
 import cn.jpush.api.push.model.PushPayload;
 import cn.jpush.api.push.model.audience.Audience;
+import cn.jpush.api.push.model.notification.Notification;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,6 +18,7 @@ import com.mx.ai.sports.common.entity.MsgTypeEnum;
 import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.entity.Course;
+import com.mx.ai.sports.course.service.ICourseStudentService;
 import com.mx.ai.sports.system.entity.Message;
 import com.mx.ai.sports.system.entity.User;
 import com.mx.ai.sports.system.entity.UserMessage;
@@ -55,6 +57,9 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     @Autowired
     private JPushConfigProperties jPushConfigProperties;
 
+    @Autowired
+    private ICourseStudentService courseStudentService;
+
 
     @Override
     public IPage<MessageVo> findMyMessage(QueryRequest query, Long userId) {
@@ -90,43 +95,87 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     @Override
     public Boolean courseAddPush(Long userId, Course course) throws AiSportsException {
 
+        User user = userService.getById(userId);
+        // 查询这个老师对应的学校下面所有的学生
+        List<User> studentList = userService.findStudentBySchoolId(user.getSchoolId());
+        // 如果没有学生直接返回
+        if (CollectionUtils.isEmpty(studentList)) {
+            return Boolean.TRUE;
+        }
+        // 推送的设备Id
+        List<String> deviceIds = studentList.stream().map(User::getDeviceId).distinct().collect(Collectors.toList());
+        // 推送的学生Id
+        List<Long> userIds = studentList.stream().map(User::getUserId).collect(Collectors.toList());
+
+        Map<String, String> extras = new HashMap<>(2);
+        extras.put("courseId", course.getCourseId().toString());
+        extras.put("messageType", MsgTypeEnum.COURSE_PUBLISH.value());
+
+        String title = "有新的课程发布啦！";
+        String content = title + user.getFullName() + "老师发布了【" + course.getCourseName() + "】课程，快去报名吧！";
+        // 推送系统消息
+        sendMessage(deviceIds, content, extras);
+        // 保存系统消息
+        saveSysMessage(course, userIds, title, content, MsgTypeEnum.COURSE_PUBLISH.value());
+
+        return Boolean.TRUE;
+    }
+
+    @Override
+    public Boolean courseStartPush(Course course) throws AiSportsException {
+
+        User user = userService.getById(course.getUserId());
+        // 先查询这次报课的学生有那些
+        List<User> studentList = courseStudentService.findUserByCourseId(course.getCourseId());
+        // 如果没有学生直接返回
+        if (CollectionUtils.isEmpty(studentList)) {
+            return Boolean.TRUE;
+        }
+        // 推送的设备Id
+        List<String> deviceIds = studentList.stream().map(User::getDeviceId).distinct().collect(Collectors.toList());
+        // 推送的学生Id
+        List<Long> userIds = studentList.stream().map(User::getUserId).collect(Collectors.toList());
+
+        Map<String, String> extras = new HashMap<>(2);
+        extras.put("courseId", course.getCourseId().toString());
+        extras.put("messageType", MsgTypeEnum.COURSE_START.value());
+
+        String title = "课程快要开始了！";
+        String content = user.getFullName() + "老师发布的【" + course.getCourseName() + "】课程，马上就要开始了！快去打卡吧！";
+        // 推送系统消息
+        sendMessage(deviceIds, content, extras);
+        // 保存系统消息
+        saveSysMessage(course, userIds, title, content, MsgTypeEnum.COURSE_START.value());
+
+        return Boolean.TRUE;
+    }
+
+    /**
+     * 发送消息
+     *
+     * @param deviceIds
+     * @param content
+     * @param extras
+     * @return
+     * @throws AiSportsException
+     */
+    public Boolean sendMessage(List<String> deviceIds, String content, Map<String, String> extras) throws AiSportsException {
+
         try {
             ClientConfig config = ClientConfig.getInstance();
 
             JPushClient jpushClient = new JPushClient(jPushConfigProperties.getMasterSecret(), jPushConfigProperties.getAppKey(), null, config);
 
-            User user = userService.getById(userId);
-            // 查询这个老师对应的学校下面所有的学生
-            List<User> studentList = userService.findStudentBySchoolId(user.getSchoolId());
-            // 如果没有学生直接返回
-            if (CollectionUtils.isEmpty(studentList)) {
-                return Boolean.TRUE;
-            }
-            // 推送的设备Id
-            List<String> deviceIds = studentList.stream().map(User::getDeviceId).distinct().collect(Collectors.toList());
-            // 推送的学生Id
-            List<Long> userIds = studentList.stream().map(User::getUserId).collect(Collectors.toList());
-
-            Map<String, String> extras = new HashMap<>(3);
-            extras.put("courseId", course.getCourseId().toString());
-            extras.put("courseName", course.getCourseName());
-            extras.put("userName", user.getFullName());
-
-            String title = "有新的课程发布啦！";
-            String content = user.getFullName() + "老师，发布了<" + course.getCourseName() + ">课程，快去报名吧！";
             cn.jpush.api.push.model.Message message = cn.jpush.api.push.model.Message.newBuilder().setMsgContent(content)
-                    .setTitle(title)
                     .addExtras(extras).build();
             PushPayload payload = PushPayload.newBuilder().setPlatform(Platform.all())
-                    .setAudience(Audience.all())
+                    .setAudience(Audience.registrationId(deviceIds))
+                    .setNotification(Notification.newBuilder().setAlert(content).build())
                     .setMessage(message).build();
 
-
             PushResult result = jpushClient.sendPush(payload);
-            // 保存系统消息
-            saveSysMessage(course, userIds, title, content);
 
-            log.info("课程创建成功后，消息推送成功! userId：{}, courseId:{}, courseName:{}, result:{}", userId, course.getCourseId(), course.getCourseName(), result);
+            log.info("消息推送成功! content：{}, extras:{}, result:{}", content, extras, result);
         } catch (APIConnectionException e) {
             log.error("推送服务：连接错误. ", e);
 
@@ -146,12 +195,13 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
 
     /**
      * 保存系统消息
+     *
      * @param course
      * @param userIds
      * @param title
      * @param content
      */
-    private void saveSysMessage(Course course, List<Long> userIds, String title, String content) {
+    private void saveSysMessage(Course course, List<Long> userIds, String title, String content, String messageType) {
         // 保存推送的系统消息
         Message msg = new Message();
         msg.setCourseId(course.getCourseId());
@@ -160,7 +210,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         msg.setCreateTime(new Date());
         // 先默认设置为已读
         msg.setStatus(MsgStatusEnum.READ.value());
-        msg.setType(MsgTypeEnum.COURSE_PUBLISH.value());
+        msg.setType(messageType);
         // 保存系统推送的消息
         this.saveSendMessage(msg, userIds);
     }

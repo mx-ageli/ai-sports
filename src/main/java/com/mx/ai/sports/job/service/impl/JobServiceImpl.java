@@ -99,6 +99,7 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements IJobS
 
     /**
      * 创建课程记录数据任务
+     *
      * @param course
      */
     @Override
@@ -155,6 +156,18 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements IJobS
         startLocalTime = startLocalTime.minusMinutes(1);
         // 开始时间时才创建
         return initJob(course, beanName, methodName, startLocalTime, " 创建学生课程参加记录数据任务");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long createCourseStartJob(Course course) {
+        String beanName = "courseTask";
+        String methodName = "courseStartTask";
+        LocalTime signedTime = LocalTime.parse(course.getSignedTime());
+        // 打卡时间的前三分钟开始推送
+        signedTime = signedTime.minusMinutes(3);
+
+        return initJob(course, beanName, methodName, signedTime, "课程开始前的消息推送任务");
     }
 
     @Override

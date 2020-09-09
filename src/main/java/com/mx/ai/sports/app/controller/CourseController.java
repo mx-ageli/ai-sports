@@ -251,12 +251,7 @@ public class CourseController extends BaseRestController implements CourseApi {
     public AiSportsResponse<CourseVo> findById(@NotNull @RequestParam("courseId") Long courseId) {
 
         UserSimple user = getCurrentUser();
-        CourseVo courseVo = null;
-        try {
-            courseVo = courseService.findById(courseId);
-        } catch (AiSportsException e) {
-            e.printStackTrace();
-        }
+        CourseVo courseVo = courseService.findById(courseId);
         // 直接查询全部数据返回
         if (Objects.equals(user.getRoleId(), RoleEnum.TEACHER.value())) {
             return new AiSportsResponse<CourseVo>().success().data(courseVo);

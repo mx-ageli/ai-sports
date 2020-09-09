@@ -30,7 +30,7 @@ public class MessageVo implements Serializable {
     private String title;
 
     @ApiModelProperty("内容")
-    private Date content;
+    private String content;
 
     @ApiModelProperty("创建时间")
     private Date createTime;
