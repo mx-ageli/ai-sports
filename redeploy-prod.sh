@@ -27,6 +27,6 @@ else
         echo "没有对应的程序在运行"
 fi
 
-nohup java -jar /home/AiSports/ai-sports/target/ai-sports-1.0-SNAPSHOT.jar--spring.profiles.active=prod &
+nohup java -jar /home/AiSports/ai-sports/target/ai-sports-1.0-SNAPSHOT.jar --spring.profiles.active=prod&
 #监控日志
 tail -f /home/AiSports/ai-sports/nohup.out
