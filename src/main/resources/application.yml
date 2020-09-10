@@ -26,11 +26,6 @@ spring:
       # 单个请求的文件总大小上限
       max-request-size: 30MB
 
-#  boot:
-#    admin:
-#      client:
-#        url: http://localhost:8081
-
 
 management:
   endpoints:
