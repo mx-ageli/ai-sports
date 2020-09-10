@@ -18,11 +18,18 @@ public interface ICourseRecordService extends IService<CourseRecord> {
 
     /**
      * 获取课程最新的记录Id
+     * @param courseId
+     * @return
+     */
+    Long findIdByNow(Long courseId);
+
+    /**
+     * 获取课程最新的记录Id，如果没有获取到就创建
      *
      * @param courseId 课程Id
      * @return
      */
-    Long findIdByNow(Long courseId);
+    Long findIdByNowAndCreate(Long courseId);
 
     /**
      * 查询课程的记录
@@ -31,5 +38,14 @@ public interface ICourseRecordService extends IService<CourseRecord> {
      * @return
      */
     IPage<CourseRecordVo> findByCourseId(QueryRequest request, Long courseId);
+
+    /**
+     * 保存课程记录
+     * @param courseId
+     * @return
+     */
+    CourseRecord saveCourseRecord(Long courseId);
+
+
 
 }

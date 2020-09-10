@@ -81,7 +81,9 @@ public class SignedServiceImpl extends ServiceImpl<SignedMapper, Signed> impleme
     @Override
     public Signed findLastByCourseId(Long courseId, Long userId) {
         Long courseRecordId = courseRecordService.findIdByNow(courseId);
-
+        if(courseRecordId == null){
+            return null;
+        }
         return this.baseMapper.selectOne(new LambdaQueryWrapper<Signed>().eq(Signed::getCourseRecordId, courseRecordId).eq(Signed::getUserId, userId));
     }
 }

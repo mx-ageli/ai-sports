@@ -23,6 +23,12 @@ public class UserUpdateVo implements Serializable {
     private String sex;
 
     /**
+     * 学校Id
+     */
+    @ApiModelProperty("学校Id")
+    private Long schoolId;
+
+    /**
      * 班级Id
      */
     @ApiModelProperty("班级Id")

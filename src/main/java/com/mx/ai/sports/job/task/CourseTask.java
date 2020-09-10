@@ -52,19 +52,7 @@ public class CourseTask {
      */
     public void courseRecordTask(String courseId) {
         // 创建课程记录
-        CourseRecord courseRecord = new CourseRecord();
-        courseRecord.setCreateTime(new Date());
-        courseRecord.setCourseId(Long.valueOf(courseId));
-
-        // 现将报名的总人数先统计到课程记录表中
-        // 统计课程报名的总人数， 这里有可能没有学生报名这个课程，就为0
-        List<Long> userIds = courseStudentService.findByCourseId(Long.valueOf(courseId));
-        Long allCount = (long) userIds.size();
-        courseRecord.setAllCount(allCount);
-        // 默认认为所有人都是缺席
-        courseRecord.setAbsentCount(allCount);
-
-        courseRecordService.save(courseRecord);
+        CourseRecord courseRecord = courseRecordService.saveCourseRecord(Long.valueOf(courseId));
 
         log.info("创建课程记录，courseId:{}，courseRecordId:{}", courseId, courseRecord.getCourseRecordId());
     }
@@ -79,7 +67,7 @@ public class CourseTask {
     public void recordStudentTask(String courseId) {
         Long longCourseId = Long.valueOf(courseId);
         // 课程记录Id
-        Long courseRecordId = courseRecordService.findIdByNow(longCourseId);
+        Long courseRecordId = courseRecordService.findIdByNowAndCreate(longCourseId);
         // 本次课程报名的所有学生
         List<Long> studentIds = courseStudentService.findByCourseId(longCourseId);
         // 本次课程已经参与打卡的学生 已经打卡的学生会在课程记录中存在，这种数据无需再次添加
@@ -89,16 +77,8 @@ public class CourseTask {
 
         List<RecordStudent> recordStudentList = new ArrayList<>();
         for (Long studentId : studentIds) {
-            RecordStudent recordStudent = new RecordStudent();
-            recordStudent.setCourseId(longCourseId);
-            recordStudent.setCourseRecordId(courseRecordId);
-            recordStudent.setUserId(studentId);
-            recordStudent.setCreateTime(new Date());
-            recordStudent.setUpdateTime(new Date());
-            // 默认缺席
-            recordStudent.setIsAbsent(Boolean.TRUE);
-            // 默认迟到
-            recordStudent.setIsLate(Boolean.TRUE);
+            RecordStudent recordStudent = new RecordStudent(longCourseId, courseRecordId, studentId);
+
             recordStudentList.add(recordStudent);
         }
         recordStudentService.saveBatch(recordStudentList);

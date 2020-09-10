@@ -63,9 +63,10 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         run.setSpeed(runAddVo.getSpeed());
         run.setStatus(RunStatusEnum.NO_PASS.value());
         // 对应最新的课程记录Id
-        Long courseRecordId = courseRecordService.findIdByNow(runAddVo.getCourseId());
-
+        Long courseRecordId = courseRecordService.findIdByNowAndCreate(runAddVo.getCourseId());
         run.setCourseRecordId(courseRecordId);
+        // 先清除历史数据， 只保存最后一次运动记录
+        deleteHistory(courseRecordId, userId);
 
         // 查询当前这次跑步是否满足规则，满足就合格
         if (runAddVo.getMileage() > runRule.getMileage() && runAddVo.getRunTime() > runRule.getRunTime()) {
@@ -74,7 +75,7 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         this.save(run);
 
         // 重新计算学生的合格状态
-        calcPass(userId, run, courseRecordId);
+        calcPass(userId, run, runAddVo.getCourseId(), courseRecordId);
 
         List<RunLocation> runList = new ArrayList<>();
         for (RunLocationAddVo addVo : runAddVo.getLocation()) {
@@ -87,6 +88,15 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         }
 
         return runLocationService.saveBatch(runList);
+    }
+
+    /**
+     * 先删除以往的记录
+     * @param courseRecordId
+     * @param userId
+     */
+    private void deleteHistory(Long courseRecordId, Long userId){
+        this.baseMapper.delete(new LambdaQueryWrapper<Run>().eq(Run::getCourseRecordId, courseRecordId).eq(Run::getUserId, userId));
     }
 
     @Override
@@ -119,9 +129,13 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
      * @param run
      * @param courseRecordId
      */
-    private void calcPass(Long userId, Run run, Long courseRecordId) {
+    private void calcPass(Long userId, Run run, Long courseId, Long courseRecordId) {
         // 需要将是否合格保存到学生记录表中
         RecordStudent recordStudent = recordStudentService.getOne(new LambdaQueryWrapper<RecordStudent>().eq(RecordStudent::getUserId, userId).eq(RecordStudent::getCourseRecordId, courseRecordId));
+        // 没有学生记录 需要创建
+        if(recordStudent == null){
+            recordStudent = new RecordStudent(courseId, courseRecordId, userId);
+        }
         recordStudent.setIsPass(Objects.equals(run.getStatus(), RunStatusEnum.PASS.value()));
         recordStudentService.saveOrUpdate(recordStudent);
 

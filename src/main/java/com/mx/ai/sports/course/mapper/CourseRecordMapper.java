@@ -21,4 +21,6 @@ public interface CourseRecordMapper extends BaseMapper<CourseRecord> {
      * @return
      */
     IPage<CourseRecordVo> findByCourseId(Page<CourseRecordVo> page, Long courseId);
+
+    CourseRecord findIdByNow(Long courseId);
 }

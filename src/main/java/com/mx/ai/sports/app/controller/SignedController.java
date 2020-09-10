@@ -106,10 +106,11 @@ public class SignedController extends BaseRestController implements SignedApi {
         }
 
         // 查询到当前课程记录Id
-        Long courseRecordId = courseRecordService.findIdByNow(signedAddVo.getCourseId());
+        Long courseRecordId = courseRecordService.findIdByNowAndCreate(signedAddVo.getCourseId());
         // 学生的打卡记录
         Signed signed = signedService.findByCourseRecordId(courseRecordId, userId);
-
+        // 是否是第一次打卡
+        boolean isFirst = false;
         // 说明学生还没有打卡过，这个时候打的都是上课卡
         if (signed == null) {
 
@@ -132,6 +133,7 @@ public class SignedController extends BaseRestController implements SignedApi {
             // 当前时间 > 课程的开始时间 打迟到卡
             if (currentTime.isAfter(startTime)) {
                 signed.setIsLate(true);
+                isFirst = true;
             }
         } else { // 存在记录了说明已经打过上课卡了，或者是重复的打下课卡
 
@@ -152,6 +154,6 @@ public class SignedController extends BaseRestController implements SignedApi {
         }
         // 保存打卡记录
         AiSportsResponse<Boolean> response = new AiSportsResponse<Boolean>().success().data(signedService.saveSigned(signed));
-        return signed.getIsLate() ? response.message("迟到打卡！") : response.message("打卡成功！");
+        return signed.getIsLate() && isFirst ? response.message("迟到打卡！") : response.message("打卡成功！");
     }
 }

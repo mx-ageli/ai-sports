@@ -266,7 +266,9 @@ public class UserController extends BaseRestController implements UserApi {
                 }
                 // 添加班级Id
                 user.setClassesId(classes.getClassesId());
-                user.setSchoolId(classes.getSchoolId());
+            }
+            if (null != userUpdateVo.getSchoolId()) {
+                user.setSchoolId(userUpdateVo.getSchoolId());
             }
             if (StringUtils.isNotBlank(userUpdateVo.getSex())) {
 

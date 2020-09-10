@@ -76,4 +76,22 @@ public class RecordStudent implements Serializable {
     private Boolean isPass;
 
 
+    public RecordStudent(){
+
+    }
+
+
+    public RecordStudent(Long courseId, Long courseRecordId, Long studentId){
+        this.setCourseId(courseId);
+        this.setCourseRecordId(courseRecordId);
+        this.setUserId(studentId);
+        this.setCreateTime(new Date());
+        this.setUpdateTime(new Date());
+        // 默认缺席
+        this.setIsAbsent(Boolean.TRUE);
+        // 默认迟到
+        this.setIsLate(Boolean.TRUE);
+
+    }
+
 }

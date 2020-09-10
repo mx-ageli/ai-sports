@@ -25,7 +25,7 @@ spring:
           username: root
           password: pKd@oVt#$2*qanWe
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://47.99.115.187:3306/ai_sports_quartz?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+          url: jdbc:mysql://127.0.0.1:3306/ai_sports_quartz?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
 
   redis:
     # Redis数据库索引（默认为 0）
@@ -69,13 +69,3 @@ jetcache:
       host: 127.0.0.1
       password: Kao!Ba~20191108
       port: 6379
-
-ekb:
-  http-url: http://47.99.115.187/
-  pay:
-    wxpay:
-      appID: wx4ce44ceb3b361d05
-      mchID: 1579582011
-      key: 2b9b31f42d0f4bffb0419679580abc20
-      certPath: cert/apiclient_cert.p12
-      notifyUrl: http://47.99.115.187/api/order/student/wx_pay_success

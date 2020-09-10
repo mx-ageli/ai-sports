@@ -25,4 +25,13 @@
             acr.CREATE_TIME DESC
 
     </select>
+    <select id="findIdByNow" resultType="com.mx.ai.sports.course.entity.CourseRecord">
+        SELECT
+            *
+        FROM
+            APP_COURSE_RECORD acr
+        WHERE
+          acr.COURSE_ID = #{courseId} AND
+            to_days( acr.CREATE_TIME ) = to_days(now()) ORDER BY acr.CREATE_TIME DESC LIMIT 1
+    </select>
 </mapper>
