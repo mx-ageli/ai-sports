@@ -76,7 +76,7 @@ public class UserController extends BaseRestController implements UserApi {
 
     @Override
     @Log("手机号和短信验证码登录获得token")
-    @Limit(key = "mobileLogin", period = 60, count = 3, name = "登录", prefix = "limit")
+    @Limit(key = "mobileLogin", period = 10, count = 3, name = "登录", prefix = "limit")
     public AiSportsResponse<String> login(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
                                           @NotBlank @Length(min = 6, max = 6, message = "长度必须等于6位") @RequestParam("code") String code,
                                           @NotBlank @RequestParam("deviceId") String deviceId) throws AiSportsException {
