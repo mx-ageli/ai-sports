@@ -66,8 +66,11 @@ public class SignedServiceImpl extends ServiceImpl<SignedMapper, Signed> impleme
             CourseRecord courseRecord = courseRecordService.getById(signed.getCourseRecordId());
             // 打卡人数加1
             courseRecord.setSingedCount(courseRecord.getSingedCount() + 1);
-            // 缺席人数减1
-            courseRecord.setAbsentCount(courseRecord.getAbsentCount() - 1);
+
+            if(courseRecord.getAbsentCount() > 0){
+                // 缺席人数减1
+                courseRecord.setAbsentCount(courseRecord.getAbsentCount() - 1);
+            }
             // 是否已经迟到
             if (signed.getIsLate()) {
                 // 迟到人数加1
