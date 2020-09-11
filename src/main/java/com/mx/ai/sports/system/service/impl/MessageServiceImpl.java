@@ -179,7 +179,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         } catch (APIConnectionException e) {
             log.error("推送服务：连接错误. ", e);
 
-            throw new AiSportsException("推送服务：连接错误.");
+//            throw new AiSportsException("推送服务：连接错误.");
         } catch (APIRequestException e) {
             log.error("JPush服务器的错误响应。.", e);
             log.error("HTTP Status: " + e.getStatus());
@@ -187,7 +187,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
             log.error("Error Message: " + e.getErrorMessage());
             log.error("Msg ID: " + e.getMsgId());
 
-            throw new AiSportsException("JPush服务器的错误响应.");
+//            throw new AiSportsException("JPush服务器的错误响应.");
         }
 
         return Boolean.TRUE;
