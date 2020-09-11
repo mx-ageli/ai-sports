@@ -6,7 +6,7 @@
         <![CDATA[
         SELECT
             COUNT( ar.RUN_ID ) AS allCount,
-            COUNT( ar.USER_ID ) / DATEDIFF( #{startTime} , #{endTime} ) AS avgCount,
+            COUNT( ar.USER_ID ) / DATEDIFF( #{endTime} , #{startTime} ) AS avgCount,
             SUM( ar.RUN_TIME ) AS allRunTime,
             SUM( ar.MILEAGE ) AS allMileage
         FROM
