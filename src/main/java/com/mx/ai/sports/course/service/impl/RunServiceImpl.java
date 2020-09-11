@@ -148,5 +148,6 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
             // 不合格人数+1
             courseRecord.setNoPassCount(courseRecord.getNoPassCount() + 1);
         }
+        courseRecordService.saveOrUpdate(courseRecord);
     }
 }
