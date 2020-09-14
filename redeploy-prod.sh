@@ -6,13 +6,13 @@ git pull
 mvn clean install -Dmaven.test.skip=true
 #cd ~
 #删除原来的jar包
-#rm -rf ai-sports-1.0-SNAPSHOT.jar.jar
+#rm -rf ai-sports-1.0.jar.jar
 #cp code/test/test-web/target/test-web.jar test-web.jar
 #后台运行
 #nohup java -agentlib:jdwp=transport=dt_socket,address=8100,server=y,suspend=n -jar test-web.jar > /root/logs/test.log &
 
 #杀死原来的java进程
-jarName="ai-sports-1.0-SNAPSHOT.jar"
+jarName="ai-sports-1.0.jar"
 
 count=$(ps -ef |grep ${jarName} |grep -v "grep" |wc -l)
 
@@ -27,6 +27,6 @@ else
         echo "没有对应的程序在运行"
 fi
 
-nohup java -jar /home/AiSports/ai-sports/target/ai-sports-1.0-SNAPSHOT.jar --spring.profiles.active=prod&
+nohup java -jar /home/AiSports/ai-sports/target/ai-sports-1.0.jar --spring.profiles.active=prod&
 #监控日志
 tail -f /home/AiSports/ai-sports/nohup.out

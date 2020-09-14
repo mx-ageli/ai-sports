@@ -6,7 +6,7 @@
 
     <groupId>com.mx.ai.sports</groupId>
     <artifactId>ai-sports</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <description>AI体育</description>
 
