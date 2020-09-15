@@ -73,4 +73,7 @@ public class CourseVo implements Serializable {
 
     @ApiModelProperty("课程简介")
     private String content;
+
+    @ApiModelProperty("是否为跑步课程")
+    private Boolean isRun;
 }

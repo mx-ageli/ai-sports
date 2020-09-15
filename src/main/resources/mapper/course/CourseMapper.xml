@@ -19,6 +19,7 @@
             ac.SCOPE AS scope,
             ac.IMAGES AS images,
             ac.STATUS AS status,
+            ac.IS_RUN AS isRun,
             ac.COURSE_JOB_ID AS courseJobId,
             ac.STUDENT_JOB_ID AS studentJobId
         FROM
@@ -48,6 +49,7 @@
             ac.SCOPE AS scope,
             ac.IMAGES AS images,
             ac.STATUS AS STATUS,
+            ac.IS_RUN AS isRun,
             CASE
             WHEN `week` LIKE '%${week}%' THEN
             1 ELSE 0
@@ -82,6 +84,7 @@
             ac.SCOPE AS scope,
             ac.IMAGES AS images,
             ac.STATUS AS STATUS,
+            ac.IS_RUN AS isRun,
         CASE WHEN `week` LIKE '%${week}%' THEN
             1 ELSE 0
             END AS isToday,
@@ -116,6 +119,7 @@
                 ac.SCOPE AS scope,
                 ac.IMAGES AS images,
                 ac.STATUS AS STATUS,
+                ac.IS_RUN AS isRun,
             CASE WHEN `week` LIKE '%${week}%' THEN
                     1 ELSE 0
                 END AS isToday,
@@ -149,6 +153,7 @@
             ac.LOCATION_NAME AS locationName,
             ac.SCOPE AS scope,
             ac.IMAGES AS images,
+            ac.IS_RUN AS isRun,
             ac.`STATUS` AS `status`
         FROM
             APP_COURSE ac,

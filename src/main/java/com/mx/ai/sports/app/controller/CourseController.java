@@ -164,6 +164,7 @@ public class CourseController extends BaseRestController implements CourseApi {
         course.setScope(updateVo.getScope());
         course.setImages(updateVo.getImages());
         course.setContent(updateVo.getContent());
+        course.setIsRun(updateVo.getIsRun());
         if (StringUtils.isNotBlank(updateVo.getStatus())) {
             course.setStatus(updateVo.getStatus());
         }

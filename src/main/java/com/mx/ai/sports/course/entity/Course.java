@@ -138,5 +138,11 @@ public class Course implements Serializable {
     @TableField("CONTENT")
     private String content;
 
+    /**
+     * 是否为跑步课程
+     */
+    @TableField("IS_RUN")
+    private Boolean isRun;
+
 
 }

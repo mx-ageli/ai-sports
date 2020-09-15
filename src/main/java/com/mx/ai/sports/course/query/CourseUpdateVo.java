@@ -112,4 +112,11 @@ public class CourseUpdateVo implements Serializable {
     @NotNull(message = "课程简介不能为null")
     @ApiModelProperty("课程简介")
     private String content;
+
+    /**
+     * 是否为跑步课程
+     */
+    @NotNull(message = "是否为跑步课程不能为null")
+    @ApiModelProperty("是否为跑步课程")
+    private Boolean isRun;
 }

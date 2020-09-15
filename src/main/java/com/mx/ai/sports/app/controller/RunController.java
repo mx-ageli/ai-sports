@@ -51,6 +51,12 @@ public class RunController extends BaseRestController implements RunApi {
         if (course == null) {
             return new AiSportsResponse<Boolean>().fail().message("课程Id不存在，没有查询到数据!");
         }
+
+        // 判断课程是否有跑步课程
+        if(course.getIsRun() == null || !course.getIsRun()){
+            return new AiSportsResponse<Boolean>().fail().message("该课程不是跑步课程，不能保存跑步数据!");
+        }
+
         // 开始时间小于结束时间
         if (runAddVo.getStartTime().after(runAddVo.getEndTime())) {
             return new AiSportsResponse<Boolean>().fail().message("结束时间不能小于开始时间！");
