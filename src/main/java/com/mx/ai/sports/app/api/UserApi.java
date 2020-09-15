@@ -111,12 +111,12 @@ public interface UserApi {
                                                     @NotNull @RequestParam("schoolId") Long schoolId);
 
     /**
-     * 学生更新个人信息，只能修改学号、姓名、班级、性别。都是非必填字段，各项传值才修改，不传的不修改。
+     * 更新个人信息，只能修改学号、姓名、班级、性别。都是非必填字段，各项传值才修改，不传的不修改。
      *
      * @param userUpdateVo 个人资料参数
      * @return
      */
-    @ApiOperation(value = "#已实现 图22# 学生更新个人信息，只能修改学号、姓名、班级、性别。都是非必填字段，各项传值才修改，不传的不修改。")
+    @ApiOperation(value = "#已实现 图22# 更新个人信息，只能修改学号、姓名、班级、性别。都是非必填字段，各项传值才修改，不传的不修改。")
     @ApiImplicitParam(name = "userUpdateVo", value = "个人资料参数", paramType = "body", dataType = "UserUpdateVo", required = true)
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     AiSportsResponse<Boolean> update(@RequestBody @Valid UserUpdateVo userUpdateVo);

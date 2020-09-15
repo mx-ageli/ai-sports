@@ -240,13 +240,13 @@ public class UserController extends BaseRestController implements UserApi {
     }
 
     @Override
-    @Log("学生更新个人信息")
+    @Log("更新个人信息")
     public AiSportsResponse<Boolean> update(@RequestBody @Valid UserUpdateVo userUpdateVo) {
         User user = getUser();
         // 只能学生才能调用这个接口进行修改
-        if (!Objects.equals(RoleEnum.STUDENT.value(), user.getRoleId())) {
-            return new AiSportsResponse<Boolean>().message("当前能用户不是一个学生，不能修改！").fail();
-        } else {
+//        if (!Objects.equals(RoleEnum.STUDENT.value(), user.getRoleId())) {
+//            return new AiSportsResponse<Boolean>().message("当前能用户不是一个学生，不能修改！").fail();
+//        } else {
             if (StringUtils.isNotBlank(userUpdateVo.getSno())) {
                 // 通过学号去查询
                 User snoUser = userService.findBySno(userUpdateVo.getSno());
@@ -281,6 +281,6 @@ public class UserController extends BaseRestController implements UserApi {
             // 重置修改时间
             user.setModifyTime(new Date());
             return new AiSportsResponse<Boolean>().success().data(userService.updateById(user));
-        }
+//        }
     }
 }
