@@ -235,6 +235,13 @@
             <artifactId>quartz</artifactId>
         </dependency>
 
+        <!-- Excel导入导出插件 -->
+        <dependency>
+            <groupId>com.github.crab2died</groupId>
+            <artifactId>Excel4J</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>

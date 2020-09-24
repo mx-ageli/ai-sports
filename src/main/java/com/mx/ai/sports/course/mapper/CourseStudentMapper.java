@@ -2,6 +2,7 @@ package com.mx.ai.sports.course.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.mx.ai.sports.course.dto.CourseStudentCountDto;
 import com.mx.ai.sports.course.entity.CourseStudent;
 import com.mx.ai.sports.system.entity.User;
 
@@ -15,4 +16,6 @@ import java.util.List;
 public interface CourseStudentMapper extends BaseMapper<CourseStudent> {
 
     List<User> findUserByCourseId(Long courseId);
+
+    List<CourseStudentCountDto> findCourseStudentCount();
 }

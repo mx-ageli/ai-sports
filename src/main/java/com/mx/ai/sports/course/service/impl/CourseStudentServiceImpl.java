@@ -2,6 +2,7 @@ package com.mx.ai.sports.course.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mx.ai.sports.course.dto.CourseStudentCountDto;
 import com.mx.ai.sports.course.entity.CourseStudent;
 import com.mx.ai.sports.course.mapper.CourseStudentMapper;
 import com.mx.ai.sports.course.service.ICourseStudentService;
@@ -14,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -59,5 +62,15 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
     @Override
     public Boolean remove(Long userId, Long courseId) {
         return this.baseMapper.delete(new LambdaQueryWrapper<CourseStudent>().eq(CourseStudent::getCourseId, courseId).eq(CourseStudent::getUserId, userId)) > 0;
+    }
+
+    @Override
+    public Map<Long, Long> findCourseStudentCount() {
+        List<CourseStudentCountDto> countDtos = this.baseMapper.findCourseStudentCount();
+
+        if(CollectionUtils.isEmpty(countDtos)){
+            new HashMap<>(0);
+        }
+        return countDtos.stream().collect(Collectors.toMap(CourseStudentCountDto::getCourseId, CourseStudentCountDto::getCurrentCount, (e1 ,e2) -> e1));
     }
 }

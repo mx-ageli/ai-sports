@@ -164,4 +164,60 @@
             AND ac.`WEEK` LIKE '%${week}%'
             AND ac.STATUS = 1
     </select>
+    <select id="findExportRecordTotal" resultType="com.mx.ai.sports.course.dto.ExportRecordTotalDto">
+        SELECT
+            ac.COURSE_ID AS courseId,
+            ac.COURSE_NAME AS courseName,
+            su.FULL_NAME AS teacherName,
+            su.USERNAME AS mobile,
+            ac.`WEEK` AS `week`,
+            ac.START_TIME AS startTime,
+            ac.END_TIME AS endTime,
+            count( acr.COURSE_ID ) AS courseCount,
+            sum( acr.SINGED_COUNT ) AS signedCount,
+            sum( acr.ABSENT_COUNT ) AS absentCount,
+            sum( acr.LATE_COUNT ) AS lateCount,
+            sum( acr.PASS_COUNT ) AS passCount,
+            sum( acr.NO_PASS_COUNT ) AS noPassCount
+        FROM
+            APP_COURSE ac
+        LEFT JOIN SYS_USER su ON ac.USER_ID = su.USER_ID
+        LEFT JOIN APP_COURSE_RECORD acr ON ac.COURSE_ID = acr.COURSE_ID
+        WHERE
+        <![CDATA[
+            acr.CREATE_TIME > #{startTime}
+            AND acr.CREATE_TIME < #{endTime}
+        ]]>
+        GROUP BY
+            acr.COURSE_ID
+        ORDER BY
+            ac.`WEEK`
+
+    </select>
+
+    <select id="findExportRecordStudent" resultType="com.mx.ai.sports.course.dto.ExportRecordStudentDto">
+        SELECT
+            ac.COURSE_ID AS courseId,
+            su.USER_ID AS userId,
+            ac.COURSE_NAME AS courseName,
+            su.FULL_NAME AS studentName,
+            su.USERNAME AS phone,
+            COUNT( ars.COURSE_RECORD_ID ) AS courseCount,
+            SUM( ars.IS_ABSENT ) AS absentCount,
+            SUM( ars.IS_LATE ) AS lateCount,
+            SUM( ars.IS_PASS ) AS passCount
+        FROM
+            APP_COURSE ac
+        RIGHT JOIN APP_RECORD_STUDENT ars ON ac.COURSE_ID = ars.COURSE_ID
+        LEFT JOIN SYS_USER su ON ars.USER_ID = su.USER_ID
+        WHERE
+        <![CDATA[
+            ars.CREATE_TIME > #{startTime}
+            AND ars.CREATE_TIME < #{endTime}
+        ]]>
+        GROUP BY
+            ars.COURSE_ID,
+            ars.USER_ID
+        ORDER BY courseCount DESC
+    </select>
 </mapper>

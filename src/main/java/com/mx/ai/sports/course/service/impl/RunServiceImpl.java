@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.RunStatusEnum;
+import com.mx.ai.sports.course.dto.CourseRunCountDto;
+import com.mx.ai.sports.course.dto.CourseStudentCountDto;
 import com.mx.ai.sports.course.entity.*;
 import com.mx.ai.sports.course.mapper.RunMapper;
 import com.mx.ai.sports.course.query.RunAddVo;
@@ -149,5 +151,15 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
             courseRecord.setNoPassCount(courseRecord.getNoPassCount() + 1);
         }
         courseRecordService.saveOrUpdate(courseRecord);
+    }
+
+    @Override
+    public Map<Long, Long> findCourseRunCount(Date startTime, Date endTime) {
+        List<CourseRunCountDto> countDtos = this.baseMapper.findCourseRunCount(startTime, endTime);
+        if(CollectionUtils.isEmpty(countDtos)){
+            return new HashMap<>(0);
+        }
+
+        return countDtos.stream().collect(Collectors.toMap(CourseRunCountDto::getCourseId, CourseRunCountDto::getRunCount, (e1 , e2) -> e1));
     }
 }

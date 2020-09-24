@@ -2,12 +2,14 @@ package com.mx.ai.sports.course.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
+import com.mx.ai.sports.course.dto.ExportRecordTotalDto;
 import com.mx.ai.sports.course.entity.Run;
 import com.mx.ai.sports.course.entity.RunRule;
 import com.mx.ai.sports.course.query.RunAddVo;
 import com.mx.ai.sports.course.query.RunRecordQuery;
 import com.mx.ai.sports.course.vo.RunRecordVo;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -36,4 +38,12 @@ public interface IRunService extends IService<Run> {
     RunRecordVo getRunRecordVo(Long currentUserId, RunRecordQuery query);
 
     Map<Long, Run> findByCourseRecordIds(Long userId, List<Long> courseRecordIds);
+
+    /**
+     * 查询时间内课程累计的跑步数量
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    Map<Long, Long> findCourseRunCount(Date startTime, Date endTime);
 }

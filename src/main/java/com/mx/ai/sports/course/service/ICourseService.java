@@ -1,22 +1,18 @@
 package com.mx.ai.sports.course.service;
 
-import cn.jiguang.common.resp.APIConnectionException;
-import cn.jiguang.common.resp.APIRequestException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.common.exception.AiSportsException;
+import com.mx.ai.sports.course.dto.ExportRecordStudentDto;
+import com.mx.ai.sports.course.dto.ExportRecordTotalDto;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.query.CourseUpdateVo;
 import com.mx.ai.sports.course.vo.CourseVo;
-import com.mx.ai.sports.course.vo.RecordStudentVo;
-import com.mx.ai.sports.system.entity.Classes;
-import com.mx.ai.sports.system.entity.School;
-import com.mx.ai.sports.system.entity.TeacherRegister;
-import com.mx.ai.sports.system.entity.User;
 
-import java.sql.Time;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 课程Service
@@ -85,4 +81,20 @@ public interface ICourseService extends IService<Course> {
      * @return
      */
     List<CourseVo> findMyEntryByCurrent(Long currentUserId);
+
+    /**
+     * 查询时间范围内的课程统计数据
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return
+     */
+    List<ExportRecordTotalDto> findExportRecordTotal(Date startTime, Date endTime);
+
+    /**
+     *
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    Map<String, List<ExportRecordStudentDto>> findExportRecordStudent(Date startTime, Date endTime);
 }

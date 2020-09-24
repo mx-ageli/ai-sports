@@ -2,6 +2,8 @@ package com.mx.ai.sports.course.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mx.ai.sports.course.dto.CourseRunCountDto;
+import com.mx.ai.sports.course.dto.CourseSignedCountDto;
 import com.mx.ai.sports.course.entity.CourseRecord;
 import com.mx.ai.sports.course.entity.RecordStudent;
 import com.mx.ai.sports.course.entity.Signed;
@@ -14,8 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Mengjiaxin
@@ -88,5 +96,15 @@ public class SignedServiceImpl extends ServiceImpl<SignedMapper, Signed> impleme
             return null;
         }
         return this.baseMapper.selectOne(new LambdaQueryWrapper<Signed>().eq(Signed::getCourseRecordId, courseRecordId).eq(Signed::getUserId, userId));
+    }
+
+    @Override
+    public Map<Long, Map<Long, Long>> findCourseSignedCount(Date startTime, Date endTime) {
+        List<CourseSignedCountDto> countDtos = this.baseMapper.findCourseSignedCount(startTime, endTime);
+        if(CollectionUtils.isEmpty(countDtos)){
+            return new HashMap<>(0);
+        }
+
+        return countDtos.stream().collect(Collectors.groupingBy(CourseSignedCountDto::getCourseId, Collectors.groupingBy(CourseSignedCountDto::getUserId, Collectors.counting())));
     }
 }

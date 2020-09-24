@@ -1,33 +1,27 @@
 package com.mx.ai.sports.course.service.impl;
 
-import cn.jiguang.common.ClientConfig;
-import cn.jiguang.common.resp.APIConnectionException;
-import cn.jiguang.common.resp.APIRequestException;
-import cn.jpush.api.JPushClient;
-import cn.jpush.api.push.PushResult;
-import cn.jpush.api.push.model.Message;
-import cn.jpush.api.push.model.Platform;
-import cn.jpush.api.push.model.PushPayload;
-import cn.jpush.api.push.model.audience.Audience;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mx.ai.sports.common.configure.JPushConfigProperties;
 import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.converter.CourseConverter;
+import com.mx.ai.sports.course.dto.ExportRecordStudentDto;
+import com.mx.ai.sports.course.dto.ExportRecordTotalDto;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.mapper.CourseMapper;
 import com.mx.ai.sports.course.query.CourseUpdateVo;
 import com.mx.ai.sports.course.service.ICourseService;
+import com.mx.ai.sports.course.service.ICourseStudentService;
+import com.mx.ai.sports.course.service.IRunService;
+import com.mx.ai.sports.course.service.ISignedService;
 import com.mx.ai.sports.course.vo.CourseVo;
 import com.mx.ai.sports.course.vo.StudentCourseVo;
 import com.mx.ai.sports.job.entity.Job;
 import com.mx.ai.sports.job.service.IJobService;
-import com.mx.ai.sports.system.entity.User;
 import com.mx.ai.sports.system.service.IMessageService;
-import com.mx.ai.sports.system.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,6 +50,15 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
     @Autowired
     private IMessageService messageService;
+
+    @Autowired
+    private ICourseStudentService courseStudentService;
+
+    @Autowired
+    private IRunService runService;
+
+    @Autowired
+    private ISignedService signedService;
 
     @Override
     public Course findByCourseName(Long courseId, String courseName) {
@@ -172,6 +175,46 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         List<CourseVo> courseVos = this.baseMapper.findMyEntryByCurrent(week, currentUserId);
 
         return courseVos.stream().filter(e -> localTime.isAfter(LocalTime.parse(e.getStartTime())) && localTime.isBefore(LocalTime.parse(e.getEndTime()))).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ExportRecordTotalDto> findExportRecordTotal(Date startTime, Date endTime) {
+
+        List<ExportRecordTotalDto> exportRecordTotalDtos = this.baseMapper.findExportRecordTotal(startTime, endTime);
+        // 查询当前各个课程报名的人数
+        Map<Long, Long> studentCountMap = courseStudentService.findCourseStudentCount();
+        // 时间内累计的跑步次数
+        Map<Long, Long> runCountMap = runService.findCourseRunCount(startTime, endTime);
+
+        for (ExportRecordTotalDto dto : exportRecordTotalDtos) {
+            dto.setCurrentCount(studentCountMap.getOrDefault(dto.getCourseId(), 0L));
+            dto.setRunCount(runCountMap.getOrDefault(dto.getCourseId(), 0L));
+        }
+
+        return exportRecordTotalDtos;
+    }
+
+    @Override
+    public Map<String, List<ExportRecordStudentDto>> findExportRecordStudent(Date startTime, Date endTime) {
+
+        List<ExportRecordStudentDto> studentVos = this.baseMapper.findExportRecordStudent(startTime, endTime);
+
+        if (CollectionUtils.isEmpty(studentVos)) {
+            return new HashMap<>(0);
+        }
+        // 课程下学生对应的打卡数量
+        Map<Long, Map<Long, Long>> signedCountMap = signedService.findCourseSignedCount(startTime, endTime);
+
+        for(ExportRecordStudentDto dto : studentVos){
+            Long signedCount = 0L;
+            if(signedCountMap.containsKey(dto.getCourseId())){
+                signedCount = signedCountMap.get(dto.getCourseId()).getOrDefault(dto.getUserId(), 0L);
+            }
+
+            dto.setSignedCount(signedCount);
+        }
+
+        return studentVos.stream().collect(Collectors.groupingBy(ExportRecordStudentDto::getCourseName));
     }
 
 }

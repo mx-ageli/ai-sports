@@ -1,7 +1,11 @@
 package com.mx.ai.sports.course.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.mx.ai.sports.course.dto.CourseSignedCountDto;
 import com.mx.ai.sports.course.entity.Signed;
+
+import java.util.Date;
+import java.util.Map;
 
 /**
  * 打卡Service
@@ -35,4 +39,12 @@ public interface ISignedService extends IService<Signed> {
      * @return
      */
     Signed findLastByCourseId(Long courseId, Long userId);
+
+    /**
+     * 查询时间内,各个课程下各个学生的累计的打卡次数
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    Map<Long, Map<Long, Long>> findCourseSignedCount(Date startTime, Date endTime);
 }

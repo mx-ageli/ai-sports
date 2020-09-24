@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mx.ai.sports.course.mapper.SignedMapper">
+    <select id="findCourseSignedCount" resultType="com.mx.ai.sports.course.dto.CourseSignedCountDto">
+
+        SELECT
+            asi.COURSE_ID AS courseId,
+            asi.USER_ID AS userId,
+            asi.SIGNED_ID AS signedId
+        FROM
+            APP_SIGNED asi
+        WHERE
+        <![CDATA[
+            asi.CREATE_TIME > #{startTime}
+            AND asi.CREATE_TIME < #{endTime}
+        ]]>
+    </select>
+</mapper>

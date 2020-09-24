@@ -15,4 +15,13 @@
             AND acs.COURSE_ID = #{courseId}
             AND ROLE_ID = 1
     </select>
+    <select id="findCourseStudentCount" resultType="com.mx.ai.sports.course.dto.CourseStudentCountDto">
+        SELECT
+            acs.COURSE_ID AS courseId,
+            COUNT( acs.USER_ID ) AS currentCount
+        FROM
+            APP_COURSE_STUDENT acs
+        GROUP BY
+            acs.COURSE_ID
+    </select>
 </mapper>

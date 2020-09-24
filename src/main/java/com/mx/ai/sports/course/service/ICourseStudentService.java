@@ -1,11 +1,15 @@
 package com.mx.ai.sports.course.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.mx.ai.sports.course.dto.CourseStudentCountDto;
+import com.mx.ai.sports.course.dto.ExportRecordTotalDto;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.CourseStudent;
 import com.mx.ai.sports.system.entity.User;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 课程报名的学生Service
@@ -55,5 +59,11 @@ public interface ICourseStudentService extends IService<CourseStudent> {
      * @return
      */
     Boolean remove(Long userId, Long courseId);
+
+    /**
+     * 统计当前报名的学生数量
+     * @return
+     */
+    Map<Long, Long> findCourseStudentCount();
 
 }

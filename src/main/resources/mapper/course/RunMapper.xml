@@ -51,4 +51,19 @@
             ar.CREATE_TIME DESC
 
     </select>
+    <select id="findCourseRunCount" resultType="com.mx.ai.sports.course.dto.CourseRunCountDto">
+        SELECT
+            ar.COURSE_ID AS courseId,
+            count( ar.COURSE_ID ) AS runCount
+        FROM
+            APP_RUN ar
+        WHERE
+        <![CDATA[
+            ar.CREATE_TIME > #{startTime}
+            AND ar.CREATE_TIME < #{endTime}
+        ]]>
+        GROUP BY
+            ar.COURSE_ID
+
+    </select>
 </mapper>

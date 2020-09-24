@@ -6,7 +6,7 @@ server:
 
 spring:
   profiles:
-    active: dev
+    active: localprod
 
   thymeleaf:
     cache: false
