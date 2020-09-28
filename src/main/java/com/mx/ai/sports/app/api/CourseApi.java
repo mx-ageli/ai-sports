@@ -4,11 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.common.exception.AiSportsException;
-import com.mx.ai.sports.course.query.CourseQuery;
-import com.mx.ai.sports.course.query.StudentCourseQuery;
-import com.mx.ai.sports.course.query.UserCourseQuery;
+import com.mx.ai.sports.course.query.*;
 import com.mx.ai.sports.course.vo.*;
-import com.mx.ai.sports.course.query.CourseUpdateVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -48,7 +45,7 @@ public interface CourseApi {
     /**
      * 新增课程信息（仅限于老师使用)
      *
-     * @param updateVo
+     * @param addVo
      * @return
      * @throws AiSportsException
      */
@@ -57,9 +54,9 @@ public interface CourseApi {
                     "2、小时格式时间： HH:mm 只需要小时和分钟 \n" +
                     "3、时间范围：开始时间必须在结束时间之前， 可打卡时间必须在开始时间之前\n" +
                     "4、当前课程正在进行中，不能修改! 请等本次课程结束后再修改！")
-    @ApiImplicitParam(name = "updateVo", value = "新增参数", paramType = "body", dataType = "CourseUpdateVo", required = true)
+    @ApiImplicitParam(name = "addVo", value = "新增参数", paramType = "body", dataType = "CourseAddVo", required = true)
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    AiSportsResponse<Boolean> add(@RequestBody @Valid CourseUpdateVo updateVo) throws AiSportsException;
+    AiSportsResponse<Boolean> add(@RequestBody @Valid CourseAddVo addVo) throws AiSportsException;
 
     /**
      * 修改课程信息（仅限于老师使用)

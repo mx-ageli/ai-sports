@@ -16,10 +16,7 @@ import com.mx.ai.sports.course.converter.CourseConverter;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.CourseRecord;
 import com.mx.ai.sports.course.entity.CourseStudent;
-import com.mx.ai.sports.course.query.CourseQuery;
-import com.mx.ai.sports.course.query.CourseUpdateVo;
-import com.mx.ai.sports.course.query.StudentCourseQuery;
-import com.mx.ai.sports.course.query.UserCourseQuery;
+import com.mx.ai.sports.course.query.*;
 import com.mx.ai.sports.course.service.ICourseRecordService;
 import com.mx.ai.sports.course.service.ICourseService;
 import com.mx.ai.sports.course.service.ICourseStudentService;
@@ -80,14 +77,14 @@ public class CourseController extends BaseRestController implements CourseApi {
     @Override
     @TeacherRole
     @Log("老师创建课程")
-    public AiSportsResponse<Boolean> add(@RequestBody @Valid CourseUpdateVo updateVo) throws AiSportsException {
+    public AiSportsResponse<Boolean> add(@RequestBody @Valid CourseAddVo addVo) throws AiSportsException {
         // 校验课程名称是否重复
-        checkCourseName(null, updateVo.getCourseName());
+        checkCourseName(null, addVo.getCourseName());
         // 校验课程时间数据的范围校验
-        checkUpdateCourseTime(updateVo);
+        checkUpdateCourseTime(addVo.getStartTime(), addVo.getEndTime(), addVo.getSignedTime());
 
         // 老师新增课程，并创建定时任务
-        courseService.saveCourse(updateVo, getCurrentUserId());
+        courseService.saveCourse(addVo, getCurrentUserId());
 
         return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
     }
@@ -109,17 +106,19 @@ public class CourseController extends BaseRestController implements CourseApi {
     /**
      * 校验修改的课程时间数据的范围校验
      *
-     * @param updateVo
+     * @param startTimeStr  开始时间
+     * @param endTimeStr    结束时间
+     * @param signedTimeStr 签到时间
      * @throws AiSportsException
      */
-    private void checkUpdateCourseTime(CourseUpdateVo updateVo) throws AiSportsException {
+    private void checkUpdateCourseTime(String startTimeStr, String endTimeStr, String signedTimeStr) throws AiSportsException {
         // 还需要校验 开始时间结束时间的范围差值
         // 开始时间
-        LocalTime startTime = LocalTime.parse(updateVo.getStartTime());
+        LocalTime startTime = LocalTime.parse(startTimeStr);
         // 结束时间
-        LocalTime endTime = LocalTime.parse(updateVo.getEndTime());
+        LocalTime endTime = LocalTime.parse(endTimeStr);
         // 打卡时间
-        LocalTime signedTime = LocalTime.parse(updateVo.getSignedTime());
+        LocalTime signedTime = LocalTime.parse(signedTimeStr);
         // 开始时间必须在结束时间之前
         // startTime < endTime = true
         if (startTime.isAfter(endTime)) {
@@ -144,7 +143,7 @@ public class CourseController extends BaseRestController implements CourseApi {
         // 校验课程名称是否重复, 排除当前课程
         checkCourseName(updateVo.getCourseId(), updateVo.getCourseName());
         // 校验课程时间数据的范围校验
-        checkUpdateCourseTime(updateVo);
+        checkUpdateCourseTime(updateVo.getStartTime(), updateVo.getEndTime(), updateVo.getSignedTime());
         // 校验当前时间节点是否有已经开始的课程在进行，如果有不能进行修改
         if (isCheckStart(course.getWeek(), course.getStartTime(), course.getEndTime())) {
             throw new AiSportsException("当前课程正在进行中，不能修改! 请等本次课程结束后再修改！");

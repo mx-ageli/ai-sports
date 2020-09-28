@@ -1,6 +1,7 @@
 package com.mx.ai.sports.course.converter;
 
 import com.mx.ai.sports.course.entity.Course;
+import com.mx.ai.sports.course.query.CourseAddVo;
 import com.mx.ai.sports.course.query.CourseUpdateVo;
 import com.mx.ai.sports.system.entity.Classes;
 import com.mx.ai.sports.system.vo.ClassesVo;
@@ -26,6 +27,14 @@ public interface CourseConverter {
      * @return
      */
     Course vo2Domain(CourseUpdateVo updateVo);
+
+    /**
+     * 转换为课程对象
+     *
+     * @param addVo
+     * @return
+     */
+    Course addVo2Domain(CourseAddVo addVo);
 
 
 }

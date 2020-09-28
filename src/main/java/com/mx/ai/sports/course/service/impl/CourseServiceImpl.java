@@ -9,12 +9,11 @@ import com.mx.ai.sports.course.converter.CourseConverter;
 import com.mx.ai.sports.course.dto.ExportRecordStudentDto;
 import com.mx.ai.sports.course.dto.ExportRecordTotalDto;
 import com.mx.ai.sports.course.entity.Course;
+import com.mx.ai.sports.course.entity.Group;
 import com.mx.ai.sports.course.mapper.CourseMapper;
+import com.mx.ai.sports.course.query.CourseAddVo;
 import com.mx.ai.sports.course.query.CourseUpdateVo;
-import com.mx.ai.sports.course.service.ICourseService;
-import com.mx.ai.sports.course.service.ICourseStudentService;
-import com.mx.ai.sports.course.service.IRunService;
-import com.mx.ai.sports.course.service.ISignedService;
+import com.mx.ai.sports.course.service.*;
 import com.mx.ai.sports.course.vo.CourseVo;
 import com.mx.ai.sports.course.vo.StudentCourseVo;
 import com.mx.ai.sports.job.entity.Job;
@@ -60,6 +59,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     @Autowired
     private ISignedService signedService;
 
+    @Autowired
+    private IGroupService groupService;
+
     @Override
     public Course findByCourseName(Long courseId, String courseName) {
         return baseMapper.findByCourseName(courseId, courseName);
@@ -96,17 +98,17 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean saveCourse(CourseUpdateVo updateVo, Long currentUserId) throws AiSportsException {
-        Course course = courseConverter.vo2Domain(updateVo);
+    public Boolean saveCourse(CourseAddVo addVo, Long currentUserId) throws AiSportsException {
+        Course course = courseConverter.addVo2Domain(addVo);
         course.setUserId(currentUserId);
         course.setCreateTime(new Date());
         course.setUpdateTime(new Date());
 
         // 如果课程状态为空，默认为开启
-        if (StringUtils.isBlank(updateVo.getStatus())) {
+        if (StringUtils.isBlank(addVo.getStatus())) {
             course.setStatus(Job.ScheduleStatus.NORMAL.getValue());
         } else {
-            course.setStatus(updateVo.getStatus());
+            course.setStatus(addVo.getStatus());
         }
         // 先保存课程数据
         this.save(course);
@@ -118,8 +120,10 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
             course.setStudentJobId(jobService.createRecordStudentJob(course));
             // 创建课程开始前的消息推送任务
             course.setStartJobId(jobService.createCourseStartJob(course));
-
         }
+        // 创建课程小组
+        groupService.batchCreate(course, addVo.getGroupCount(), addVo.getMaxCount());
+
         // 推送发布新课程的消息
         messageService.courseAddPush(currentUserId, course);
         // 更新课程任务
@@ -205,9 +209,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         // 课程下学生对应的打卡数量
         Map<Long, Map<Long, Long>> signedCountMap = signedService.findCourseSignedCount(startTime, endTime);
 
-        for(ExportRecordStudentDto dto : studentVos){
+        for (ExportRecordStudentDto dto : studentVos) {
             Long signedCount = 0L;
-            if(signedCountMap.containsKey(dto.getCourseId())){
+            if (signedCountMap.containsKey(dto.getCourseId())) {
                 signedCount = signedCountMap.get(dto.getCourseId()).getOrDefault(dto.getUserId(), 0L);
             }
 

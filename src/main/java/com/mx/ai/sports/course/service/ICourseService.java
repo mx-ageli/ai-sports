@@ -7,6 +7,7 @@ import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.dto.ExportRecordStudentDto;
 import com.mx.ai.sports.course.dto.ExportRecordTotalDto;
 import com.mx.ai.sports.course.entity.Course;
+import com.mx.ai.sports.course.query.CourseAddVo;
 import com.mx.ai.sports.course.query.CourseUpdateVo;
 import com.mx.ai.sports.course.vo.CourseVo;
 
@@ -60,10 +61,10 @@ public interface ICourseService extends IService<Course> {
     /**
      * 老师新增课程，并创建定时任务
      *
-     * @param updateVo
+     * @param addVo
      * @return
      */
-    Boolean saveCourse(CourseUpdateVo updateVo, Long currentUserId) throws AiSportsException;
+    Boolean saveCourse(CourseAddVo addVo, Long currentUserId) throws AiSportsException;
 
     /**
      * 老师修改课程，并创建定时任务

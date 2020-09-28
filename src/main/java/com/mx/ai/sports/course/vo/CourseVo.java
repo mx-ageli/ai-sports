@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -76,4 +77,10 @@ public class CourseVo implements Serializable {
 
     @ApiModelProperty("是否为跑步课程")
     private Boolean isRun;
+
+    @ApiModelProperty("课程的上限人数")
+    private Integer maxCount;
+
+    @ApiModelProperty("小组数量")
+    private Integer groupCount;
 }
