@@ -20,6 +20,12 @@ public class GroupStudent implements Serializable {
     private static final long serialVersionUID = -5129530619182067892L;
 
     /**
+     * 课程Id
+     */
+    @TableId(value = "COURSE_ID")
+    private Long courseId;
+
+    /**
      * 小组Id
      */
     @TableId(value = "GROUP_ID")

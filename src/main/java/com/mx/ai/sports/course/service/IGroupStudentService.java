@@ -55,4 +55,8 @@ public interface IGroupStudentService extends IService<GroupStudent> {
      * @return
      */
     Long countStudent(Long groupId);
+
+    GroupStudent findByCourseIdAndUserId(Long courseId, Long userId);
+
+    Boolean removeByGroupIdAndUserId(Long groupId, Long userId);
 }

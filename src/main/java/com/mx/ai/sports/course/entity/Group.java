@@ -1,5 +1,6 @@
 package com.mx.ai.sports.course.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -23,7 +24,7 @@ public class Group implements Serializable {
     /**
      * 小组Id
      */
-    @TableId(value = "GROUP_ID")
+    @TableId(value = "GROUP_ID", type = IdType.AUTO)
     private Long groupId;
 
     /**

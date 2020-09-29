@@ -1,7 +1,5 @@
 package com.mx.ai.sports.app.controller;
 
-import cn.jiguang.common.resp.APIConnectionException;
-import cn.jiguang.common.resp.APIRequestException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mx.ai.sports.app.api.CourseApi;
 import com.mx.ai.sports.common.annotation.Log;
@@ -12,7 +10,6 @@ import com.mx.ai.sports.common.entity.EntryEnum;
 import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.common.entity.RoleEnum;
 import com.mx.ai.sports.common.exception.AiSportsException;
-import com.mx.ai.sports.course.converter.CourseConverter;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.CourseRecord;
 import com.mx.ai.sports.course.entity.CourseStudent;
@@ -82,11 +79,32 @@ public class CourseController extends BaseRestController implements CourseApi {
         checkCourseName(null, addVo.getCourseName());
         // 校验课程时间数据的范围校验
         checkUpdateCourseTime(addVo.getStartTime(), addVo.getEndTime(), addVo.getSignedTime());
+        // 校验小组数量和课程上限数量
+        checkGroupCount(addVo.getGroupCount(), addVo.getMaxCount());
 
         // 老师新增课程，并创建定时任务
         courseService.saveCourse(addVo, getCurrentUserId());
 
         return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
+    }
+
+    /**
+     * 校验小组数量和课程上限数量
+     *
+     * @param groupCount
+     * @param maxCount
+     * @throws AiSportsException
+     */
+    private void checkGroupCount(Integer groupCount, Integer maxCount) throws AiSportsException {
+        if (groupCount == null || groupCount <= 0) {
+            throw new AiSportsException("小组数量必须大于0");
+        }
+        if (maxCount == null || maxCount <= 0) {
+            throw new AiSportsException("课程上限人数必须大于0");
+        }
+        if (maxCount < groupCount) {
+            throw new AiSportsException("课程上限人数必须大于小组数量");
+        }
     }
 
     /**
@@ -265,7 +283,7 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     @Override
     @Log("学生报名课程")
-    public AiSportsResponse<Boolean> entry(@NotNull @RequestParam("courseId") Long courseId) {
+    public AiSportsResponse<Boolean> entry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException{
 
         Course course = courseService.getById(courseId);
         if (course == null) {
@@ -290,7 +308,7 @@ public class CourseController extends BaseRestController implements CourseApi {
             courseStudent.setCourseId(courseId);
             courseStudent.setUserId(userId);
 
-            return new AiSportsResponse<Boolean>().success().data(courseStudentService.save(courseStudent));
+            return new AiSportsResponse<Boolean>().success().data(courseStudentService.saveStudentAndGroup(courseStudent));
         }
     }
 

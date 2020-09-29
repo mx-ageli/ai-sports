@@ -1,13 +1,10 @@
 package com.mx.ai.sports.course.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mx.ai.sports.course.dto.CourseStudentCountDto;
-import com.mx.ai.sports.course.dto.ExportRecordTotalDto;
-import com.mx.ai.sports.course.entity.Course;
+import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.entity.CourseStudent;
 import com.mx.ai.sports.system.entity.User;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -66,4 +63,10 @@ public interface ICourseStudentService extends IService<CourseStudent> {
      */
     Map<Long, Long> findCourseStudentCount();
 
+    /**
+     * 保存学生的报名关系，并保存分组
+     * @param courseStudent
+     * @return
+     */
+    Boolean saveStudentAndGroup(CourseStudent courseStudent) throws AiSportsException;
 }

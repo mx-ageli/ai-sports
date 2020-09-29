@@ -66,8 +66,11 @@ public class GroupController extends BaseRestController implements GroupApi {
     @Override
     @TeacherRole
     public AiSportsResponse<Boolean> add(@RequestBody @Valid GroupAddVo addVo) throws AiSportsException {
-        // TODO 查询小组名称是否重名
-
+        // 查询小组名称是否重名
+        Group repeatGroup = groupService.findByGroupName(null, addVo.getGroupName());
+        if (repeatGroup != null) {
+            return new AiSportsResponse<Boolean>().fail().message("小组名称与其他小组名称冲突");
+        }
 
         Group group = new Group();
         group.setCourseId(addVo.getCourseId());
@@ -80,8 +83,8 @@ public class GroupController extends BaseRestController implements GroupApi {
         if (addVo.getMaxCount() != null && addVo.getMaxCount() > 0) {
             group.setMaxCount(addVo.getMaxCount());
         } else {
-            // TODO 根据课程ID查询其他小组的上限人数
-
+            // 根据课程ID查询其他小组的上限人数
+            Group otherGroup = groupService.findOne(addVo.getCourseId());
         }
 
         return new AiSportsResponse<Boolean>().success().data(groupService.save(group));

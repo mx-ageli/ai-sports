@@ -29,17 +29,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
 
     @Override
     public Boolean batchCreate(Course course, Integer groupCount, Integer maxCount) throws AiSportsException {
-        if (groupCount == null || groupCount <= 0) {
-            throw new AiSportsException("小组数量必须大于0");
-        }
-        if (maxCount == null || maxCount <= 0) {
-            throw new AiSportsException("课程上限人数必须大于0");
-        }
-        if (maxCount < groupCount) {
-            throw new AiSportsException("课程上限人数必须大于小组数量");
-        }
+
         // 得出每组的上限人数
-        Integer maxStudentCount = (int) Math.ceil(maxCount / groupCount);
+        Integer maxStudentCount = (int) Math.ceil((double) maxCount / groupCount);
 
         List<Group> groups = new ArrayList<>();
         for (int i = 0; i < groupCount; i++) {
@@ -70,5 +62,16 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
     @Override
     public Group findByGroupName(Long groupId, String groupName) {
         return null;
+    }
+
+    @Override
+    public Group findOne(Long courseId) {
+        return null;
+    }
+
+    @Override
+    public Group findCanJoinGroup(Long courseId) {
+
+        return this.baseMapper.findCanJoinGroup(courseId);
     }
 }

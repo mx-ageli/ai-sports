@@ -20,6 +20,8 @@
             ac.IMAGES AS images,
             ac.STATUS AS status,
             ac.IS_RUN AS isRun,
+            ac.MAX_COUNT AS maxCount,
+            ac.GROUP_COUNT AS groupCount,
             ac.COURSE_JOB_ID AS courseJobId,
             ac.STUDENT_JOB_ID AS studentJobId
         FROM
@@ -50,6 +52,8 @@
             ac.IMAGES AS images,
             ac.STATUS AS STATUS,
             ac.IS_RUN AS isRun,
+            ac.MAX_COUNT AS maxCount,
+            ac.GROUP_COUNT AS groupCount,
             CASE
             WHEN `week` LIKE '%${week}%' THEN
             1 ELSE 0
@@ -85,6 +89,8 @@
             ac.IMAGES AS images,
             ac.STATUS AS STATUS,
             ac.IS_RUN AS isRun,
+            ac.MAX_COUNT AS maxCount,
+            ac.GROUP_COUNT AS groupCount,
         CASE WHEN `week` LIKE '%${week}%' THEN
             1 ELSE 0
             END AS isToday,
@@ -120,6 +126,8 @@
                 ac.IMAGES AS images,
                 ac.STATUS AS STATUS,
                 ac.IS_RUN AS isRun,
+                ac.MAX_COUNT AS maxCount,
+                ac.GROUP_COUNT AS groupCount,
             CASE WHEN `week` LIKE '%${week}%' THEN
                     1 ELSE 0
                 END AS isToday,
@@ -154,7 +162,9 @@
             ac.SCOPE AS scope,
             ac.IMAGES AS images,
             ac.IS_RUN AS isRun,
-            ac.`STATUS` AS `status`
+            ac.`STATUS` AS `status`,
+            ac.MAX_COUNT AS maxCount,
+            ac.GROUP_COUNT AS groupCount
         FROM
             APP_COURSE ac,
             APP_COURSE_STUDENT acs

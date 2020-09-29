@@ -104,6 +104,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         course.setCreateTime(new Date());
         course.setUpdateTime(new Date());
 
+        course.setMaxCount(addVo.getMaxCount());
+        course.setGroupCount(addVo.getGroupCount());
+
         // 如果课程状态为空，默认为开启
         if (StringUtils.isBlank(addVo.getStatus())) {
             course.setStatus(Job.ScheduleStatus.NORMAL.getValue());

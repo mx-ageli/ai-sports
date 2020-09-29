@@ -53,4 +53,17 @@ public interface IGroupService extends IService<Group> {
      */
     Group findByGroupName(Long groupId, String groupName);
 
+    /**
+     *
+     * @param courseId
+     * @return
+     */
+    Group findOne(Long courseId);
+
+    /**
+     *
+     * @param courseId
+     * @return
+     */
+    Group findCanJoinGroup(Long courseId);
 }

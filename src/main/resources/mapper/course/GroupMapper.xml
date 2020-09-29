@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mx.ai.sports.course.mapper.GroupMapper">
+
+    <select id="findCanJoinGroup" resultType="com.mx.ai.sports.course.entity.Group">
+        SELECT
+            ag.GROUP_ID AS groupId,
+            ag.COURSE_ID AS courseId,
+            ag.USER_ID AS userId,
+            ag.GROUP_NAME AS groupName,
+            ag.MAX_COUNT AS maxCount,
+            ag.CURRENT_COUNT AS currentCount,
+            ag.CREATE_TIME AS createTime
+        FROM
+            APP_GROUP ag
+        WHERE
+            ag.COURSE_ID = #{courseId}
+            AND ag.MAX_COUNT > ag.CURRENT_COUNT
+            LIMIT 1
+
+    </select>
+</mapper>

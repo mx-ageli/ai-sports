@@ -1,8 +1,10 @@
 package com.mx.ai.sports.course.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.QueryRequest;
+import com.mx.ai.sports.course.entity.CourseStudent;
 import com.mx.ai.sports.course.entity.GroupStudent;
 import com.mx.ai.sports.course.mapper.GroupStudentMapper;
 import com.mx.ai.sports.course.query.GroupStudentUpdateVo;
@@ -46,5 +48,15 @@ public class GroupStudentServiceImpl extends ServiceImpl<GroupStudentMapper, Gro
     @Override
     public Long countStudent(Long groupId) {
         return null;
+    }
+
+    @Override
+    public GroupStudent findByCourseIdAndUserId(Long courseId, Long userId) {
+        return this.baseMapper.selectOne(new LambdaQueryWrapper<GroupStudent>().eq(GroupStudent::getCourseId, courseId).eq(GroupStudent::getUserId, userId));
+    }
+
+    @Override
+    public Boolean removeByGroupIdAndUserId(Long groupId, Long userId) {
+        return this.baseMapper.delete(new LambdaQueryWrapper<GroupStudent>().eq(GroupStudent::getGroupId, groupId).eq(GroupStudent::getUserId, userId)) > 0;
     }
 }
