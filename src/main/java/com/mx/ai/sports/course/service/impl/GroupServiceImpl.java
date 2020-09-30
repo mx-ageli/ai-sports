@@ -42,7 +42,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
             group.setCurrentCount(0);
             group.setCourseId(course.getCourseId());
 
-            group.setGroupName(course.getCourseName() + (i + 1) + "组");
+            group.setGroupName((i + 1) + "组");
             groups.add(group);
         }
 
@@ -73,5 +73,10 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
     public Group findCanJoinGroup(Long courseId) {
 
         return this.baseMapper.findCanJoinGroup(courseId);
+    }
+
+    @Override
+    public Group findMyGroup(Long userId, Long courseId) {
+        return this.baseMapper.findMyGroup(userId, courseId);
     }
 }

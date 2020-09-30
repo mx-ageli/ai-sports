@@ -19,4 +19,22 @@
             LIMIT 1
 
     </select>
+    <select id="findMyGroup" resultType="com.mx.ai.sports.course.entity.Group">
+        SELECT
+            ag.GROUP_ID AS groupId,
+            ag.COURSE_ID AS courseId,
+            ag.USER_ID AS userId,
+            ag.GROUP_NAME AS groupName,
+            ag.MAX_COUNT AS maxCount,
+            ag.CURRENT_COUNT AS currentCount,
+            ag.CREATE_TIME AS createTime
+        FROM
+            APP_GROUP ag,
+            APP_GROUP_STUDENT ags
+        WHERE
+            ag.GROUP_ID = ags.GROUP_ID
+            AND ag.COURSE_ID = #{courseId}
+            AND ags.USER_ID = #{userId}
+            LIMIT 1
+    </select>
 </mapper>

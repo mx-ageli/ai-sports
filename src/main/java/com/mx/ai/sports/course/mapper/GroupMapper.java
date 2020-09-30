@@ -17,4 +17,12 @@ public interface GroupMapper extends BaseMapper<Group> {
      * @return
      */
     Group findCanJoinGroup(Long courseId);
+
+    /**
+     * 查询我所在的小组信息
+     * @param userId
+     * @param courseId
+     * @return
+     */
+    Group findMyGroup(Long userId, Long courseId);
 }

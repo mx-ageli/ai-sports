@@ -66,4 +66,6 @@ public interface IGroupService extends IService<Group> {
      * @return
      */
     Group findCanJoinGroup(Long courseId);
+
+    Group findMyGroup(Long userId, Long courseId);
 }

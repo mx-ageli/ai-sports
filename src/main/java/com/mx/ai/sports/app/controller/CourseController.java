@@ -13,11 +13,9 @@ import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.CourseRecord;
 import com.mx.ai.sports.course.entity.CourseStudent;
+import com.mx.ai.sports.course.entity.Group;
 import com.mx.ai.sports.course.query.*;
-import com.mx.ai.sports.course.service.ICourseRecordService;
-import com.mx.ai.sports.course.service.ICourseService;
-import com.mx.ai.sports.course.service.ICourseStudentService;
-import com.mx.ai.sports.course.service.IRecordStudentService;
+import com.mx.ai.sports.course.service.*;
 import com.mx.ai.sports.course.vo.*;
 import com.mx.ai.sports.job.entity.Job;
 import com.mx.ai.sports.system.entity.User;
@@ -63,6 +61,9 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private IGroupService groupService;
 
     @Override
     @TeacherRole
@@ -276,6 +277,14 @@ public class CourseController extends BaseRestController implements CourseApi {
         }
         // 我已经报名的课程列表
         List<Long> courseIds = courseStudentService.findByUserId(user.getUserId());
+
+        // 查询当前这个课程我所在的小组
+        Group group = groupService.findMyGroup(user.getUserId(), courseId);
+        if(group != null){
+            courseVo.setGroupId(group.getGroupId());
+            courseVo.setGroupName(group.getGroupName());
+        }
+
         // 赋值课程状态
         setEntryStatus(courseIds, courseVo);
         return new AiSportsResponse<CourseVo>().success().data(courseVo);

@@ -83,4 +83,10 @@ public class CourseVo implements Serializable {
 
     @ApiModelProperty("小组数量")
     private Integer groupCount;
+
+    @ApiModelProperty("小组Id")
+    private Long groupId;
+
+    @ApiModelProperty("小组名称")
+    private String groupName;
 }
