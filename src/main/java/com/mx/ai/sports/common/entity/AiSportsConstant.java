@@ -67,7 +67,8 @@ public class AiSportsConstant {
     /**
      * 短信验证码的过期时间 默认为五分钟
      */
-    public final static Integer CODE_EXPIRE_TIME = 5 * 60;
+//    public final static Integer CODE_EXPIRE_TIME = 5 * 60;
+    public final static Integer CODE_EXPIRE_TIME = 60 * 60 * 24 * 7;
 
     /**
      * 不需要token验证的路径

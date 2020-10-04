@@ -149,14 +149,14 @@ public class UserController extends BaseRestController implements UserApi {
         }
 
         String code = JwtTokenUtil.getRandomCode();
-        code = "666666";
+//        code = "666666";
         log.info("手机号:{}, 获取验证码:{}", mobile, code);
 
-//        String lhtMobile = "13708075380";
-//        // 如果是陆海涛的手机号默认使用666666
-//        if(lhtMobile.equals(mobile)){
-//            code = "666666";
-//        }
+        String lhtMobile = "13708075380";
+        // 如果是陆海涛的手机号默认使用666666
+        if(lhtMobile.equals(mobile)){
+            code = "666666";
+        }
 
         // TODO 需要考虑事物的问题
         // 往redis中存放验证码，设置过期时间为五分钟
