@@ -73,6 +73,8 @@ public class UserController extends BaseRestController implements UserApi {
     @Autowired
     private IClassesService classesService;
 
+    private final static String LHT_MOBILE = "13708075380";
+
 
     @Override
     @Log("手机号和短信验证码登录获得token")
@@ -87,6 +89,11 @@ public class UserController extends BaseRestController implements UserApi {
 
         // 根据phone从redis中取出发送的短信验证码，并与用户输入的验证码比较
         String messageCode = jedisPoolUtil.get(mobile);
+
+        // 如果是陆海涛的手机号默认使用666666
+        if(LHT_MOBILE.equals(mobile)){
+            messageCode = "666666";
+        }
 
         if (StringUtils.isEmpty(messageCode)) {
             return new AiSportsResponse<String>().fail().message("验证码过期,请重新获取!");
@@ -152,9 +159,9 @@ public class UserController extends BaseRestController implements UserApi {
 //        code = "666666";
         log.info("手机号:{}, 获取验证码:{}", mobile, code);
 
-        String lhtMobile = "13708075380";
+
         // 如果是陆海涛的手机号默认使用666666
-        if(lhtMobile.equals(mobile)){
+        if(LHT_MOBILE.equals(mobile)){
             code = "666666";
         }
 
