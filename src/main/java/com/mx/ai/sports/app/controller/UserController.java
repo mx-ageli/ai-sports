@@ -37,6 +37,7 @@ import javax.validation.constraints.Pattern;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import static com.mx.ai.sports.common.entity.AiSportsConstant.*;
@@ -73,7 +74,7 @@ public class UserController extends BaseRestController implements UserApi {
     @Autowired
     private IClassesService classesService;
 
-    private final static String LHT_MOBILE = "13708075380";
+    private final static List<String> TEST_MOBILE = Arrays.asList("13708075380", "13036662958");
 
 
     @Override
@@ -90,8 +91,8 @@ public class UserController extends BaseRestController implements UserApi {
         // 根据phone从redis中取出发送的短信验证码，并与用户输入的验证码比较
         String messageCode = jedisPoolUtil.get(mobile);
 
-        // 如果是陆海涛的手机号默认使用666666
-        if(LHT_MOBILE.equals(mobile)){
+        // 如果是上架的测试手机号默认使用666666
+        if(TEST_MOBILE.contains(mobile)){
             messageCode = "666666";
         }
 
@@ -160,8 +161,8 @@ public class UserController extends BaseRestController implements UserApi {
         log.info("手机号:{}, 获取验证码:{}", mobile, code);
 
 
-        // 如果是陆海涛的手机号默认使用666666
-        if(LHT_MOBILE.equals(mobile)){
+        // 如果是上架的测试手机号默认使用666666
+        if(TEST_MOBILE.contains(mobile)){
             code = "666666";
         }
 
