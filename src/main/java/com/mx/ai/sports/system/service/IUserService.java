@@ -91,4 +91,11 @@ public interface IUserService extends IService<User> {
      * @return
      */
     List<User> findStudentBySchoolId(Long schoolId);
+
+    /**
+     *
+     * @param value
+     * @return
+     */
+    List<User> findByRole(Long value);
 }

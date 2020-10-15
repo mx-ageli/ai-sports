@@ -155,4 +155,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public List<User> findStudentBySchoolId(Long schoolId) {
         return baseMapper.findStudentBySchoolId(schoolId);
     }
+
+    @Override
+    public List<User> findByRole(Long value) {
+        return this.baseMapper.selectList(new LambdaQueryWrapper<User>().eq(User::getRoleId, value));
+    }
 }

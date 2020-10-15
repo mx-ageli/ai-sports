@@ -49,4 +49,11 @@ public interface IClassesService extends IService<Classes> {
 
 
     ClassesVo findById(Long classesId);
+
+    /**
+     * 批量的导入班级信息
+     * @param classesList
+     * @return
+     */
+    List<Classes> batchClasses(List<Classes> classesList);
 }

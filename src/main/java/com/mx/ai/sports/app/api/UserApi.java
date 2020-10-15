@@ -4,6 +4,7 @@ import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.common.utils.AccountValidatorUtil;
 import com.mx.ai.sports.system.query.UserUpdateVo;
+import com.mx.ai.sports.system.vo.TempStudentVo;
 import com.mx.ai.sports.system.vo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -120,6 +121,36 @@ public interface UserApi {
     @ApiImplicitParam(name = "userUpdateVo", value = "个人资料参数", paramType = "body", dataType = "UserUpdateVo", required = true)
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     AiSportsResponse<Boolean> update(@RequestBody @Valid UserUpdateVo userUpdateVo);
+
+    /**
+     * 查询学生的临时信息
+     *
+     * @param fullName 老师姓名
+     * @param sno      学号
+     * @return
+     */
+    @ApiOperation(value = "#已实现 2020-10-15# 查询学生的临时信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "fullName", value = "学生姓名", paramType = "query", dataType = "String", required = true),
+            @ApiImplicitParam(name = "sno", value = "学号", paramType = "query", dataType = "String", required = true)
+    })
+    @RequestMapping(value = "/find_temp_student_info", method = RequestMethod.GET)
+    AiSportsResponse<TempStudentVo> findTempStudentInfo(@NotBlank @RequestParam("fullName") String fullName, @NotBlank @RequestParam("sno") String sno);
+
+    /**
+     * 绑定手机号与学生临时信息的关系,初始化学生基础信息
+     * @param mobile
+     * @param tempStudentId
+     * @return
+     */
+    @ApiOperation(value = "#已实现 2020-10-15# 绑定手机号与学生临时信息的关系,初始化学生基础信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "mobile", value = "手机号", paramType = "query", dataType = "String", required = true),
+            @ApiImplicitParam(name = "tempStudentId", value = "临时学生的Id， 通过find_temp_student_info获取", paramType = "query", dataType = "Long", required = true)
+    })
+    @RequestMapping(value = "/bind_student_info", method = RequestMethod.GET)
+    AiSportsResponse<Boolean> bindStudentInfo(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
+                                              @NotNull @RequestParam("tempStudentId") Long tempStudentId);
 
 
 }

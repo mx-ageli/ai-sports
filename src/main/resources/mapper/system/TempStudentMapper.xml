@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mx.ai.sports.system.mapper.TempStudentMapper">
+
+    <select id="findTempStudentInfo" resultType="com.mx.ai.sports.system.vo.TempStudentVo">
+        SELECT
+            sts.TEMP_STUDENT_ID AS tempStudentId,
+            sts.FULL_NAME AS fullName,
+            sts.SNO AS sno,
+            sts.SEX AS sex,
+            sts.SCHOOL_ID AS schoolId,
+            ss.SCHOOL_NAME AS schoolName,
+            sts.CLASSES_ID AS classesId,
+            sc.CLASSES_NAME AS classesName,
+            sts.SUBJECT_ID AS subjectId,
+            asu.NUMBER AS number,
+            asu.`NAME` AS subjectName,
+            sts.SUBJECT_SEQ_ID AS subjectSeqId,
+            ass.SEQ AS seq,
+            sts.TEACHER_ID AS teacherId,
+            su.FULL_NAME AS teacherName
+        FROM
+            SYS_TEMP_STUDENT sts,
+            SYS_SCHOOL ss,
+            SYS_CLASSES sc,
+            APP_SUBJECT asu,
+            APP_SUBJECT_SEQ ass,
+            SYS_USER su
+        WHERE
+            sts.SCHOOL_ID = ss.SCHOOL_ID
+            AND sts.CLASSES_ID = sc.CLASSES_ID
+            AND sts.SUBJECT_ID = asu.SUBJECT_ID
+            AND sts.SUBJECT_SEQ_ID = ass.SUBJECT_SEQ_ID
+            AND sts.TEACHER_ID = su.USER_ID
+            AND sts.FULL_NAME = #{fullName}
+            AND sts.SNO = #{sno}
+    </select>
+</mapper>

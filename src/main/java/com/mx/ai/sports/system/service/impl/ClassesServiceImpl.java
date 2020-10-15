@@ -2,6 +2,7 @@ package com.mx.ai.sports.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mx.ai.sports.system.entity.SubjectTeacher;
 import com.mx.ai.sports.system.vo.ClassesVo;
 import com.mx.ai.sports.system.entity.Classes;
 import com.mx.ai.sports.system.mapper.ClassesMapper;
@@ -9,8 +10,10 @@ import com.mx.ai.sports.system.service.IClassesService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 班级Service
@@ -45,6 +48,24 @@ public class ClassesServiceImpl extends ServiceImpl<ClassesMapper, Classes> impl
     @Override
     public ClassesVo findById(Long classesId) {
         return baseMapper.findById(classesId);
+    }
+
+    @Override
+    public List<Classes> batchClasses(List<Classes> classesList) {
+        // 先把老的数据查询出来
+        List<Classes> oldClassesList = this.list();
+
+        for (Classes oldClasses : oldClassesList) {
+            classesList.removeIf(classes -> Objects.equals(oldClasses.getClassesName(), classes.getClassesName()));
+        }
+
+        if (!CollectionUtils.isEmpty(classesList)) {
+            saveBatch(classesList);
+
+            oldClassesList.addAll(classesList);
+        }
+
+        return oldClassesList;
     }
 
 }

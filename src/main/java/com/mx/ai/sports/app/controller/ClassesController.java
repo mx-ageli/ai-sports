@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,10 +65,9 @@ public class ClassesController extends BaseRestController implements ClassesApi 
 
         classesAdd = new Classes();
         classesAdd.setClassesName(classes.getClassesName());
-        classesAdd.setCreateTime(new Date());
         classesAdd.setAvatar(classes.getAvatar());
         classesAdd.setSchoolId(userSimple.getSchoolId());
-        classesAdd.setUserId(userSimple.getUserId());
+
         classesService.save(classesAdd);
 
         return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
@@ -83,8 +81,6 @@ public class ClassesController extends BaseRestController implements ClassesApi 
         Classes classesUpdate = classesService.getById(classes.getClassesId());
         if (classesUpdate == null) {
             return new AiSportsResponse<Boolean>().message("班级Id错误，没有查询到班级数据！").fail().data(Boolean.FALSE);
-        } else if (!Objects.equals(classesUpdate.getUserId(), getCurrentUserId())) {
-            return new AiSportsResponse<Boolean>().message("当前登录用户没有权限操作其他老师创建的班级！").fail().data(Boolean.FALSE);
         } else if (Objects.equals(classesUpdate.getClassesName(), classes.getClassesName()) && Objects.equals(classesUpdate.getAvatar(), classes.getAvatar())) {
             // 如果修改的名称与数据库中名称一致，则不需要重复修改
             return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);

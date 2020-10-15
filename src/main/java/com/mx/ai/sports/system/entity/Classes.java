@@ -19,6 +19,7 @@ import java.util.Date;
 public class Classes implements Serializable {
 
 
+    private static final long serialVersionUID = 1834103382381420831L;
     /**
      * 班级Id
      */
@@ -32,12 +33,6 @@ public class Classes implements Serializable {
     private String classesName;
 
     /**
-     * 班主任的用户Id
-     */
-    @TableId(value = "USER_ID")
-    private Long userId;
-
-    /**
      * 学校Id
      */
     @TableId(value = "SCHOOL_ID")
@@ -48,11 +43,5 @@ public class Classes implements Serializable {
      */
     @TableField("AVATAR")
     private String avatar;
-
-    /**
-     * 创建时间
-     */
-    @TableField("CREATE_TIME")
-    private Date createTime;
 
 }

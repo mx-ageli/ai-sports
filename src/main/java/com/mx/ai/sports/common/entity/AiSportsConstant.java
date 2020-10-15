@@ -94,4 +94,10 @@ public class AiSportsConstant {
      * 空格
      */
     public static final String SPACE = " ";
+
+    /**
+     * 默认的学校Id
+     */
+    public static final Long SCHOOL_ID = 1L;
+
 }

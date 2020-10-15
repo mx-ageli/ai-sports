@@ -26,6 +26,8 @@ public interface ClassesMapper extends BaseMapper<Classes> {
     /**
      * 根据学校Id和创建人查询班级信息
      *
+     * TODO 修改方法
+     *
      * @param schoolId
      * @return
      */

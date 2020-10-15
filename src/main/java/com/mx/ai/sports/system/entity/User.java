@@ -99,5 +99,23 @@ public class User implements Serializable {
     @TableField("SNO")
     private String sno;
 
+    /**
+     * 主课Id
+     */
+    @TableField("SUBJECT_ID")
+    private Long subjectId;
+
+    /**
+     * 主课序号Id
+     */
+    @TableField("SUBJECT_SEQ_ID")
+    private Long subjectSeqId;
+
+    /**
+     * 主课老师Id
+     */
+    @TableField("TEACHER_ID")
+    private Long teacherId;
+
 
 }

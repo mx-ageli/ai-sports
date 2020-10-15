@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.zip.CRC32;
@@ -222,5 +223,41 @@ public class FileUtil {
             e.printStackTrace();
         }
         return result.toString();
+    }
+
+    /**
+     * 格式化文件长度
+     *
+     * @param fileSize 文件长度
+     * @return 格式化后的结果
+     */
+    public static String getFileSizeStr(long fileSize) {
+        String sFileSize = "";
+
+        if (fileSize < 0) {
+            return sFileSize;
+        }
+
+        DecimalFormat df = new DecimalFormat("####.00");
+
+        double dFileSize = (double) fileSize;
+
+        double kiloByte = dFileSize / 1024;
+        if (kiloByte < 1) {
+            return fileSize + "Byte(s)";
+        }
+        double megaByte = kiloByte / 1024;
+        if (megaByte < 1) {
+            return df.format(kiloByte) + "KB";
+        }
+        double gigaByte = megaByte / 1024;
+        if (gigaByte < 1) {
+            return df.format(megaByte) + "MB";
+        }
+        double teraByte = gigaByte / 1024;
+        if (teraByte < 1) {
+            return df.format(gigaByte) + "GB";
+        }
+        return df.format(teraByte) + "TB";
     }
 }

@@ -7,14 +7,16 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 老师和班级的关系表
+ * 班级和老师的对应关系
  * @author Mengjiaxin
- * @date 2020/8/3 5:10 下午
+ * @date 2020/10/15 2:51 下午
  */
 @Data
-@TableName("SYS_TEACHER_CLASSES")
-public class TeacherClasses implements Serializable {
+@TableName("SYS_CLASSES_TEACHER")
+public class ClassesTeacher implements Serializable {
 
+
+    private static final long serialVersionUID = -8592352346579963818L;
     /**
      * 班级Id
      */
@@ -26,6 +28,5 @@ public class TeacherClasses implements Serializable {
      */
     @TableId(value = "USER_ID")
     private Long userId;
-
 
 }

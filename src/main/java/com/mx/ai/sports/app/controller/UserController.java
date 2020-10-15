@@ -14,9 +14,12 @@ import com.mx.ai.sports.monitor.service.ILoginLogService;
 import com.mx.ai.sports.system.converter.UserConverter;
 import com.mx.ai.sports.system.entity.Classes;
 import com.mx.ai.sports.system.entity.TeacherRegister;
+import com.mx.ai.sports.system.entity.TempStudent;
 import com.mx.ai.sports.system.entity.User;
 import com.mx.ai.sports.system.service.IClassesService;
+import com.mx.ai.sports.system.service.ITempStudentService;
 import com.mx.ai.sports.system.service.IUserService;
+import com.mx.ai.sports.system.vo.TempStudentVo;
 import com.mx.ai.sports.system.vo.UserSimple;
 import com.mx.ai.sports.system.query.UserUpdateVo;
 import com.mx.ai.sports.system.vo.UserVo;
@@ -37,7 +40,6 @@ import javax.validation.constraints.Pattern;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 import static com.mx.ai.sports.common.entity.AiSportsConstant.*;
@@ -74,8 +76,8 @@ public class UserController extends BaseRestController implements UserApi {
     @Autowired
     private IClassesService classesService;
 
-    private final static List<String> TEST_MOBILE = Arrays.asList("13708075380", "13036662958");
-
+    @Autowired
+    private ITempStudentService tempStudentService;
 
     @Override
     @Log("手机号和短信验证码登录获得token")
@@ -90,11 +92,6 @@ public class UserController extends BaseRestController implements UserApi {
 
         // 根据phone从redis中取出发送的短信验证码，并与用户输入的验证码比较
         String messageCode = jedisPoolUtil.get(mobile);
-
-        // 如果是上架的测试手机号默认使用666666
-        if(TEST_MOBILE.contains(mobile)){
-            messageCode = "666666";
-        }
 
         if (StringUtils.isEmpty(messageCode)) {
             return new AiSportsResponse<String>().fail().message("验证码过期,请重新获取!");
@@ -157,14 +154,8 @@ public class UserController extends BaseRestController implements UserApi {
         }
 
         String code = JwtTokenUtil.getRandomCode();
-//        code = "666666";
+        code = "666666";
         log.info("手机号:{}, 获取验证码:{}", mobile, code);
-
-
-        // 如果是上架的测试手机号默认使用666666
-        if(TEST_MOBILE.contains(mobile)){
-            code = "666666";
-        }
 
         // TODO 需要考虑事物的问题
         // 往redis中存放验证码，设置过期时间为五分钟
@@ -176,12 +167,12 @@ public class UserController extends BaseRestController implements UserApi {
         jedisPoolUtil.expire(keyMobile, CODE_DATE_OUT_VALUE);
 
         // 给手机号发送短信验证码
-        try {
-            smsUtil.sendCode(mobile, code);
-        } catch (ClientException e) {
-            log.info("手机号:{}, 发送短信验证码失败，短信服务器异常！", mobile);
-            return new AiSportsResponse<Boolean>().fail().message("发送短信验证码失败！短信服务器异常！");
-        }
+//        try {
+//            smsUtil.sendCode(mobile, code);
+//        } catch (ClientException e) {
+//            log.info("手机号:{}, 发送短信验证码失败，短信服务器异常！", mobile);
+//            return new AiSportsResponse<Boolean>().fail().message("发送短信验证码失败！短信服务器异常！");
+//        }
 
         return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
     }
@@ -261,40 +252,78 @@ public class UserController extends BaseRestController implements UserApi {
 //        if (!Objects.equals(RoleEnum.STUDENT.value(), user.getRoleId())) {
 //            return new AiSportsResponse<Boolean>().message("当前能用户不是一个学生，不能修改！").fail();
 //        } else {
-            if (StringUtils.isNotBlank(userUpdateVo.getSno())) {
-                // 通过学号去查询
-                User snoUser = userService.findBySno(userUpdateVo.getSno());
-                // 校验这个学号是否存在，而且判断是否有别的学生在使用
-                if (snoUser != null && !Objects.equals(snoUser.getUserId(), user.getUserId())) {
-                    return new AiSportsResponse<Boolean>().message("学号错误，学号已经被其他同学使用！").fail();
-                }
-                user.setSno(userUpdateVo.getSno());
+        if (StringUtils.isNotBlank(userUpdateVo.getSno())) {
+            // 通过学号去查询
+            User snoUser = userService.findBySno(userUpdateVo.getSno());
+            // 校验这个学号是否存在，而且判断是否有别的学生在使用
+            if (snoUser != null && !Objects.equals(snoUser.getUserId(), user.getUserId())) {
+                return new AiSportsResponse<Boolean>().message("学号错误，学号已经被其他同学使用！").fail();
             }
-            if (StringUtils.isNotBlank(userUpdateVo.getFullName())) {
-                user.setFullName(userUpdateVo.getFullName());
+            user.setSno(userUpdateVo.getSno());
+        }
+        if (StringUtils.isNotBlank(userUpdateVo.getFullName())) {
+            user.setFullName(userUpdateVo.getFullName());
+        }
+        if (null != userUpdateVo.getClassesId()) {
+            Classes classes = classesService.getById(userUpdateVo.getClassesId());
+            if (classes == null) {
+                return new AiSportsResponse<Boolean>().message("传入的班级Id错误！没有查询到相应的班级数据！").fail();
             }
-            if (null != userUpdateVo.getClassesId()) {
-                Classes classes = classesService.getById(userUpdateVo.getClassesId());
-                if (classes == null) {
-                    return new AiSportsResponse<Boolean>().message("传入的班级Id错误！没有查询到相应的班级数据！").fail();
-                }
-                // 添加班级Id
-                user.setClassesId(classes.getClassesId());
-            }
-            if (null != userUpdateVo.getSchoolId()) {
-                user.setSchoolId(userUpdateVo.getSchoolId());
-            }
-            if (StringUtils.isNotBlank(userUpdateVo.getSex())) {
+            // 添加班级Id
+            user.setClassesId(classes.getClassesId());
+        }
+        if (null != userUpdateVo.getSchoolId()) {
+            user.setSchoolId(userUpdateVo.getSchoolId());
+        }
+        if (StringUtils.isNotBlank(userUpdateVo.getSex())) {
 
-                if (Objects.equals(userUpdateVo.getSex(), SexEnum.MALE.value()) || Objects.equals(userUpdateVo.getSex(), SexEnum.FEMALE.value())) {
-                    user.setSex(userUpdateVo.getSex());
-                } else {
-                    return new AiSportsResponse<Boolean>().message("性别只能为 (1或者2) 1男 2女").fail();
-                }
+            if (Objects.equals(userUpdateVo.getSex(), SexEnum.MALE.value()) || Objects.equals(userUpdateVo.getSex(), SexEnum.FEMALE.value())) {
+                user.setSex(userUpdateVo.getSex());
+            } else {
+                return new AiSportsResponse<Boolean>().message("性别只能为 (1或者2) 1男 2女").fail();
             }
-            // 重置修改时间
-            user.setModifyTime(new Date());
-            return new AiSportsResponse<Boolean>().success().data(userService.updateById(user));
+        }
+        // 重置修改时间
+        user.setModifyTime(new Date());
+        return new AiSportsResponse<Boolean>().success().data(userService.updateById(user));
 //        }
+    }
+
+    @Override
+    public AiSportsResponse<TempStudentVo> findTempStudentInfo(@NotBlank @RequestParam("fullName") String fullName, @NotBlank @RequestParam("sno") String sno) {
+
+        TempStudentVo tempStudentVo = tempStudentService.findTempStudentInfo(fullName, sno);
+
+        if (tempStudentVo == null) {
+            return new AiSportsResponse<TempStudentVo>().fail().message("没有查询到匹配信息！");
+        }
+
+        return new AiSportsResponse<TempStudentVo>().success().data(tempStudentVo);
+    }
+
+    @Override
+    public AiSportsResponse<Boolean> bindStudentInfo(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
+                                                     @NotNull @RequestParam("tempStudentId") Long tempStudentId) {
+        // 先查询到临时信息
+        TempStudent tempStudent = tempStudentService.getById(tempStudentId);
+        if (tempStudent == null) {
+            return new AiSportsResponse<Boolean>().fail().message("临时学生Id有误，没有查询到数据！");
+        }
+
+        if (tempStudent.getIsRegister()) {
+            return new AiSportsResponse<Boolean>().fail().message("当前学生已经绑定了基础信息，不能重复绑定！");
+        }
+
+        User user = userService.findByUsername(mobile);
+        if (user == null) {
+            return new AiSportsResponse<Boolean>().fail().message("手机号有误，没有查询到数据！");
+        }
+
+        if (StringUtils.isNotBlank(user.getFullName())) {
+            return new AiSportsResponse<Boolean>().fail().message("当前手机号已经绑定了基础信息，不能重复绑定！");
+        }
+
+        // 绑定基础信息
+        return new AiSportsResponse<Boolean>().success().data(tempStudentService.bind(tempStudent, user));
     }
 }
