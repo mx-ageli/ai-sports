@@ -252,6 +252,10 @@ public class UserController extends BaseRestController implements UserApi {
 //        if (!Objects.equals(RoleEnum.STUDENT.value(), user.getRoleId())) {
 //            return new AiSportsResponse<Boolean>().message("当前能用户不是一个学生，不能修改！").fail();
 //        } else {
+        if(StringUtils.isBlank(user.getFullName()) || StringUtils.isBlank(user.getSno())){
+            return new AiSportsResponse<Boolean>().message("还没有绑定初始个人信息，不能修改！").fail();
+        }
+
         if (StringUtils.isNotBlank(userUpdateVo.getSno())) {
             // 通过学号去查询
             User snoUser = userService.findBySno(userUpdateVo.getSno());

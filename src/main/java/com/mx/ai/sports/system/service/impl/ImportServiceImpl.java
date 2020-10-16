@@ -90,8 +90,8 @@ public class ImportServiceImpl implements IImportService {
         log.info("开始解析excel内容！一共需要转换{}条", readExcelList.size());
         for (List<String> readExcel : readExcelList) {
             TeacherRegister teacherRegister = new TeacherRegister();
-            teacherRegister.setFullName(readExcel.get(0));
-            teacherRegister.setUsername(readExcel.get(1));
+            teacherRegister.setFullName(readExcel.get(0).trim());
+            teacherRegister.setUsername(readExcel.get(1).trim());
             teacherRegister.setIsRegister(false);
             teacherRegister.setSchoolId(AiSportsConstant.SCHOOL_ID);
 

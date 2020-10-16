@@ -123,6 +123,8 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
             course.setStudentJobId(jobService.createRecordStudentJob(course));
             // 创建课程开始前的消息推送任务
             course.setStartJobId(jobService.createCourseStartJob(course));
+            // 创建课程结束后删除所有的报名学生任务
+            course.setFinishJobId(jobService.deleteCourseStudentJob(course));
         }
         // 创建课程小组
         groupService.batchCreate(course, addVo.getGroupCount(), addVo.getMaxCount());
