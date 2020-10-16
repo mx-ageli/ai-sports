@@ -5,10 +5,7 @@ import com.mx.ai.sports.app.api.CourseApi;
 import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.annotation.TeacherRole;
 import com.mx.ai.sports.common.controller.BaseRestController;
-import com.mx.ai.sports.common.entity.AiSportsResponse;
-import com.mx.ai.sports.common.entity.EntryEnum;
-import com.mx.ai.sports.common.entity.QueryRequest;
-import com.mx.ai.sports.common.entity.RoleEnum;
+import com.mx.ai.sports.common.entity.*;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.CourseRecord;
@@ -280,7 +277,7 @@ public class CourseController extends BaseRestController implements CourseApi {
 
         // 查询当前这个课程我所在的小组
         Group group = groupService.findMyGroup(user.getUserId(), courseId);
-        if(group != null){
+        if (group != null) {
             courseVo.setGroupId(group.getGroupId());
             courseVo.setGroupName(group.getGroupName());
         }
@@ -292,14 +289,42 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     @Override
     @Log("学生报名课程")
-    public AiSportsResponse<Boolean> entry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException{
+    public AiSportsResponse<Boolean> entry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException {
 
         Course course = courseService.getById(courseId);
         if (course == null) {
             return new AiSportsResponse<Boolean>().fail().message("课程Id不存在，没有查询到数据!");
         }
+        // 先判断课程是否是今天的课程
+        // 获取今天是星期几
+        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        // 判断今天是否课程执行的星期
+        boolean isCheckTime = course.getWeek().contains(String.valueOf(week));
+        // 如果今日不是课程日
+        if (!isCheckTime) {
+            return new AiSportsResponse<Boolean>().fail().message("今天不是课程日，不能预约！");
+        }
+        // 当前时间
+        LocalTime currentTime = LocalTime.now();
+        // 预约时间提示
+        String tip = "请在" + AiSportsConstant.ENTRY_START_TIME + "-" + AiSportsConstant.ENTRY_END_TIME + "内进行课程预约！";
+        // 判断当前时间是否在课程的预约时间范围内
+        if (LocalTime.parse(AiSportsConstant.ENTRY_START_TIME).isBefore(currentTime)) {
+            return new AiSportsResponse<Boolean>().fail().message("还没有到课程的预约时间，" + tip);
+        }
+        if (LocalTime.parse(AiSportsConstant.ENTRY_END_TIME).isAfter(currentTime)) {
+            return new AiSportsResponse<Boolean>().fail().message("已经错过了课程预约时间，" + tip);
+        }
+
+        // 课程的开始时间
+        LocalTime startTime = LocalTime.parse(course.getStartTime());
+        // 课程的结束时间
+        LocalTime endTime = LocalTime.parse(course.getEndTime());
+
         // 课程是否已经开始
-        boolean isCheckStart = isCheckStart(course.getWeek(), course.getStartTime(), course.getEndTime());
+        // 今天是否是执行日 startTime > currentTime && currentTime > endTime = true
+        boolean isCheckStart = startTime.isBefore(currentTime) && currentTime.isBefore(endTime);
+
         Long userId = getCurrentUserId();
         // 查询学生是否报名
         CourseStudent courseStudent = courseStudentService.findByUserCourseId(userId, courseId);

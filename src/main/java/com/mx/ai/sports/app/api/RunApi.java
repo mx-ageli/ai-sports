@@ -7,14 +7,17 @@ import com.mx.ai.sports.course.vo.RunRecordVo;
 import com.mx.ai.sports.course.vo.RunRuleVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -50,6 +53,7 @@ public interface RunApi {
 
     /**
      * 按照指定的时间区间查询跑步记录
+     *
      * @param query
      * @return
      */
@@ -57,5 +61,20 @@ public interface RunApi {
     @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "RunRecordQuery", required = true)
     @RequestMapping(value = "/find_run_history", method = RequestMethod.POST)
     AiSportsResponse<RunRecordVo> findRunHistory(@RequestBody @Valid RunRecordQuery query);
+
+    /**
+     * 设置学生的运动是否合格
+     *
+     * @param courseId
+     * @param isPass
+     * @return
+     */
+    @ApiOperation(value = "#已实现 # 设置学生的运动是否合格")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "courseId", value = "课程Id", paramType = "query", dataType = "long", required = true),
+            @ApiImplicitParam(name = "isPass", value = "是否合格", paramType = "query", dataType = "boolean", required = true),
+    })
+    @RequestMapping(value = "/pass", method = RequestMethod.GET)
+    AiSportsResponse<Boolean> pass(@NotNull @RequestParam("courseId") Long courseId, @NotNull @RequestParam("isPass") Boolean isPass);
 
 }

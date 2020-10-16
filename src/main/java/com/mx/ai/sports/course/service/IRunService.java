@@ -46,4 +46,13 @@ public interface IRunService extends IService<Run> {
      * @return
      */
     Map<Long, Long> findCourseRunCount(Date startTime, Date endTime);
+
+    /**
+     * 设置学生的运动是否合格
+     * @param courseId
+     * @param currentUserId
+     * @param isPass
+     * @return
+     */
+    Boolean pass(Long courseId, Long currentUserId, Boolean isPass);
 }

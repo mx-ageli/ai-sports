@@ -6,6 +6,7 @@ import com.mx.ai.sports.common.entity.AiSportsConstant;
 import com.mx.ai.sports.common.entity.RoleEnum;
 import com.mx.ai.sports.common.entity.SexEnum;
 import com.mx.ai.sports.common.exception.AiSportsException;
+import com.mx.ai.sports.common.oss.AliyunOssConfig;
 import com.mx.ai.sports.common.utils.FileUtil;
 import com.mx.ai.sports.system.dto.ImportStudentDto;
 import com.mx.ai.sports.system.entity.*;
@@ -22,6 +23,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.mx.ai.sports.common.entity.AiSportsConstant.DEFAULT_LOGO;
 
 /**
  * @author Mengjiaxin
@@ -49,6 +52,9 @@ public class ImportServiceImpl implements IImportService {
 
     @Autowired
     private ITempStudentService tempStudentService;
+
+    @Autowired
+    private AliyunOssConfig aliyunOssConfig;
 
     @Autowired
     private IUserService userService;
@@ -229,7 +235,7 @@ public class ImportServiceImpl implements IImportService {
             Classes classes = new Classes();
             classes.setClassesName(e.getClassesName().trim());
             classes.setSchoolId(AiSportsConstant.SCHOOL_ID);
-            classes.setAvatar("");
+            classes.setAvatar(aliyunOssConfig.getAccessUrl() + DEFAULT_LOGO);
 
             return classes;
         }).distinct().collect(Collectors.toList());

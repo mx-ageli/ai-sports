@@ -101,5 +101,15 @@ public class CourseTask {
         log.info("课程开始前的消息推送成功，courseId:{}", courseId);
     }
 
+    /**
+     * 课程结束后删除所有的报名学生任务
+     *
+     * @param courseId
+     */
+    public void deleteCourseStudentTask(String courseId) {
+        int delCount = courseStudentService.removeByCourseId(courseId);
+        log.info("课程结束，清除所有的学生报名记录，courseId:{}, 清除数量：{}", courseId, delCount);
+    }
+
 
 }

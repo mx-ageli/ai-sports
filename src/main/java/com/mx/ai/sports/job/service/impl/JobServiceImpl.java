@@ -98,24 +98,6 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements IJobS
     }
 
     /**
-     * 创建课程记录数据任务
-     *
-     * @param course
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Long createCourseRecordJob(Course course) {
-        String beanName = "courseTask";
-        String methodName = "courseRecordTask";
-
-        LocalTime startLocalTime = LocalTime.parse(course.getSignedTime());
-        // 在打卡时间的前一分钟创建
-        startLocalTime = startLocalTime.minusMinutes(1);
-        // 先创建课程记录数据任务
-        return initJob(course, beanName, methodName, startLocalTime, " 创建课程记录数据任务");
-    }
-
-    /**
      * 初始化任务课程的
      *
      * @param course
@@ -139,6 +121,24 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements IJobS
         createJob(job);
 
         return job.getJobId();
+    }
+
+    /**
+     * 创建课程记录数据任务
+     *
+     * @param course
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long createCourseRecordJob(Course course) {
+        String beanName = "courseTask";
+        String methodName = "courseRecordTask";
+
+        LocalTime startLocalTime = LocalTime.parse(course.getSignedTime());
+        // 在打卡时间的前一分钟创建
+        startLocalTime = startLocalTime.minusMinutes(1);
+        // 先创建课程记录数据任务
+        return initJob(course, beanName, methodName, startLocalTime, " 创建课程记录数据任务");
     }
 
     /**
@@ -167,7 +167,24 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements IJobS
         // 打卡时间的前三分钟开始推送
         signedTime = signedTime.minusMinutes(3);
 
-        return initJob(course, beanName, methodName, signedTime, "课程开始前的消息推送任务");
+        return initJob(course, beanName, methodName, signedTime, " 课程开始前的消息推送任务");
+    }
+
+    /**
+     * 课程结束后删除所有的报名学生任务
+     *
+     * @param course
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long deleteCourseStudentJob(Course course) {
+        String beanName = "courseTask";
+        String methodName = "deleteCourseStudentTask";
+        LocalTime endLocalTime = LocalTime.parse(course.getEndTime());
+        // 在课程结束的后五分钟执行
+        endLocalTime = endLocalTime.plusMinutes(5);
+        // 开始时间时才创建
+        return initJob(course, beanName, methodName, endLocalTime, " 课程结束后删除所有的报名学生任务");
     }
 
     @Override

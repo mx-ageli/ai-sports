@@ -18,94 +18,52 @@ public class UserVo implements Serializable {
 
     private static final long serialVersionUID = -3964377585818464531L;
 
-    /**
-     * 用户Id
-     */
     @ApiModelProperty("用户Id")
     private Long userId;
 
-    /**
-     * 用户名，电话号码
-     */
     @ApiModelProperty("用户名，电话号码")
     private String username;
 
-    /**
-     * 创建时间
-     */
     @ApiModelProperty("创建时间")
     private Date createTime;
 
-    /**
-     * 修改时间
-     */
     @ApiModelProperty("修改时间")
     private Date modifyTime;
 
-    /**
-     * 最近一次登录时间
-     */
     @ApiModelProperty("最近一次登录时间")
     private Date lastLoginTime;
 
-    /**
-     * 性别 1男 2女
-     */
     @ApiModelProperty("性别 1男 2女")
     private String sex;
 
-    /**
-     * 头像，oss地址
-     */
     @ApiModelProperty("头像，oss地址")
     private String avatar;
 
-    /**
-     * 姓名
-     */
     @ApiModelProperty("姓名")
     private String fullName;
 
-    /**
-     * 设备Id
-     */
     @ApiModelProperty("设备Id")
     private String deviceId;
 
-    /**
-     * 角色Id
-     */
     @ApiModelProperty("角色Id 1 学生，2 老师")
     private Long roleId;
 
-    /**
-     * 学校Id
-     */
     @ApiModelProperty("学校Id")
     private Long schoolId;
 
-    /**
-     * 学校名称
-     */
     @ApiModelProperty("学校名称")
     private String schoolName;
 
-    /**
-     * 班级Id
-     */
     @JsonIgnore
     @ApiModelProperty("班级Id")
     private Long classesId;
 
-    /**
-     * 班级名称
-     */
+    @ApiModelProperty("学号")
+    private String sno;
+
     @ApiModelProperty("班级信息，只有学生才有值")
     private ClassesVo classes;
 
-    /**
-     * 学号
-     */
-    @ApiModelProperty("学号")
-    private String sno;
+    @ApiModelProperty("学生的主课信息，只有学生才有值")
+    private SubjectStudentVo subjectStudent;
 }

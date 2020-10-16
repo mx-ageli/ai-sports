@@ -163,3 +163,16 @@ swagger文档的支持
 初始化所有的临时学生基础信息
 完成查询学生的临时信息
 完成绑定手机号与学生临时信息的关系,初始化学生基础信息
+
+* 2020-10-16
+1、删除了班级信息中的 userId（班主任的用户Id），teacherName（老师姓名）字段。因为先一个班级会对应很多老师，所以先将老师字段删除，如果以后要使用老师字段再增加其他查询方式。
+/api/classes/find_by_school_id, /api/classes/find_by_id, /api/classes/find_by_teacher
+2、获取用户信息中加了一个新对象subjectStudent（学生主课信息）。老师账号登录subjectStudent对象为空，classes也为空。只有学生才有这两个对象。
+/api/user/info
+3、新增接口：学生基础信息绑定
+/api/user/find_temp_student_info
+/api/user/bind_student_info
+4、设置学生的运动是否合格
+/api/run/pass
+
+

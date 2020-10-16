@@ -29,9 +29,31 @@ public class ClassesVo implements Serializable {
     private String classesName;
 
     /**
+     * 班主任的用户Id
+     */
+    @ApiModelProperty("班主任的用户Id")
+    private Long userId;
+
+    /**
+     * 老师姓名
+     */
+    @ApiModelProperty("老师姓名")
+    private String teacherName;
+
+    /**
      * 头像，oss地址
      */
     @ApiModelProperty("头像，oss地址")
     private String avatar;
 
+
+    public ClassesVo(){
+
+    }
+
+    public ClassesVo(ClassesSmallVo classesSmallVo){
+        this.classesId = classesSmallVo.getClassesId();
+        this.classesName = classesSmallVo.getClassesName();
+        this.avatar = classesSmallVo.getAvatar();
+    }
 }

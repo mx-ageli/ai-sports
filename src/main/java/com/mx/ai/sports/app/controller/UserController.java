@@ -290,18 +290,18 @@ public class UserController extends BaseRestController implements UserApi {
     }
 
     @Override
+    @Log("查询学生的临时信息")
     public AiSportsResponse<TempStudentVo> findTempStudentInfo(@NotBlank @RequestParam("fullName") String fullName, @NotBlank @RequestParam("sno") String sno) {
 
         TempStudentVo tempStudentVo = tempStudentService.findTempStudentInfo(fullName, sno);
-
         if (tempStudentVo == null) {
             return new AiSportsResponse<TempStudentVo>().fail().message("没有查询到匹配信息！");
         }
-
         return new AiSportsResponse<TempStudentVo>().success().data(tempStudentVo);
     }
 
     @Override
+    @Log("绑定手机号与学生临时信息的关系")
     public AiSportsResponse<Boolean> bindStudentInfo(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
                                                      @NotNull @RequestParam("tempStudentId") Long tempStudentId) {
         // 先查询到临时信息
@@ -309,20 +309,22 @@ public class UserController extends BaseRestController implements UserApi {
         if (tempStudent == null) {
             return new AiSportsResponse<Boolean>().fail().message("临时学生Id有误，没有查询到数据！");
         }
-
         if (tempStudent.getIsRegister()) {
             return new AiSportsResponse<Boolean>().fail().message("当前学生已经绑定了基础信息，不能重复绑定！");
+        }
+        // 查询学号是否被别人已经使用
+        User snoUser = userService.findBySno(tempStudent.getSno());
+        if (snoUser != null) {
+            return new AiSportsResponse<Boolean>().fail().message("当前学号已经被其他同学所绑定，不能重复绑定！请联系管理员！");
         }
 
         User user = userService.findByUsername(mobile);
         if (user == null) {
             return new AiSportsResponse<Boolean>().fail().message("手机号有误，没有查询到数据！");
         }
-
         if (StringUtils.isNotBlank(user.getFullName())) {
             return new AiSportsResponse<Boolean>().fail().message("当前手机号已经绑定了基础信息，不能重复绑定！");
         }
-
         // 绑定基础信息
         return new AiSportsResponse<Boolean>().success().data(tempStudentService.bind(tempStudent, user));
     }

@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.RoleEnum;
 import com.mx.ai.sports.common.oss.AliyunOssConfig;
-import com.mx.ai.sports.system.converter.UserConverter;
 import com.mx.ai.sports.system.entity.School;
 import com.mx.ai.sports.system.entity.TeacherRegister;
 import com.mx.ai.sports.system.entity.User;
@@ -16,9 +15,7 @@ import com.mx.ai.sports.system.mapper.TeacherRegisterMapper;
 import com.mx.ai.sports.system.mapper.UserMapper;
 import com.mx.ai.sports.system.query.ClassesQuery;
 import com.mx.ai.sports.system.service.IUserService;
-import com.mx.ai.sports.system.vo.ClassesVo;
-import com.mx.ai.sports.system.vo.UserSmallVo;
-import com.mx.ai.sports.system.vo.UserVo;
+import com.mx.ai.sports.system.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -51,9 +48,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     private ClassesMapper classesMapper;
-
-    @Autowired
-    private UserConverter userConverter;
 
     @Override
     public User findByUsername(String username) {
@@ -138,10 +132,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         UserVo userVo = baseMapper.findVoById(userId);
         if(Objects.equals(userVo.getRoleId(), RoleEnum.STUDENT.value()) && userVo.getClassesId() != null){
-            ClassesVo classesVo = classesMapper.findById(userVo.getClassesId());
-            userVo.setClasses(classesVo);
-        }
+            // 查询学生的主课信息
+            SubjectStudentVo subjectStudentVo = this.baseMapper.findSubjectByUserId(userId);
+            userVo.setSubjectStudent(subjectStudentVo);
 
+            ClassesSmallVo classesSmallVo = classesMapper.findById(userVo.getClassesId());
+
+            ClassesVo classesVo = new ClassesVo(classesSmallVo);
+            // 班级的任课老师直接使用学生的任课老师
+            classesVo.setUserId(subjectStudentVo.getTeacherId());
+            classesVo.setTeacherName(subjectStudentVo.getTeacherName());
+            userVo.setClasses(classesVo);
+
+        }
         return userVo;
     }
 

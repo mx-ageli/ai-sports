@@ -69,4 +69,11 @@ public interface ICourseStudentService extends IService<CourseStudent> {
      * @return
      */
     Boolean saveStudentAndGroup(CourseStudent courseStudent) throws AiSportsException;
+
+    /**
+     * 清除课程所有的报名学生
+     * @param courseId
+     * @return
+     */
+    int removeByCourseId(String courseId);
 }

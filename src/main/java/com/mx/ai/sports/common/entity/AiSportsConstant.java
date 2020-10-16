@@ -1,5 +1,7 @@
 package com.mx.ai.sports.common.entity;
 
+import java.time.LocalTime;
+
 /**
  * 项目的通用的常量
  *
@@ -91,6 +93,11 @@ public class AiSportsConstant {
     public static final String DEFAULT_AVATAR = "/avatar/default.jpg";
 
     /**
+     * 项目logo
+     */
+    public static final String DEFAULT_LOGO = "/avatar/logo.png";
+
+    /**
      * 空格
      */
     public static final String SPACE = " ";
@@ -99,5 +106,15 @@ public class AiSportsConstant {
      * 默认的学校Id
      */
     public static final Long SCHOOL_ID = 1L;
+
+    /**
+     * 课程的开始预约时间
+     */
+    public static final String ENTRY_START_TIME = "8:00";
+
+    /**
+     * 课程的结束预约时间
+     */
+    public static final String ENTRY_END_TIME = "16:00";
 
 }

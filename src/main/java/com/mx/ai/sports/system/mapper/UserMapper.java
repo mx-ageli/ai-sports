@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mx.ai.sports.system.entity.User;
+import com.mx.ai.sports.system.vo.SubjectStudentVo;
 import com.mx.ai.sports.system.vo.UserSmallVo;
 import com.mx.ai.sports.system.vo.UserVo;
 import org.apache.ibatis.annotations.Param;
@@ -40,4 +41,12 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     List<User> findStudentBySchoolId(Long schoolId);
+
+    /**
+     *
+     * @param userId
+     * @return
+     */
+    SubjectStudentVo findSubjectByUserId(Long userId);
+
 }

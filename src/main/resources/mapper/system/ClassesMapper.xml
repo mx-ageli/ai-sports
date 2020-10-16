@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mx.ai.sports.system.mapper.ClassesMapper">
-    <select id="findBySchoolId" parameterType="long" resultType="com.mx.ai.sports.system.vo.ClassesVo">
+    <select id="findBySchoolId" parameterType="long" resultType="com.mx.ai.sports.system.vo.ClassesSmallVo">
         SELECT
             sc.CLASSES_ID AS classesId,
             sc.CLASSES_NAME AS classesName,
@@ -13,20 +13,23 @@
         ORDER BY
             sc.CLASSES_NAME ASC
     </select>
-    <select id="findBySchoolIdAndUserId" resultType="com.mx.ai.sports.system.vo.ClassesVo">
+    <select id="findBySchoolIdAndUserId" resultType="com.mx.ai.sports.system.vo.ClassesSmallVo">
         SELECT
             sc.CLASSES_ID AS classesId,
             sc.CLASSES_NAME AS classesName,
             sc.AVATAR AS avatar
         FROM
-            SYS_CLASSES sc
+            SYS_CLASSES sc,
+            SYS_CLASSES_TEACHER sct
         WHERE
-            sc.SCHOOL_ID = #{schoolId}
+            sc.CLASSES_ID = sct.CLASSES_ID
+            AND sc.SCHOOL_ID = #{schoolId}
+            AND sct.USER_ID = #{userId}
         ORDER BY
             sc.CLASSES_NAME ASC
 
     </select>
-    <select id="findById" resultType="com.mx.ai.sports.system.vo.ClassesVo">
+    <select id="findById" resultType="com.mx.ai.sports.system.vo.ClassesSmallVo">
         SELECT
             sc.CLASSES_ID AS classesId,
             sc.CLASSES_NAME AS classesName,

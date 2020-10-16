@@ -1,8 +1,11 @@
 package com.mx.ai.sports.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.mx.ai.sports.system.query.ClassesUpdateVo;
+import com.mx.ai.sports.system.vo.ClassesSmallVo;
 import com.mx.ai.sports.system.vo.ClassesVo;
 import com.mx.ai.sports.system.entity.Classes;
+import com.mx.ai.sports.system.vo.UserSimple;
 
 import java.util.List;
 
@@ -28,7 +31,7 @@ public interface IClassesService extends IService<Classes> {
      * @param schoolId 学校Id
      * @return
      */
-    List<ClassesVo> findBySchoolId(Long schoolId);
+    List<ClassesSmallVo> findBySchoolId(Long schoolId);
 
     /**
      * 通过学校Id和创建人查询班级列表
@@ -36,7 +39,7 @@ public interface IClassesService extends IService<Classes> {
      * @param schoolId 学校Id
      * @return
      */
-    List<ClassesVo> findBySchoolIdAndUserId(Long schoolId, Long userId);
+    List<ClassesSmallVo> findBySchoolIdAndUserId(Long schoolId, Long userId);
 
     /**
      * 通过班级名称查找班级, 排除传入的classesId
@@ -48,7 +51,7 @@ public interface IClassesService extends IService<Classes> {
     Classes findByClassesNameNotClassesId(Long classesId, String classesName);
 
 
-    ClassesVo findById(Long classesId);
+    ClassesSmallVo findById(Long classesId);
 
     /**
      * 批量的导入班级信息
@@ -56,4 +59,12 @@ public interface IClassesService extends IService<Classes> {
      * @return
      */
     List<Classes> batchClasses(List<Classes> classesList);
+
+    /**
+     * 创建班级，以及添加老师班级的关系
+     * @param classes
+     * @param userSimple
+     * @return
+     */
+    Boolean saveClasses(ClassesUpdateVo classes, UserSimple userSimple);
 }

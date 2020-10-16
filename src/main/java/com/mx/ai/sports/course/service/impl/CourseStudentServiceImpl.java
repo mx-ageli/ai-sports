@@ -113,4 +113,10 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
 
         return this.save(courseStudent);
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int removeByCourseId(String courseId) {
+        return this.baseMapper.delete(new LambdaQueryWrapper<CourseStudent>().eq(CourseStudent::getCourseId, courseId));
+    }
 }

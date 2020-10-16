@@ -1,6 +1,7 @@
 package com.mx.ai.sports.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.mx.ai.sports.system.vo.ClassesSmallVo;
 import com.mx.ai.sports.system.vo.ClassesVo;
 import com.mx.ai.sports.system.entity.Classes;
 import org.apache.ibatis.annotations.Param;
@@ -21,7 +22,7 @@ public interface ClassesMapper extends BaseMapper<Classes> {
      * @param schoolId
      * @return
      */
-    List<ClassesVo> findBySchoolId(@Param("schoolId") Long schoolId);
+    List<ClassesSmallVo> findBySchoolId(@Param("schoolId") Long schoolId);
 
     /**
      * 根据学校Id和创建人查询班级信息
@@ -31,12 +32,12 @@ public interface ClassesMapper extends BaseMapper<Classes> {
      * @param schoolId
      * @return
      */
-    List<ClassesVo> findBySchoolIdAndUserId(@Param("schoolId") Long schoolId, @Param("userId") Long userId);
+    List<ClassesSmallVo> findBySchoolIdAndUserId(@Param("schoolId") Long schoolId, @Param("userId") Long userId);
 
     /**
      *
      * @param classesId
      * @return
      */
-    ClassesVo findById(Long classesId);
+    ClassesSmallVo findById(Long classesId);
 }

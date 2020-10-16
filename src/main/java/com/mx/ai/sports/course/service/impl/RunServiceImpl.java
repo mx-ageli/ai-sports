@@ -77,7 +77,8 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         this.save(run);
 
         // 重新计算学生的合格状态
-        calcPass(userId, run, runAddVo.getCourseId(), courseRecordId);
+        boolean isPass = Objects.equals(run.getStatus(), RunStatusEnum.PASS.value());
+        calcPass(userId, isPass, runAddVo.getCourseId(), courseRecordId);
 
         List<RunLocation> runList = new ArrayList<>();
         for (RunLocationAddVo addVo : runAddVo.getLocation()) {
@@ -94,10 +95,11 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
 
     /**
      * 先删除以往的记录
+     *
      * @param courseRecordId
      * @param userId
      */
-    private void deleteHistory(Long courseRecordId, Long userId){
+    private void deleteHistory(Long courseRecordId, Long userId) {
         this.baseMapper.delete(new LambdaQueryWrapper<Run>().eq(Run::getCourseRecordId, courseRecordId).eq(Run::getUserId, userId));
     }
 
@@ -128,17 +130,17 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
      * 重新计算学生的合格状态
      *
      * @param userId
-     * @param run
+     * @param isPass
      * @param courseRecordId
      */
-    private void calcPass(Long userId, Run run, Long courseId, Long courseRecordId) {
+    private void calcPass(Long userId, boolean isPass, Long courseId, Long courseRecordId) {
         // 需要将是否合格保存到学生记录表中
         RecordStudent recordStudent = recordStudentService.getOne(new LambdaQueryWrapper<RecordStudent>().eq(RecordStudent::getUserId, userId).eq(RecordStudent::getCourseRecordId, courseRecordId));
         // 没有学生记录 需要创建
-        if(recordStudent == null){
+        if (recordStudent == null) {
             recordStudent = new RecordStudent(courseId, courseRecordId, userId);
         }
-        recordStudent.setIsPass(Objects.equals(run.getStatus(), RunStatusEnum.PASS.value()));
+        recordStudent.setIsPass(isPass);
         recordStudentService.saveOrUpdate(recordStudent);
 
         // 还需要重新统计课程记录的合格人数
@@ -156,10 +158,21 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
     @Override
     public Map<Long, Long> findCourseRunCount(Date startTime, Date endTime) {
         List<CourseRunCountDto> countDtos = this.baseMapper.findCourseRunCount(startTime, endTime);
-        if(CollectionUtils.isEmpty(countDtos)){
+        if (CollectionUtils.isEmpty(countDtos)) {
             return new HashMap<>(0);
         }
 
-        return countDtos.stream().collect(Collectors.toMap(CourseRunCountDto::getCourseId, CourseRunCountDto::getRunCount, (e1 , e2) -> e1));
+        return countDtos.stream().collect(Collectors.toMap(CourseRunCountDto::getCourseId, CourseRunCountDto::getRunCount, (e1, e2) -> e1));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean pass(Long courseId, Long currentUserId, Boolean isPass) {
+        // 对应最新的课程记录Id
+        Long courseRecordId = courseRecordService.findIdByNowAndCreate(courseId);
+
+        calcPass(currentUserId, isPass, courseId, courseRecordId);
+
+        return true;
     }
 }

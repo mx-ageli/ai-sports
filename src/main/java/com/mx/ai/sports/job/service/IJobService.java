@@ -39,6 +39,13 @@ public interface IJobService extends IService<Job> {
      */
     Long createCourseStartJob(Course course);
 
+    /**
+     * 课程结束后删除所有的报名学生
+     * @param course
+     * @return
+     */
+    Long deleteCourseStudentJob(Course course);
+
 
     void updateJob(Job job);
 

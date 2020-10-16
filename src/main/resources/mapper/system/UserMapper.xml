@@ -44,5 +44,25 @@
             SCHOOL_ID = #{schoolId}
             AND ROLE_ID = 1
     </select>
+    <select id="findSubjectByUserId" resultType="com.mx.ai.sports.system.vo.SubjectStudentVo">
+        SELECT
+            su.SUBJECT_ID AS subjectId,
+            asu.NUMBER AS number,
+            asu.`NAME` AS subjectName,
+            su.SUBJECT_SEQ_ID AS subjectSeqId,
+            ass.SEQ AS seq,
+            su.TEACHER_ID AS teacherId,
+            sut.FULL_NAME AS teacherName
+        FROM
+            APP_SUBJECT asu,
+            APP_SUBJECT_SEQ ass,
+            SYS_USER su,
+            SYS_USER sut
+        WHERE
+            su.SUBJECT_ID = asu.SUBJECT_ID
+            AND su.SUBJECT_SEQ_ID = ass.SUBJECT_SEQ_ID
+            AND su.TEACHER_ID = sut.USER_ID
+            AND su.USER_ID = #{userId}
+    </select>
 
 </mapper>

@@ -17,9 +17,11 @@ import com.mx.ai.sports.course.vo.RunRuleVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -104,6 +106,31 @@ public class RunController extends BaseRestController implements RunApi {
     public AiSportsResponse<RunRecordVo> findRunHistory(@RequestBody @Valid RunRecordQuery query) {
 
         return new AiSportsResponse<RunRecordVo>().success().data(runService.getRunRecordVo(getCurrentUserId(), query));
+    }
+
+    @Override
+    @Log("设置学生的运动是否合格")
+    public AiSportsResponse<Boolean> pass(@NotNull @RequestParam("courseId") Long courseId, @NotNull @RequestParam("isPass") Boolean isPass) {
+        Course course = courseService.getById(courseId);
+        if (course == null) {
+            return new AiSportsResponse<Boolean>().fail().message("课程Id不存在，没有查询到数据!");
+        }
+        // 获取今天是星期几
+        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        // 课程的开始时间
+        LocalTime startTime = LocalTime.parse(course.getStartTime());
+        // 当前时间
+        LocalTime currentTime = LocalTime.now();
+
+        if (!course.getWeek().contains(String.valueOf(week))) {
+            return new AiSportsResponse<Boolean>().fail().message("当前课程还没有到上课时间，不能保存运动数据！");
+        }
+        // 当前时间 < 开始时间
+        if (currentTime.isBefore(startTime)) {
+            return new AiSportsResponse<Boolean>().fail().message("当前课程还没有到上课时间，不能保存运动数据！");
+        }
+
+        return new AiSportsResponse<Boolean>().success().data(runService.pass(courseId, getCurrentUserId(), isPass));
     }
 
 }

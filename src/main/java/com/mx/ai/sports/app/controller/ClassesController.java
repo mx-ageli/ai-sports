@@ -14,10 +14,7 @@ import com.mx.ai.sports.system.query.ClassesUpdateVo;
 import com.mx.ai.sports.system.service.IClassesService;
 import com.mx.ai.sports.system.service.ISchoolService;
 import com.mx.ai.sports.system.service.IUserService;
-import com.mx.ai.sports.system.vo.ClassesVo;
-import com.mx.ai.sports.system.vo.SchoolVo;
-import com.mx.ai.sports.system.vo.UserSimple;
-import com.mx.ai.sports.system.vo.UserSmallVo;
+import com.mx.ai.sports.system.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -60,17 +57,9 @@ public class ClassesController extends BaseRestController implements ClassesApi 
         if (classesAdd != null) {
             return new AiSportsResponse<Boolean>().message("班级已经存在！").fail().data(Boolean.FALSE);
         }
-
         UserSimple userSimple = getCurrentUser();
-
-        classesAdd = new Classes();
-        classesAdd.setClassesName(classes.getClassesName());
-        classesAdd.setAvatar(classes.getAvatar());
-        classesAdd.setSchoolId(userSimple.getSchoolId());
-
-        classesService.save(classesAdd);
-
-        return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
+        // 创建班级，以及添加老师班级的关系
+        return new AiSportsResponse<Boolean>().success().data(classesService.saveClasses(classes, userSimple));
     }
 
     @Override
@@ -99,30 +88,28 @@ public class ClassesController extends BaseRestController implements ClassesApi 
 
     @Override
     @Log("查询班级列表")
-    public AiSportsResponse<List<ClassesVo>> findBySchoolId(@NotNull @RequestParam("schoolId") Long schoolId) {
+    public AiSportsResponse<List<ClassesSmallVo>> findBySchoolId(@NotNull @RequestParam("schoolId") Long schoolId) {
         School school = schoolService.getById(schoolId);
         if (school == null) {
-            return new AiSportsResponse<List<ClassesVo>>().fail().message("学校Id错误！");
+            return new AiSportsResponse<List<ClassesSmallVo>>().fail().message("学校Id错误！");
         }
-
-        return new AiSportsResponse<List<ClassesVo>>().success().data(classesService.findBySchoolId(schoolId));
+        return new AiSportsResponse<List<ClassesSmallVo>>().success().data(classesService.findBySchoolId(schoolId));
     }
 
     @Override
     @Log("根据班级Id查询班级详情")
-    public AiSportsResponse<ClassesVo> findById(@NotNull @RequestParam("classesId") Long classesId) {
-
-        return new AiSportsResponse<ClassesVo>().success().data(classesService.findById(classesId));
+    public AiSportsResponse<ClassesSmallVo> findById(@NotNull @RequestParam("classesId") Long classesId) {
+        return new AiSportsResponse<ClassesSmallVo>().success().data(classesService.findById(classesId));
     }
 
     @Override
     @TeacherRole
     @Log("查询当前老师所创建的班级")
-    public AiSportsResponse<List<ClassesVo>> findByTeacher() throws AiSportsException {
+    public AiSportsResponse<List<ClassesSmallVo>> findByTeacher() throws AiSportsException {
 
         UserSimple userSimple = getCurrentUser();
 
-        return new AiSportsResponse<List<ClassesVo>>().success().data(classesService.findBySchoolIdAndUserId(userSimple.getSchoolId(), userSimple.getUserId()));
+        return new AiSportsResponse<List<ClassesSmallVo>>().success().data(classesService.findBySchoolIdAndUserId(userSimple.getSchoolId(), userSimple.getUserId()));
     }
 
     @Override

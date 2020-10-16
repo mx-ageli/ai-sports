@@ -5,7 +5,7 @@ import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.system.query.ClassesQuery;
 import com.mx.ai.sports.system.query.ClassesUpdateVo;
-import com.mx.ai.sports.system.vo.ClassesVo;
+import com.mx.ai.sports.system.vo.ClassesSmallVo;
 import com.mx.ai.sports.system.vo.SchoolVo;
 import com.mx.ai.sports.system.vo.UserSmallVo;
 import io.swagger.annotations.Api;
@@ -63,7 +63,7 @@ public interface ClassesApi {
     @ApiOperation(value = "#已实现 2020-08-28# 查询一个学校下的所有班级")
     @ApiImplicitParam(name = "schoolId", value = "学校Id", paramType = "query", dataType = "long", required = true)
     @RequestMapping(value = "/find_by_school_id", method = RequestMethod.GET)
-    AiSportsResponse<List<ClassesVo>> findBySchoolId(@NotNull @RequestParam("schoolId") Long schoolId);
+    AiSportsResponse<List<ClassesSmallVo>> findBySchoolId(@NotNull @RequestParam("schoolId") Long schoolId);
 
     /**
      * 根据班级Id查询班级详情
@@ -73,7 +73,7 @@ public interface ClassesApi {
     @ApiOperation(value = "#已实现 2020-08-28# 根据班级Id查询班级详情")
     @ApiImplicitParam(name = "classesId", value = "班级Id", paramType = "query", dataType = "long", required = true)
     @RequestMapping(value = "/find_by_id", method = RequestMethod.GET)
-    AiSportsResponse<ClassesVo> findById(@NotNull @RequestParam("classesId") Long classesId);
+    AiSportsResponse<ClassesSmallVo> findById(@NotNull @RequestParam("classesId") Long classesId);
 
     /**
      * 查询当前老师所创建的班级
@@ -82,7 +82,7 @@ public interface ClassesApi {
      */
     @ApiOperation(value = "#已实现 2020-08-28# 查询当前老师所创建的班级")
     @RequestMapping(value = "/find_by_teacher", method = RequestMethod.GET)
-    AiSportsResponse<List<ClassesVo>> findByTeacher() throws AiSportsException;
+    AiSportsResponse<List<ClassesSmallVo>> findByTeacher() throws AiSportsException;
 
     /**
      * 查询所有的学校列表
