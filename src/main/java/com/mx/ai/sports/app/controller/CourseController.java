@@ -309,10 +309,10 @@ public class CourseController extends BaseRestController implements CourseApi {
         // 预约时间提示
         String tip = "请在" + AiSportsConstant.ENTRY_START_TIME + "-" + AiSportsConstant.ENTRY_END_TIME + "内进行课程预约！";
         // 判断当前时间是否在课程的预约时间范围内
-        if (LocalTime.parse(AiSportsConstant.ENTRY_START_TIME).isBefore(currentTime)) {
+        if (LocalTime.parse(AiSportsConstant.ENTRY_START_TIME).isAfter(currentTime)) {
             return new AiSportsResponse<Boolean>().fail().message("还没有到课程的预约时间，" + tip);
         }
-        if (LocalTime.parse(AiSportsConstant.ENTRY_END_TIME).isAfter(currentTime)) {
+        if (LocalTime.parse(AiSportsConstant.ENTRY_END_TIME).isBefore(currentTime)) {
             return new AiSportsResponse<Boolean>().fail().message("已经错过了课程预约时间，" + tip);
         }
 
