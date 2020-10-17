@@ -11,6 +11,7 @@ import com.mx.ai.sports.course.mapper.CourseStudentMapper;
 import com.mx.ai.sports.course.service.ICourseStudentService;
 import com.mx.ai.sports.course.service.IGroupService;
 import com.mx.ai.sports.course.service.IGroupStudentService;
+import com.mx.ai.sports.course.vo.CourseEntryVo;
 import com.mx.ai.sports.system.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,8 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
         // 再将学生关系删除掉
         groupStudentService.removeByGroupIdAndUserId(groupStudent.getGroupId(), groupStudent.getUserId());
 
+        // TODO 需要更新其他学生的排序
+
         return this.baseMapper.delete(new LambdaQueryWrapper<CourseStudent>().eq(CourseStudent::getCourseId, courseId).eq(CourseStudent::getUserId, userId)) > 0;
     }
 
@@ -92,7 +95,7 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean saveStudentAndGroup(CourseStudent courseStudent) throws AiSportsException {
+    public CourseEntryVo saveStudentAndGroup(CourseStudent courseStudent) throws AiSportsException {
         // 查询一个课程中还可以加入的小组，小组的上限人数>组内人数的小组
         Group group = groupService.findCanJoinGroup(courseStudent.getCourseId());
         // 如果这里查不到的话，说明所有的小组已经报满了，不能再报课
@@ -111,7 +114,18 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
         // 保存小组和学生的关系
         groupStudentService.save(groupStudent);
 
-        return this.save(courseStudent);
+        // 统计报名序号
+        Long sort = baseMapper.findSortByMax(courseStudent.getCourseId());
+        courseStudent.setSort(sort);
+        // 保存报名信息
+        this.save(courseStudent);
+
+        CourseEntryVo entryVo = new CourseEntryVo();
+        entryVo.setGroupId(group.getGroupId());
+        entryVo.setGroupName(group.getGroupName());
+        entryVo.setSort(sort);
+
+        return entryVo;
     }
 
     @Override

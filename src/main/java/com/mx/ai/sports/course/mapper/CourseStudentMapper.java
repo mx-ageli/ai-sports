@@ -18,4 +18,6 @@ public interface CourseStudentMapper extends BaseMapper<CourseStudent> {
     List<User> findUserByCourseId(Long courseId);
 
     List<CourseStudentCountDto> findCourseStudentCount();
+
+    Long findSortByMax(Long courseId);
 }

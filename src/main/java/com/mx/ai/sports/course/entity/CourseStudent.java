@@ -29,5 +29,11 @@ public class CourseStudent implements Serializable {
     @TableId(value = "USER_ID")
     private Long userId;
 
+    /**
+     * 报名顺序
+     */
+    @TableId(value = "SORT")
+    private Long sort;
+
 
 }

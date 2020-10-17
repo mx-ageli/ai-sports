@@ -289,11 +289,11 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     @Override
     @Log("学生报名课程")
-    public AiSportsResponse<Boolean> entry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException {
+    public AiSportsResponse<CourseEntryVo> entry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException {
 
         Course course = courseService.getById(courseId);
         if (course == null) {
-            return new AiSportsResponse<Boolean>().fail().message("课程Id不存在，没有查询到数据!");
+            return new AiSportsResponse<CourseEntryVo>().fail().message("课程Id不存在，没有查询到数据!");
         }
         // 先判断课程是否是今天的课程
         // 获取今天是星期几
@@ -302,19 +302,19 @@ public class CourseController extends BaseRestController implements CourseApi {
         boolean isCheckTime = course.getWeek().contains(String.valueOf(week));
         // 如果今日不是课程日
         if (!isCheckTime) {
-            return new AiSportsResponse<Boolean>().fail().message("今天不是课程日，不能预约！");
+            return new AiSportsResponse<CourseEntryVo>().fail().message("今天不是课程日，不能预约！");
         }
         // 当前时间
         LocalTime currentTime = LocalTime.now();
         // 预约时间提示
         String tip = "请在" + AiSportsConstant.ENTRY_START_TIME + "-" + AiSportsConstant.ENTRY_END_TIME + "内进行课程预约！";
         // 判断当前时间是否在课程的预约时间范围内
-        if (LocalTime.parse(AiSportsConstant.ENTRY_START_TIME).isAfter(currentTime)) {
-            return new AiSportsResponse<Boolean>().fail().message("还没有到课程的预约时间，" + tip);
-        }
-        if (LocalTime.parse(AiSportsConstant.ENTRY_END_TIME).isBefore(currentTime)) {
-            return new AiSportsResponse<Boolean>().fail().message("已经错过了课程预约时间，" + tip);
-        }
+//        if (LocalTime.parse(AiSportsConstant.ENTRY_START_TIME).isAfter(currentTime)) {
+//            return new AiSportsResponse<CourseEntryVo>().fail().message("还没有到课程的预约时间，" + tip);
+//        }
+//        if (LocalTime.parse(AiSportsConstant.ENTRY_END_TIME).isBefore(currentTime)) {
+//            return new AiSportsResponse<CourseEntryVo>().fail().message("已经错过了课程预约时间，" + tip);
+//        }
 
         // 课程的开始时间
         LocalTime startTime = LocalTime.parse(course.getStartTime());
@@ -331,18 +331,20 @@ public class CourseController extends BaseRestController implements CourseApi {
         // 如果已经报名了，就删除报名信息，取消报名
         if (courseStudent != null) {
             if (isCheckStart) {
-                return new AiSportsResponse<Boolean>().fail().message("当前课程正在进行中，不能取消报名！请等课程结束后再试！");
+                return new AiSportsResponse<CourseEntryVo>().fail().message("当前课程正在进行中，不能取消报名！请等课程结束后再试！");
             }
-            return new AiSportsResponse<Boolean>().success().data(courseStudentService.remove(userId, courseId));
+            // 删除报名信息
+            courseStudentService.remove(userId, courseId);
+            return new AiSportsResponse<CourseEntryVo>().success().data(new CourseEntryVo());
         } else {  // 没有报名的话就报名
             if (isCheckStart) {
-                return new AiSportsResponse<Boolean>().fail().message("当前报名课程已经开始，不能报名！请等课程结束后再试！");
+                return new AiSportsResponse<CourseEntryVo>().fail().message("当前报名课程已经开始，不能报名！请等课程结束后再试！");
             }
             courseStudent = new CourseStudent();
             courseStudent.setCourseId(courseId);
             courseStudent.setUserId(userId);
 
-            return new AiSportsResponse<Boolean>().success().data(courseStudentService.saveStudentAndGroup(courseStudent));
+            return new AiSportsResponse<CourseEntryVo>().success().data(courseStudentService.saveStudentAndGroup(courseStudent));
         }
     }
 

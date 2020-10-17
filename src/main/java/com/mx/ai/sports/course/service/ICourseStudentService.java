@@ -3,6 +3,7 @@ package com.mx.ai.sports.course.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.entity.CourseStudent;
+import com.mx.ai.sports.course.vo.CourseEntryVo;
 import com.mx.ai.sports.system.entity.User;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public interface ICourseStudentService extends IService<CourseStudent> {
      * @param courseStudent
      * @return
      */
-    Boolean saveStudentAndGroup(CourseStudent courseStudent) throws AiSportsException;
+    CourseEntryVo saveStudentAndGroup(CourseStudent courseStudent) throws AiSportsException;
 
     /**
      * 清除课程所有的报名学生

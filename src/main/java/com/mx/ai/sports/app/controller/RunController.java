@@ -89,8 +89,8 @@ public class RunController extends BaseRestController implements RunApi {
 
     @Override
     @Log("查询合格的跑步规则")
-    public AiSportsResponse<RunRuleVo> findRunRule() {
-        RunRule runRule = runRuleService.getOne(new LambdaQueryWrapper<>());
+    public AiSportsResponse<RunRuleVo> findRunRule(@NotNull @RequestParam("runRuleId") Long runRuleId) {
+        RunRule runRule = runRuleService.getById(runRuleId);
         if (runRule == null) {
             return new AiSportsResponse<RunRuleVo>().fail().message("没有设置跑步规则，请后台设置！");
         }

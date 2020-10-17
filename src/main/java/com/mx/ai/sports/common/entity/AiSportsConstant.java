@@ -115,6 +115,6 @@ public class AiSportsConstant {
     /**
      * 课程的结束预约时间
      */
-    public static final String ENTRY_END_TIME = "18:00";
+    public static final String ENTRY_END_TIME = "16:00";
 
 }

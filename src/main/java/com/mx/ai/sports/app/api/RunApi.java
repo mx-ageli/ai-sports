@@ -47,9 +47,10 @@ public interface RunApi {
      *
      * @return
      */
-    @ApiOperation(value = "#已实现 图6# 查询合格的跑步规则")
+    @ApiOperation(value = "#已实现 图6# 查询合格的跑步规则和健身规则 1跑步 2健身")
+    @ApiImplicitParam(name = "runRuleId", value = "规则类型：1跑步课程 2健身课程", paramType = "query", dataType = "long", required = true)
     @RequestMapping(value = "/find_run_rule", method = RequestMethod.GET)
-    AiSportsResponse<RunRuleVo> findRunRule();
+    AiSportsResponse<RunRuleVo> findRunRule(@NotNull @RequestParam("runRuleId") Long runRuleId);
 
     /**
      * 按照指定的时间区间查询跑步记录

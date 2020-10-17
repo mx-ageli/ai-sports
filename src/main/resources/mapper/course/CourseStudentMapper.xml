@@ -24,4 +24,13 @@
         GROUP BY
             acs.COURSE_ID
     </select>
+    <select id="findSortByMax" resultType="java.lang.Long">
+        SELECT
+            IFNULL( MAX( acs.SORT ) + 1, 1 ) AS sort
+        FROM
+            APP_COURSE_STUDENT acs
+        WHERE
+            acs.COURSE_ID = #{courseId}
+
+    </select>
 </mapper>

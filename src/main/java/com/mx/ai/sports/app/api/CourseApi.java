@@ -136,7 +136,7 @@ public interface CourseApi {
             notes = "1、在课程的开始时间到结束时间的范围内，不能报名或取消报名")
     @ApiImplicitParam(name = "courseId", value = "课程Id", paramType = "query", dataType = "long", required = true)
     @RequestMapping(value = "/entry", method = RequestMethod.GET)
-    AiSportsResponse<Boolean> entry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException;
+    AiSportsResponse<CourseEntryVo> entry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException;
 
 
     /**
