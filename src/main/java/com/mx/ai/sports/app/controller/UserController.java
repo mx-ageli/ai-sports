@@ -40,6 +40,7 @@ import javax.validation.constraints.Pattern;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import static com.mx.ai.sports.common.entity.AiSportsConstant.*;
@@ -79,6 +80,8 @@ public class UserController extends BaseRestController implements UserApi {
     @Autowired
     private ITempStudentService tempStudentService;
 
+    private final static List<String> TEST_MOBILE = Arrays.asList("13708075380", "13036662958");
+
     @Override
     @Log("手机号和短信验证码登录获得token")
     @Limit(key = "mobileLogin", period = 10, count = 3, name = "登录", prefix = "limit")
@@ -92,6 +95,11 @@ public class UserController extends BaseRestController implements UserApi {
 
         // 根据phone从redis中取出发送的短信验证码，并与用户输入的验证码比较
         String messageCode = jedisPoolUtil.get(mobile);
+
+        // 如果是上架的测试手机号默认使用666666
+        if(TEST_MOBILE.contains(mobile)){
+            messageCode = "666666";
+        }
 
         if (StringUtils.isEmpty(messageCode)) {
             return new AiSportsResponse<String>().fail().message("验证码过期,请重新获取!");
@@ -156,6 +164,11 @@ public class UserController extends BaseRestController implements UserApi {
         String code = JwtTokenUtil.getRandomCode();
 //        code = "666666";
         log.info("手机号:{}, 获取验证码:{}", mobile, code);
+
+        // 如果是上架的测试手机号默认使用666666
+        if(TEST_MOBILE.contains(mobile)){
+            code = "666666";
+        }
 
         // TODO 需要考虑事物的问题
         // 往redis中存放验证码，设置过期时间为五分钟
