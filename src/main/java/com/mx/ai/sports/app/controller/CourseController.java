@@ -298,6 +298,10 @@ public class CourseController extends BaseRestController implements CourseApi {
         // 先判断课程是否是今天的课程
         // 获取今天是星期几
         int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        // week为8时默认切换到1
+        if (week == 8) {
+            week = 1;
+        }
         // 判断今天是否课程执行的星期
         boolean isCheckTime = course.getWeek().contains(String.valueOf(week));
         // 如果今日不是课程日

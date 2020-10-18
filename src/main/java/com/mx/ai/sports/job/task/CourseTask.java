@@ -1,13 +1,12 @@
 package com.mx.ai.sports.job.task;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.CourseRecord;
+import com.mx.ai.sports.course.entity.GroupStudent;
 import com.mx.ai.sports.course.entity.RecordStudent;
-import com.mx.ai.sports.course.service.ICourseRecordService;
-import com.mx.ai.sports.course.service.ICourseService;
-import com.mx.ai.sports.course.service.ICourseStudentService;
-import com.mx.ai.sports.course.service.IRecordStudentService;
+import com.mx.ai.sports.course.service.*;
 import com.mx.ai.sports.system.service.IMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +41,9 @@ public class CourseTask {
 
     @Autowired
     private IMessageService messageService;
+
+    @Autowired
+    private IGroupStudentService groupStudentService;
 
     /**
      * 课程活动开始创建课程记录数据， 在打卡时间开始前5分钟创建
@@ -108,6 +110,9 @@ public class CourseTask {
      */
     public void deleteCourseStudentTask(String courseId) {
         int delCount = courseStudentService.removeByCourseId(courseId);
+        // 还需要将学生与课程的小组关系删除
+        groupStudentService.remove(new LambdaQueryWrapper<GroupStudent>().eq(GroupStudent::getCourseId, courseId));
+
         log.info("课程结束，清除所有的学生报名记录，courseId:{}, 清除数量：{}", courseId, delCount);
     }
 
