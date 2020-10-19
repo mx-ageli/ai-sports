@@ -97,7 +97,7 @@ public class UserController extends BaseRestController implements UserApi {
         String messageCode = jedisPoolUtil.get(mobile);
 
         // 如果是上架的测试手机号默认使用666666
-        if(TEST_MOBILE.contains(mobile)){
+        if (TEST_MOBILE.contains(mobile)) {
             messageCode = "666666";
         }
 
@@ -162,11 +162,14 @@ public class UserController extends BaseRestController implements UserApi {
         }
 
         String code = JwtTokenUtil.getRandomCode();
-        code = "666666";
+        // 只有在非正式环境才使用666666
+        if (!ActiveProfileConstant.PROD.equals(SpringContextUtil.getActiveProfile())) {
+            code = "666666";
+        }
         log.info("手机号:{}, 获取验证码:{}", mobile, code);
 
         // 如果是上架的测试手机号默认使用666666
-        if(TEST_MOBILE.contains(mobile)){
+        if (TEST_MOBILE.contains(mobile)) {
             code = "666666";
         }
 
@@ -179,13 +182,16 @@ public class UserController extends BaseRestController implements UserApi {
         jedisPoolUtil.set(keyMobile, code);
         jedisPoolUtil.expire(keyMobile, CODE_DATE_OUT_VALUE);
 
-        // 给手机号发送短信验证码
-//        try {
-//            smsUtil.sendCode(mobile, code);
-//        } catch (ClientException e) {
-//            log.info("手机号:{}, 发送短信验证码失败，短信服务器异常！", mobile);
-//            return new AiSportsResponse<Boolean>().fail().message("发送短信验证码失败！短信服务器异常！");
-//        }
+        // 只有在非正式环境才发送短信
+        if (ActiveProfileConstant.PROD.equals(SpringContextUtil.getActiveProfile())) {
+            // 给手机号发送短信验证码
+            try {
+                smsUtil.sendCode(mobile, code);
+            } catch (ClientException e) {
+                log.info("手机号:{}, 发送短信验证码失败，短信服务器异常！", mobile);
+                return new AiSportsResponse<Boolean>().fail().message("发送短信验证码失败！短信服务器异常！");
+            }
+        }
 
         return new AiSportsResponse<Boolean>().success().data(Boolean.TRUE);
     }
@@ -265,7 +271,7 @@ public class UserController extends BaseRestController implements UserApi {
 //        if (!Objects.equals(RoleEnum.STUDENT.value(), user.getRoleId())) {
 //            return new AiSportsResponse<Boolean>().message("当前能用户不是一个学生，不能修改！").fail();
 //        } else {
-        if(StringUtils.isBlank(user.getFullName()) || StringUtils.isBlank(user.getSno())){
+        if (StringUtils.isBlank(user.getFullName()) || StringUtils.isBlank(user.getSno())) {
             return new AiSportsResponse<Boolean>().message("还没有绑定初始个人信息，不能修改！").fail();
         }
 
