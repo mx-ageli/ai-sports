@@ -1,10 +1,10 @@
 package com.mx.ai.sports.app.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mx.ai.sports.app.api.RunApi;
 import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
+import com.mx.ai.sports.common.entity.RunTypeEnum;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.RunRule;
 import com.mx.ai.sports.course.query.RunAddVo;
@@ -79,7 +79,7 @@ public class RunController extends BaseRestController implements RunApi {
             return new AiSportsResponse<Boolean>().fail().message("当前课程还没有到上课时间，不能保存跑步数据！");
         }
 
-        RunRule runRule = runRuleService.getOne(new LambdaQueryWrapper<>());
+        RunRule runRule = runRuleService.getById(RunTypeEnum.RUN.value());
         if (runRule == null) {
             return new AiSportsResponse<Boolean>().fail().message("没有设置跑步规则，请后台设置！");
         }
