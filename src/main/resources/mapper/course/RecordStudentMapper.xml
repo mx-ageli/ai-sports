@@ -30,36 +30,44 @@
     </select>
     <select id="findRecordStudentVo" resultType="com.mx.ai.sports.course.vo.RecordStudentVo">
         SELECT
-            ars.RECORD_STUDENT_ID AS courseStudentId,
-            ac.COURSE_ID AS courseId,
-            ars.COURSE_RECORD_ID AS courseRecordId,
-            ars.CREATE_TIME AS createTime,
-        CASE
-                WHEN TO_DAYS( NOW( ) ) = TO_DAYS( ars.CREATE_TIME ) THEN
-                1 ELSE 0
-            END AS isToday,
-            ars.USER_ID AS userId,
-            asi.START_TIME AS startTime,
-            asi.END_TIME AS endTime,
-            ars.IS_ABSENT AS isAbsent,
-            ars.IS_LATE AS isLate,
-            ars.IS_PASS AS isPass,
+            temp.*,
             ac.COURSE_NAME AS courseName,
-            asi.START_LAT AS startLat,
-            asi.START_LON AS startLon,
-            asi.START_LOCATION_NAME AS startLocationName,
-            asi.END_LAT AS endLat,
-            asi.END_LON AS endLon,
-            asi.END_LOCATION_NAME AS endLocationName,
             ac.IMAGES AS images
         FROM
-            APP_COURSE ac
-            RIGHT JOIN APP_RECORD_STUDENT ars ON ac.COURSE_ID = ars.COURSE_ID
-            LEFT JOIN APP_SIGNED asi ON asi.USER_ID = ars.USER_ID
-        WHERE
-            ars.USER_ID = #{userId}
-        ORDER BY
-            ars.CREATE_TIME DESC
+            (
+            SELECT
+                ars.COURSE_ID AS courseId,
+                ars.RECORD_STUDENT_ID AS courseStudentId,
+                ars.COURSE_RECORD_ID AS courseRecordId,
+                ars.CREATE_TIME AS createTime,
+            CASE
+
+                    WHEN TO_DAYS(
+                        NOW()) = TO_DAYS( ars.CREATE_TIME ) THEN
+                        1 ELSE 0
+                    END AS isToday,
+                    ars.USER_ID AS userId,
+                    asi.START_TIME AS startTime,
+                    asi.END_TIME AS endTime,
+                    ars.IS_ABSENT AS isAbsent,
+                    ars.IS_LATE AS isLate,
+                    ars.IS_PASS AS isPass,
+                    asi.START_LAT AS startLat,
+                    asi.START_LON AS startLon,
+                    asi.START_LOCATION_NAME AS startLocationName,
+                    asi.END_LAT AS endLat,
+                    asi.END_LON AS endLon,
+                    asi.END_LOCATION_NAME AS endLocationName
+                FROM
+                    APP_RECORD_STUDENT ars
+                    LEFT JOIN APP_SIGNED asi ON asi.COURSE_RECORD_ID = ars.COURSE_RECORD_ID
+                WHERE
+                    ars.USER_ID = #{userId}
+                ORDER BY
+                    ars.CREATE_TIME DESC
+                ) AS temp
+                LEFT JOIN APP_COURSE ac ON temp.courseId = ac.COURSE_ID
+
 
     </select>
 </mapper>
