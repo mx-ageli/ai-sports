@@ -329,7 +329,7 @@ public class CourseController extends BaseRestController implements CourseApi {
         // 判断学生有没有报其他的课程，如果学生报了其他的课程，就不能再报
         List<CourseStudent> courseStudentList = courseStudentService.findByUserNoCourseId(userId, courseId);
         if (CollectionUtils.isNotEmpty(courseStudentList)) {
-            return new AiSportsResponse<CourseEntryVo>().fail().message("你已经报了其他课程，不能再报该课程了！");
+            return new AiSportsResponse<CourseEntryVo>().fail().message("今日你已经报了其他课程，不能再报该课程了！");
         }
 
         // 课程的开始时间
