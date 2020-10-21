@@ -7,6 +7,7 @@ import com.mx.ai.sports.common.annotation.TeacherRole;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.*;
 import com.mx.ai.sports.common.exception.AiSportsException;
+import com.mx.ai.sports.common.utils.SpringContextUtil;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.CourseRecord;
 import com.mx.ai.sports.course.entity.CourseStudent;
@@ -311,15 +312,19 @@ public class CourseController extends BaseRestController implements CourseApi {
         }
         // 当前时间
         LocalTime currentTime = LocalTime.now();
-        // 预约时间提示
-        String tip = "请在" + AiSportsConstant.ENTRY_START_TIME + "-" + AiSportsConstant.ENTRY_END_TIME + "内进行课程预约！";
-        // 判断当前时间是否在课程的预约时间范围内
-        if (LocalTime.parse(AiSportsConstant.ENTRY_START_TIME).isAfter(currentTime)) {
-            return new AiSportsResponse<CourseEntryVo>().fail().message("还没有到课程的预约时间，" + tip);
+        // 只有在正式环境才使用这个规则
+        if (ActiveProfileConstant.PROD.equals(SpringContextUtil.getActiveProfile())) {
+            // 预约时间提示
+            String tip = "请在" + AiSportsConstant.ENTRY_START_TIME + "-" + AiSportsConstant.ENTRY_END_TIME + "内进行课程预约！";
+            // 判断当前时间是否在课程的预约时间范围内
+            if (LocalTime.parse(AiSportsConstant.ENTRY_START_TIME).isAfter(currentTime)) {
+                return new AiSportsResponse<CourseEntryVo>().fail().message("还没有到课程的预约时间，" + tip);
+            }
+            if (LocalTime.parse(AiSportsConstant.ENTRY_END_TIME).isBefore(currentTime)) {
+                return new AiSportsResponse<CourseEntryVo>().fail().message("已经错过了课程预约时间，" + tip);
+            }
         }
-        if (LocalTime.parse(AiSportsConstant.ENTRY_END_TIME).isBefore(currentTime)) {
-            return new AiSportsResponse<CourseEntryVo>().fail().message("已经错过了课程预约时间，" + tip);
-        }
+
         Long userId = getCurrentUserId();
         // 判断学生有没有报其他的课程，如果学生报了其他的课程，就不能再报
         List<CourseStudent> courseStudentList = courseStudentService.findByUserNoCourseId(userId, courseId);
