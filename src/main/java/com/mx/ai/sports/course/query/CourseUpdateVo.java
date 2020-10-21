@@ -119,4 +119,14 @@ public class CourseUpdateVo implements Serializable {
     @NotNull(message = "是否为跑步课程不能为null")
     @ApiModelProperty("是否为跑步课程")
     private Boolean isRun;
+
+
+//    @NotNull(message = "课程的上限人数不能为null")
+//    @ApiModelProperty("课程的上限人数")
+    private Integer maxCount;
+
+//    @NotNull(message = "小组数量不能为null")
+//    @ApiModelProperty("小组数量")
+    private Integer groupCount;
+
 }

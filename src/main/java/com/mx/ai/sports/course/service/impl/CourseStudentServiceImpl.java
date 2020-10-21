@@ -67,6 +67,11 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
     }
 
     @Override
+    public List<CourseStudent> findByUserNoCourseId(Long userId, Long courseId) {
+        return this.baseMapper.selectList(new LambdaQueryWrapper<CourseStudent>().ne(CourseStudent::getCourseId, courseId).eq(CourseStudent::getUserId, userId));
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean remove(Long userId, Long courseId) {
         // 将用户的小组关系查询出来，得出学生在哪个小组

@@ -1,5 +1,6 @@
 package com.mx.ai.sports.course.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.QueryRequest;
@@ -28,8 +29,10 @@ import java.util.List;
 public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements IGroupService {
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean batchCreate(Course course, Integer groupCount, Integer maxCount) throws AiSportsException {
-
+        // 现将课程下面的小组都删除屌
+        this.remove(new LambdaQueryWrapper<Group>().eq(Group::getCourseId, course.getCourseId()));
         // 得出每组的上限人数
         Integer maxStudentCount = (int) Math.ceil((double) maxCount / groupCount);
 

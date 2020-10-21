@@ -19,6 +19,7 @@ import com.mx.ai.sports.system.entity.User;
 import com.mx.ai.sports.system.service.IUserService;
 import com.mx.ai.sports.system.vo.UserSimple;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -319,6 +320,12 @@ public class CourseController extends BaseRestController implements CourseApi {
         if (LocalTime.parse(AiSportsConstant.ENTRY_END_TIME).isBefore(currentTime)) {
             return new AiSportsResponse<CourseEntryVo>().fail().message("已经错过了课程预约时间，" + tip);
         }
+        Long userId = getCurrentUserId();
+        // 判断学生有没有报其他的课程，如果学生报了其他的课程，就不能再报
+        List<CourseStudent> courseStudentList = courseStudentService.findByUserNoCourseId(userId, courseId);
+        if (CollectionUtils.isNotEmpty(courseStudentList)) {
+            return new AiSportsResponse<CourseEntryVo>().fail().message("你已经报了其他课程，不能再报该课程了！");
+        }
 
         // 课程的开始时间
         LocalTime startTime = LocalTime.parse(course.getStartTime());
@@ -329,7 +336,6 @@ public class CourseController extends BaseRestController implements CourseApi {
         // 今天是否是执行日 startTime > currentTime && currentTime > endTime = true
         boolean isCheckStart = startTime.isBefore(currentTime) && currentTime.isBefore(endTime);
 
-        Long userId = getCurrentUserId();
         // 查询学生是否报名
         CourseStudent courseStudent = courseStudentService.findByUserCourseId(userId, courseId);
         // 如果已经报名了，就删除报名信息，取消报名

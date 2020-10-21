@@ -161,7 +161,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
      * @param course
      */
     private void deleteJobs(Course course) {
-        String[] jobIds = new String[3];
+        String[] jobIds = new String[4];
         if (Objects.nonNull(course.getCourseJobId())) {
             jobIds[0] = Objects.toString(course.getCourseJobId());
         }
@@ -170,6 +170,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         }
         if (Objects.nonNull(course.getStartJobId())) {
             jobIds[2] = Objects.toString(course.getStartJobId());
+        }
+        if (Objects.nonNull(course.getFinishJobId())) {
+            jobIds[3] = Objects.toString(course.getFinishJobId());
         }
 
         // 不管课程是什么状态，都先把以前的课程任务删除
