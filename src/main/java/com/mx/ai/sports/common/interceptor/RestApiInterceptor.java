@@ -6,6 +6,7 @@ import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.common.utils.JwtTokenUtil;
 import com.mx.ai.sports.common.utils.RenderUtil;
 import io.jsonwebtoken.JwtException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -38,7 +39,7 @@ public class RestApiInterceptor extends HandlerInterceptorAdapter {
         }
 
         final String requestHeader = request.getHeader(AiSportsConstant.AUTH_HEADER);
-        if (requestHeader != null) {
+        if (StringUtils.isNotBlank(requestHeader)) {
             //验证token是否过期,包含了验证jwt是否正确
             try {
                 boolean flag = JwtTokenUtil.isTokenExpired(requestHeader);
