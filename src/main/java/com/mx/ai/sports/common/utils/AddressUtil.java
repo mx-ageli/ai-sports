@@ -52,7 +52,7 @@ public class AddressUtil {
                 try {
                     searcher.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
                 }
             }
         }
