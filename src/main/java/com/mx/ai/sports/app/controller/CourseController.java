@@ -80,7 +80,15 @@ public class CourseController extends BaseRestController implements CourseApi {
         // 校验课程时间数据的范围校验
         checkUpdateCourseTime(addVo.getStartTime(), addVo.getEndTime(), addVo.getSignedTime());
         // 校验小组数量和课程上限数量
-        checkGroupCount(addVo.getGroupCount(), addVo.getMaxCount());
+        if (addVo.getGroupCount() == null || addVo.getGroupCount() <= 0) {
+            return new AiSportsResponse<Boolean>().fail().message("小组数量必须大于0");
+        }
+        if (addVo.getMaxCount() == null || addVo.getMaxCount() <= 0) {
+            return new AiSportsResponse<Boolean>().fail().message("课程上限人数必须大于0");
+        }
+        if (addVo.getMaxCount() < addVo.getGroupCount()) {
+            return new AiSportsResponse<Boolean>().fail().message("课程上限人数必须大于小组数量");
+        }
 
         // 老师新增课程，并创建定时任务
         courseService.saveCourse(addVo, getCurrentUserId());
@@ -96,15 +104,7 @@ public class CourseController extends BaseRestController implements CourseApi {
      * @throws AiSportsException
      */
     private void checkGroupCount(Integer groupCount, Integer maxCount) throws AiSportsException {
-        if (groupCount == null || groupCount <= 0) {
-            throw new AiSportsException("小组数量必须大于0");
-        }
-        if (maxCount == null || maxCount <= 0) {
-            throw new AiSportsException("课程上限人数必须大于0");
-        }
-        if (maxCount < groupCount) {
-            throw new AiSportsException("课程上限人数必须大于小组数量");
-        }
+
     }
 
     /**
@@ -155,7 +155,7 @@ public class CourseController extends BaseRestController implements CourseApi {
     public AiSportsResponse<Boolean> update(@RequestBody @Valid CourseUpdateVo updateVo) throws AiSportsException {
         Course course = courseService.getById(updateVo.getCourseId());
         if (course == null) {
-            throw new AiSportsException("课程Id不存在，没有查询到数据!");
+            return new AiSportsResponse<Boolean>().fail().message("课程Id不存在，没有查询到数据!");
         }
 
         // 校验课程名称是否重复, 排除当前课程
@@ -164,7 +164,7 @@ public class CourseController extends BaseRestController implements CourseApi {
         checkUpdateCourseTime(updateVo.getStartTime(), updateVo.getEndTime(), updateVo.getSignedTime());
         // 校验当前时间节点是否有已经开始的课程在进行，如果有不能进行修改
         if (isCheckStart(course.getWeek(), course.getStartTime(), course.getEndTime())) {
-            throw new AiSportsException("当前课程正在进行中，不能修改! 请等本次课程结束后再修改！");
+            return new AiSportsResponse<Boolean>().fail().message("当前课程正在进行中，不能修改! 请等本次课程结束后再修改！");
         }
         Long userId = getCurrentUserId();
 
@@ -328,7 +328,7 @@ public class CourseController extends BaseRestController implements CourseApi {
         Long entryCount = courseStudentService.findCountByUserId(courseId);
         // 如果报名的人数大于了课程的最大人数
         if(entryCount >= course.getMaxCount()){
-            throw new AiSportsException("今日当前课程已经报满，请明日再来！");
+            return new AiSportsResponse<CourseEntryVo>().fail().message("今日当前课程已经报满，请明日再来！");
         }
 
         Long userId = getCurrentUserId();

@@ -9,6 +9,7 @@ import com.mx.ai.sports.common.utils.AddressUtil;
 import com.mx.ai.sports.monitor.entity.Log;
 import com.mx.ai.sports.monitor.mapper.LogMapper;
 import com.mx.ai.sports.monitor.service.ILogService;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import java.util.*;
  * @author Mengjiaxin
  * @date 2019-08-20 19:54
  */
+@Slf4j
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class LogServiceImpl extends ServiceImpl<LogMapper, Log> implements ILogService {
@@ -36,19 +38,19 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log> implements ILogS
     private ObjectMapper objectMapper;
 
     @Override
-    public void saveLog(ProceedingJoinPoint point, Log log, Object result) throws JsonProcessingException {
+    public void saveLog(ProceedingJoinPoint point, Log logObj, Object result) throws JsonProcessingException {
         MethodSignature signature = (MethodSignature) point.getSignature();
         Method method = signature.getMethod();
         com.mx.ai.sports.common.annotation.Log logAnnotation = method.getAnnotation(com.mx.ai.sports.common.annotation.Log.class);
         if (logAnnotation != null) {
             // 注解上的描述
-            log.setOperation(logAnnotation.value());
+            logObj.setOperation(logAnnotation.value());
         }
         // 请求的类名
         String className = point.getTarget().getClass().getName();
         // 请求的方法名
         String methodName = signature.getName();
-        log.setMethod(className + "." + methodName + "()");
+        logObj.setMethod(className + "." + methodName + "()");
         // 请求的方法参数值
         Object[] args = point.getArgs();
         // 请求的方法参数名称
@@ -57,21 +59,23 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log> implements ILogS
         if (args != null && paramNames != null) {
             StringBuilder params = new StringBuilder();
             params = handleParams(params, args, Arrays.asList(paramNames));
-            log.setParams(params.toString());
+            logObj.setParams(params.toString());
         }
 
         try {
             // 记录返回值
             String respParam = postHandle(result);
-            log.setResult(respParam);
+            logObj.setResult(respParam);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
 
-        log.setCreateTime(new Date());
-        log.setLocation(AddressUtil.getCityInfo(log.getIp()));
+        logObj.setCreateTime(new Date());
+        logObj.setLocation(AddressUtil.getCityInfo(logObj.getIp()));
+
+        log.info(JSON.toJSONString(logObj));
         // 保存系统日志
-        save(log);
+        save(logObj);
     }
 
     /**
