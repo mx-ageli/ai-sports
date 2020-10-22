@@ -218,8 +218,8 @@ public class CourseUpdateTest {
 
     private CourseUpdateVo defaultCourseUpdateVo() {
         CourseUpdateVo courseUpdateVo = new CourseUpdateVo();
-        courseUpdateVo.setStartTime("18:00");
-        courseUpdateVo.setEndTime("18:50");
+        courseUpdateVo.setStartTime("18:15");
+        courseUpdateVo.setEndTime("18:45");
         courseUpdateVo.setSignedTime("17:45");
         courseUpdateVo.setLat("29.58926113");
         courseUpdateVo.setLon("105.0481993");

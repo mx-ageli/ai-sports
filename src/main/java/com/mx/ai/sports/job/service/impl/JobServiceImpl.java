@@ -182,7 +182,7 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements IJobS
         String methodName = "deleteCourseStudentTask";
         LocalTime endLocalTime = LocalTime.parse(course.getEndTime());
         // 在课程结束的后五分钟执行
-        endLocalTime = endLocalTime.plusMinutes(5);
+        endLocalTime = endLocalTime.plusMinutes(60 * 2);
         // 开始时间时才创建
         return initJob(course, beanName, methodName, endLocalTime, " 课程结束后删除所有的报名学生任务");
     }
