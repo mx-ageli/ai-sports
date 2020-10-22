@@ -324,6 +324,12 @@ public class CourseController extends BaseRestController implements CourseApi {
                 return new AiSportsResponse<CourseEntryVo>().fail().message("已经错过了课程预约时间，" + tip);
             }
         }
+        // 查询当前报名课程的人数
+        Long entryCount = courseStudentService.findCountByUserId(courseId);
+        // 如果报名的人数大于了课程的最大人数
+        if(entryCount >= course.getMaxCount()){
+            throw new AiSportsException("课程已经报满了，不能报课！");
+        }
 
         Long userId = getCurrentUserId();
         // 判断学生有没有报其他的课程，如果学生报了其他的课程，就不能再报

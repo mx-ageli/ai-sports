@@ -85,4 +85,11 @@ public interface ICourseStudentService extends IService<CourseStudent> {
      * @return
      */
     int removeByCourseId(String courseId);
+
+    /**
+     * 查询当期课程的报名人数
+     * @param courseId
+     * @return
+     */
+    Long findCountByUserId(Long courseId);
 }

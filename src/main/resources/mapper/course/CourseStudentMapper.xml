@@ -33,4 +33,13 @@
             acs.COURSE_ID = #{courseId}
 
     </select>
+    <select id="findCountByUserId" resultType="java.lang.Long">
+
+        SELECT
+            count( USER_ID )
+        FROM
+            APP_COURSE_STUDENT
+        WHERE
+            COURSE_ID = #{courseId}
+    </select>
 </mapper>

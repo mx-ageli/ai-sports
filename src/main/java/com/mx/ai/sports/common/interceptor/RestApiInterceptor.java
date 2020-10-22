@@ -54,7 +54,7 @@ public class RestApiInterceptor extends HandlerInterceptorAdapter {
             }
         } else {
             //header不能为空
-            RenderUtil.renderJson(response, new AiSportsResponse().code(HttpStatus.BAD_REQUEST).message("header信息不能为空, 请header中传入Authorization参数, 格式:eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNTY0NzM2MDkyLCJpYXQiOjE1NjQxMzEyOTJ9.UOZka6D2Gyuf4jK4WKzlCOGIdCuyUEGqJ5U1yF8jTCQO_mX8sM5NSdjag0AdRK7hhlGYGd2qJP9bzkc3uXU0YA"));
+            RenderUtil.renderJson(response, new AiSportsResponse().code(HttpStatus.UNAUTHORIZED).message("header信息不能为空, 请header中传入Authorization参数, 格式:eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNTY0NzM2MDkyLCJpYXQiOjE1NjQxMzEyOTJ9.UOZka6D2Gyuf4jK4WKzlCOGIdCuyUEGqJ5U1yF8jTCQO_mX8sM5NSdjag0AdRK7hhlGYGd2qJP9bzkc3uXU0YA"));
             return false;
         }
         return true;

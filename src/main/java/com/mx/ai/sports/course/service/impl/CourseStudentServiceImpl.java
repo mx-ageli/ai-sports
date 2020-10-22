@@ -138,4 +138,9 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
     public int removeByCourseId(String courseId) {
         return this.baseMapper.delete(new LambdaQueryWrapper<CourseStudent>().eq(CourseStudent::getCourseId, courseId));
     }
+
+    @Override
+    public Long findCountByUserId(Long courseId) {
+        return this.baseMapper.findCountByUserId(courseId);
+    }
 }
