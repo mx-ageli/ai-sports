@@ -51,6 +51,34 @@ public class JedisPoolUtil {
         return res;
     }
 
+    public String hGet(String hKey, String key){
+        String res = null;
+        Jedis jedis = getJedis();
+        try {
+            res = jedis.hget(hKey, key);
+        } catch (Exception e){
+            returnBrokenResource(jedis);
+            e.printStackTrace();
+        } finally {
+            returnResource(jedis);
+        }
+        return res;
+    }
+
+    public Long incrBy(String key, Long add){
+        Long res = null;
+        Jedis jedis = getJedis();
+        try {
+            res = jedis.incrBy(key, add);
+        } catch (Exception e){
+            returnBrokenResource(jedis);
+            e.printStackTrace();
+        } finally {
+            returnResource(jedis);
+        }
+        return res;
+    }
+
     public long hSet(String hKey, String key, String value){
         long res = 0;
         Jedis jedis = getJedis();
@@ -95,6 +123,18 @@ public class JedisPoolUtil {
         Jedis jedis = getJedis();
         try {
             jedis.del(key);
+        }catch (Exception e){
+            returnBrokenResource(jedis);
+            e.printStackTrace();
+        } finally {
+            returnResource(jedis);
+        }
+    }
+
+    public void hDel(String hKey, String key){
+        Jedis jedis = getJedis();
+        try {
+            jedis.hdel(hKey, key);
         }catch (Exception e){
             returnBrokenResource(jedis);
             e.printStackTrace();
