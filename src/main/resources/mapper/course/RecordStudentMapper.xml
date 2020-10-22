@@ -62,6 +62,7 @@
                     APP_RECORD_STUDENT ars
                     LEFT JOIN APP_SIGNED asi ON asi.COURSE_RECORD_ID = ars.COURSE_RECORD_ID
                 WHERE
+                    ars.USER_ID = asi.USER_ID AND
                     ars.USER_ID = #{userId}
                 ORDER BY
                     ars.CREATE_TIME DESC
