@@ -328,7 +328,7 @@ public class CourseController extends BaseRestController implements CourseApi {
         Long entryCount = courseStudentService.findCountByUserId(courseId);
         // 如果报名的人数大于了课程的最大人数
         if(entryCount >= course.getMaxCount()){
-            throw new AiSportsException("课程已经报满了，不能报课！");
+            throw new AiSportsException("今日当前课程已经报满，请明日再来！");
         }
 
         Long userId = getCurrentUserId();

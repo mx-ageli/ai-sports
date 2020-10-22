@@ -105,7 +105,7 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
         Group group = groupService.findCanJoinGroup(courseStudent.getCourseId());
         // 如果这里查不到的话，说明所有的小组已经报满了，不能再报课
         if(group == null){
-            throw new AiSportsException("课程已经报满了，不能报课！");
+            throw new AiSportsException("今日当前课程已经报满，请明日再来！");
         }
         // 给当前组内人数+1
         group.setCurrentCount(group.getCurrentCount() + 1);
