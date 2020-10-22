@@ -115,38 +115,51 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
     @Override
     @Transactional(rollbackFor = Exception.class)
     public CourseEntryVo saveStudentAndGroup(CourseStudent courseStudent) throws AiSportsException {
+        CourseEntryVo entryVo = new CourseEntryVo();
+
         // 查询一个课程中还可以加入的小组，小组的上限人数>组内人数的小组
         Group group = groupService.findCanJoinGroup(courseStudent.getCourseId());
         // 如果这里查不到的话，说明所有的小组已经报满了，不能再报课
         if (group == null) {
             throw new AiSportsException("今日当前课程已经报满，请明日再来！");
         }
-        // 给当前组内人数+1
-        group.setCurrentCount(group.getCurrentCount() + 1);
-        groupService.saveOrUpdate(group);
 
-        GroupStudent groupStudent = new GroupStudent();
-        groupStudent.setCourseId(courseStudent.getCourseId());
-        groupStudent.setGroupId(group.getGroupId());
-        groupStudent.setUserId(courseStudent.getUserId());
-        groupStudent.setCreateTime(new Date());
-        // 保存小组和学生的关系
-        groupStudentService.save(groupStudent);
-
-        // 统计报名序号
-        Long sort = baseMapper.findSortByMax(courseStudent.getCourseId());
-        courseStudent.setSort(sort);
-        // 保存报名信息
-        this.save(courseStudent);
-
-        CourseEntryVo entryVo = new CourseEntryVo();
-        entryVo.setGroupId(group.getGroupId());
-        entryVo.setGroupName(group.getGroupName());
-        entryVo.setSort(sort);
         // 设置计数器+1
         setCountByUserId2Redis(courseStudent.getCourseId(), 1L);
         // 添加报课学生列表
         setEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
+
+        try {
+            // 给当前组内人数+1
+            group.setCurrentCount(group.getCurrentCount() + 1);
+            groupService.saveOrUpdate(group);
+
+            GroupStudent groupStudent = new GroupStudent();
+            groupStudent.setCourseId(courseStudent.getCourseId());
+            groupStudent.setGroupId(group.getGroupId());
+            groupStudent.setUserId(courseStudent.getUserId());
+            groupStudent.setCreateTime(new Date());
+            // 保存小组和学生的关系
+            groupStudentService.save(groupStudent);
+
+            // 统计报名序号
+            Long sort = baseMapper.findSortByMax(courseStudent.getCourseId());
+            courseStudent.setSort(sort);
+            // 保存报名信息
+            this.save(courseStudent);
+
+            entryVo.setGroupId(group.getGroupId());
+            entryVo.setGroupName(group.getGroupName());
+            entryVo.setSort(sort);
+        } catch (Exception e) {
+            log.info("学生报课保存失败，courseId:{}, userId:{}, 发生异常：{}", courseStudent.getCourseId(), courseStudent.getUserId(), e.getMessage());
+            e.printStackTrace();
+            // 将数量回滚1
+            setCountByUserId2Redis(courseStudent.getCourseId(), -1L);
+            // 将学生列表删除
+            removeEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
+        }
+
         return entryVo;
     }
 
