@@ -45,6 +45,9 @@ public class UserVo implements Serializable {
     @ApiModelProperty("设备Id")
     private String deviceId;
 
+    @ApiModelProperty("设备类型 1苹果 2安卓")
+    private String deviceType;
+
     @ApiModelProperty("角色Id 1 学生，2 老师")
     private Long roleId;
 

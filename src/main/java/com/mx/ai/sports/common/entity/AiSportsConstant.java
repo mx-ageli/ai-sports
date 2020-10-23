@@ -46,6 +46,16 @@ public class AiSportsConstant {
     public static final String AUTH_HEADER = "Authorization";
 
     /**
+     * 设置Id
+     */
+    public static final String DEVICE_ID = "deviceId";
+
+    /**
+     * 设备类型1iOS 2Android
+     */
+    public static final String DEVICE_TYPE = "deviceType";
+
+    /**
      * 秘钥
      */
     public static final String SECRET = "defaultSecret";

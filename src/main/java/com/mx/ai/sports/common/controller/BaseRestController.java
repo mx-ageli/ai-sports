@@ -44,6 +44,11 @@ public class BaseRestController<T> {
         return JSON.parseObject(simple, UserSimple.class);
     }
 
+    protected HttpServletRequest getHttpServletRequest(){
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        return Objects.requireNonNull(servletRequestAttributes).getRequest();
+    }
+
     protected Long getCurrentUserId(){
         UserSimple userSimple =  getCurrentUser();
         if(userSimple == null){

@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -86,8 +87,7 @@ public class UserController extends BaseRestController implements UserApi {
     @Log("手机号和短信验证码登录获得token")
     @Limit(key = "mobileLogin", period = 10, count = 3, name = "登录", prefix = "limit")
     public AiSportsResponse<String> login(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
-                                          @NotBlank @Length(min = 6, max = 6, message = "长度必须等于6位") @RequestParam("code") String code,
-                                          @NotBlank @RequestParam("deviceId") String deviceId) throws AiSportsException {
+                                          @NotBlank @Length(min = 6, max = 6, message = "长度必须等于6位") @RequestParam("code") String code) throws AiSportsException {
         boolean isMobile = AccountValidatorUtil.isMobile(mobile);
         if (!isMobile) {
             return new AiSportsResponse<String>().fail().message("手机号格式不正确!");
@@ -112,13 +112,20 @@ public class UserController extends BaseRestController implements UserApi {
             mobileLoginLog(mobile);
             // 生成token
             String token = JwtTokenUtil.generateToken(userConverter.domain2Simple(user));
+
+            User updateUser = userService.getById(user.getUserId());
+
+            HttpServletRequest request = getHttpServletRequest();
+            // 从头信息里面获取到设备Id和类型
+            final String deviceId = request.getHeader(DEVICE_ID);
+            final String deviceType = request.getHeader(DEVICE_TYPE);
             // 如果传入有设备Id，将设备Id更新保存
-            if (!StringUtils.isEmpty(deviceId)) {
-                User updateUser = userService.getById(user.getUserId());
+            if (!StringUtils.isEmpty(deviceId) || !StringUtils.isEmpty(deviceType)) {
                 updateUser.setDeviceId(deviceId);
-                updateUser.setLastLoginTime(new Date());
-                userService.saveOrUpdate(updateUser);
+                updateUser.setDeviceType(deviceType);
             }
+            updateUser.setLastLoginTime(new Date());
+            userService.saveOrUpdate(updateUser);
 
             // 登录成功后,删除验证码
             jedisPoolUtil.del(mobile);

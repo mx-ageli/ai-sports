@@ -76,6 +76,12 @@ public class User implements Serializable {
     private String deviceId;
 
     /**
+     * 设备类型 1苹果 2安卓
+     */
+    @TableField("DEVICE_TYPE")
+    private String deviceType;
+
+    /**
      * 角色Id
      */
     @TableField("ROLE_ID")

@@ -40,19 +40,16 @@ public interface UserApi {
      *
      * @param mobile   手机号
      * @param code     验证码
-     * @param deviceId 设备Id
      * @return token
      */
     @ApiOperation(value = "#已实现 图21# 手机号和短信验证码登录获得token,如果账号没有注册则会在第一次登录时自动注册。<接口限流：一分钟内只能访问3次>")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "mobile", value = "手机号", paramType = "query", dataType = "String", required = true),
-            @ApiImplicitParam(name = "code", value = "短信验证码", paramType = "query", dataType = "String", required = true),
-            @ApiImplicitParam(name = "deviceId", value = "设备Id，为极光推送的设备Id（现在可以随便传个值）", paramType = "query", dataType = "String", required = true)
+            @ApiImplicitParam(name = "code", value = "短信验证码", paramType = "query", dataType = "String", required = true)
     })
     @RequestMapping(value = "/v/login", method = RequestMethod.POST)
     AiSportsResponse<String> login(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
-                                   @NotBlank @Length(min = 6, max = 6, message = "长度必须等于6位") @RequestParam("code") String code,
-                                   @NotBlank @RequestParam("deviceId") String deviceId) throws AiSportsException;
+                                   @NotBlank @Length(min = 6, max = 6, message = "长度必须等于6位") @RequestParam("code") String code) throws AiSportsException;
 
     /**
      * 获取手机验证码

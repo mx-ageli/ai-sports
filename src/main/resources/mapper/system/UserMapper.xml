@@ -13,6 +13,7 @@
             su.AVATAR AS avatar,
             su.FULL_NAME AS fullName,
             su.DEVICE_ID AS deviceId,
+            su.DEVICE_TYPE AS deviceType,
             su.ROLE_ID AS roleId,
             su.SCHOOL_ID AS schoolId,
             su.CLASSES_ID AS classesId,
