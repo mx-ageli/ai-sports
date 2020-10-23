@@ -161,7 +161,7 @@ public class ImportServiceImpl implements IImportService {
             ImportStudentDto dto = new ImportStudentDto();
             dto.setSubjectNo(readExcel.get(0).trim());
             dto.setSubjectName(readExcel.get(1).trim());
-            dto.setSubjectSeq(readExcel.get(2).trim());
+            dto.setSubjectSeq(readExcel.get(2).trim().length() == 1 ? "0" + readExcel.get(2).trim() : readExcel.get(2).trim());
             dto.setClassesName(readExcel.get(3).trim());
             dto.setSno(readExcel.get(4).trim());
             dto.setFullName(readExcel.get(5).trim());
