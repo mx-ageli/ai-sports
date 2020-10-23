@@ -91,6 +91,8 @@ public class RecordStudent implements Serializable {
         this.setIsAbsent(Boolean.TRUE);
         // 默认迟到
         this.setIsLate(Boolean.FALSE);
+        // 默认为不合格
+        this.setIsPass(Boolean.FALSE);
 
     }
 
