@@ -4,6 +4,7 @@ import com.mx.ai.sports.app.api.SignedApi;
 import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
+import com.mx.ai.sports.common.utils.DateUtil;
 import com.mx.ai.sports.course.converter.SignedConverter;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.CourseStudent;
@@ -86,7 +87,7 @@ public class SignedController extends BaseRestController implements SignedApi {
         }
 
         // 获取今天是星期几
-        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        int week = DateUtil.getWeek();
         if (!course.getWeek().contains(String.valueOf(week))) {
             return new AiSportsResponse<Boolean>().fail().message("还没有到打卡时间，不能打卡！");
         }

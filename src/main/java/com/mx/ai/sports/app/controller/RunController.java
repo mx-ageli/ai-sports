@@ -5,6 +5,7 @@ import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.entity.RunTypeEnum;
+import com.mx.ai.sports.common.utils.DateUtil;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.RunRule;
 import com.mx.ai.sports.course.query.RunAddVo;
@@ -65,7 +66,7 @@ public class RunController extends BaseRestController implements RunApi {
         }
 
         // 获取今天是星期几
-        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        int week = DateUtil.getWeek();
         // 课程的开始时间
         LocalTime startTime = LocalTime.parse(course.getStartTime());
         // 当前时间
@@ -116,7 +117,7 @@ public class RunController extends BaseRestController implements RunApi {
             return new AiSportsResponse<Boolean>().fail().message("课程Id不存在，没有查询到数据!");
         }
         // 获取今天是星期几
-        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        int week = DateUtil.getWeek();
         // 课程的开始时间
         LocalTime startTime = LocalTime.parse(course.getStartTime());
         // 当前时间

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.common.exception.AiSportsException;
+import com.mx.ai.sports.common.utils.DateUtil;
 import com.mx.ai.sports.course.converter.CourseConverter;
 import com.mx.ai.sports.course.dto.ExportRecordStudentDto;
 import com.mx.ai.sports.course.dto.ExportRecordTotalDto;
@@ -71,7 +72,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     public IPage<CourseVo> findAll(QueryRequest request, Long userId) {
         Page<StudentCourseVo> page = new Page<>(request.getPageNum(), request.getPageSize());
         // 获取今天是星期几
-        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        int week = DateUtil.getWeek();
 
 
         return this.baseMapper.findAll(page, week, userId);
@@ -80,7 +81,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     @Override
     public CourseVo findById(Long courseId) {
         // 获取今天是星期几
-        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        int week = DateUtil.getWeek();
 
         return this.baseMapper.findById(week, courseId);
     }
@@ -90,7 +91,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         Page<CourseVo> page = new Page<>(request.getPageNum(), request.getPageSize());
 
         // 获取今天是星期几
-        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        int week = DateUtil.getWeek();
 
         return this.baseMapper.findMyEntry(page, week, userId);
     }
@@ -182,7 +183,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     @Override
     public List<CourseVo> findMyEntryByCurrent(Long currentUserId) {
 
-        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        int week = DateUtil.getWeek();
         // 当前时间
         LocalTime localTime = LocalTime.now();
         // 查询到今天我报名的课程

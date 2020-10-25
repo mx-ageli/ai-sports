@@ -8,6 +8,7 @@ import com.mx.ai.sports.common.annotation.TeacherRole;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.*;
 import com.mx.ai.sports.common.exception.AiSportsException;
+import com.mx.ai.sports.common.utils.DateUtil;
 import com.mx.ai.sports.common.utils.SpringContextUtil;
 import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.CourseRecord;
@@ -308,11 +309,7 @@ public class CourseController extends BaseRestController implements CourseApi {
         if(isEntryStudent == null){
             // 先判断课程是否是今天的课程
             // 获取今天是星期几
-            int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
-            // week为8时默认切换到1
-            if (week == 8) {
-                week = 1;
-            }
+            int week = DateUtil.getWeek();
             // 判断今天是否课程执行的星期
             boolean isCheckTime = course.getWeek().contains(String.valueOf(week));
             // 如果今日不是课程日
@@ -398,7 +395,7 @@ public class CourseController extends BaseRestController implements CourseApi {
         // 当前时间
         LocalTime currentTime = LocalTime.now();
         // 获取今天是星期几
-        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        int week = DateUtil.getWeek();
         // 判断今天是否课程执行的星期
         boolean isCheckTime = weeks.contains(String.valueOf(week));
         // 今天是否是执行日 startTime > currentTime && currentTime > endTime = true

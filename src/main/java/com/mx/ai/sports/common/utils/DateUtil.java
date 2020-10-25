@@ -67,4 +67,18 @@ public class DateUtil {
         LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
         return localDateTime.format(DateTimeFormatter.ofPattern(format));
     }
+
+    /**
+     * 获取今天是星期几
+     * @return
+     */
+    public static int getWeek(){
+        // 获取今天是星期几
+        int week = LocalDateTime.now().getDayOfWeek().getValue() + 1;
+        // week为8时默认切换到1
+        if (week == 8) {
+            week = 1;
+        }
+        return week;
+    }
 }
