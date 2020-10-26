@@ -246,14 +246,24 @@ public class CourseController extends BaseRestController implements CourseApi {
     private void setEntryStatus(List<Long> courseIds, CourseVo courseVo) {
         // 默认为可以报课
         courseVo.setEntryStatus(EntryEnum.OK.value());
-        // 如果课程已经开始了，设置状态为不可报名
-        if (isCheckStart(courseVo.getWeek(), courseVo.getStartTime(), courseVo.getEndTime())) {
-            courseVo.setEntryStatus(EntryEnum.NO.value());
-        }
+
         // 判断当前用户是否已经报名这个课程
         if (courseIds.contains(courseVo.getCourseId())) {
             courseVo.setEntryStatus(EntryEnum.ENTRY.value());
         }
+
+        // 如果课程已经开始了，设置状态为不可报名
+        if (isCheckStart(courseVo.getWeek(), courseVo.getStartTime(), courseVo.getEndTime())) {
+            courseVo.setEntryStatus(EntryEnum.NO.value());
+        }
+        int week = DateUtil.getWeek();
+        // 判断今天是否课程执行的星期
+        boolean isCheckTime = courseVo.getWeek().contains(String.valueOf(week));
+        // 如果今日不是课程日
+        if (!isCheckTime) {
+            courseVo.setEntryStatus(EntryEnum.NO.value());
+        }
+
         // 判断课程是否暂停状态
         if (Objects.equals(courseVo.getStatus(), Job.ScheduleStatus.PAUSE.getValue())) {
             courseVo.setEntryStatus(EntryEnum.FINISH.value());
