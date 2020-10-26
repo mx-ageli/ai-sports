@@ -25,4 +25,6 @@ public interface GroupMapper extends BaseMapper<Group> {
      * @return
      */
     Group findMyGroup(Long userId, Long courseId);
+
+    void updateCurrentCountTo0(Long courseId);
 }

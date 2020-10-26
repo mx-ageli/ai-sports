@@ -82,4 +82,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
     public Group findMyGroup(Long userId, Long courseId) {
         return this.baseMapper.findMyGroup(userId, courseId);
     }
+
+    @Override
+    public void updateCurrentCountTo0(Long courseId) {
+        this.baseMapper.updateCurrentCountTo0(courseId);
+    }
 }

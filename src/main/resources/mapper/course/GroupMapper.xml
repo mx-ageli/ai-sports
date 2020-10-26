@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mx.ai.sports.course.mapper.GroupMapper">
+    <update id="updateCurrentCountTo0">
+        UPDATE APP_GROUP  SET CURRENT_COUNT = 0 WHERE COURSE_ID = #{courseId}
+    </update>
 
     <select id="findCanJoinGroup" resultType="com.mx.ai.sports.course.entity.Group">
         SELECT

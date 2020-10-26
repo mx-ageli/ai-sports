@@ -2,10 +2,7 @@ package com.mx.ai.sports.job.task;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mx.ai.sports.common.exception.AiSportsException;
-import com.mx.ai.sports.course.entity.Course;
-import com.mx.ai.sports.course.entity.CourseRecord;
-import com.mx.ai.sports.course.entity.GroupStudent;
-import com.mx.ai.sports.course.entity.RecordStudent;
+import com.mx.ai.sports.course.entity.*;
 import com.mx.ai.sports.course.service.*;
 import com.mx.ai.sports.system.service.IMessageService;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +41,9 @@ public class CourseTask {
 
     @Autowired
     private IGroupStudentService groupStudentService;
+
+    @Autowired
+    private IGroupService groupService;
 
     /**
      * 课程活动开始创建课程记录数据， 在打卡时间开始前5分钟创建
@@ -110,6 +110,8 @@ public class CourseTask {
      */
     public void deleteCourseStudentTask(String courseId) {
         int delCount = courseStudentService.removeByCourseId(courseId);
+        // 将小组中的人数都清空
+        groupService.updateCurrentCountTo0(Long.valueOf(courseId));
         // 还需要将学生与课程的小组关系删除
         groupStudentService.remove(new LambdaQueryWrapper<GroupStudent>().eq(GroupStudent::getCourseId, courseId));
         // 清除报名学生的缓存

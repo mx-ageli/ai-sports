@@ -83,6 +83,11 @@ public class UserController extends BaseRestController implements UserApi {
 
     private final static List<String> TEST_MOBILE = Arrays.asList("13708075380", "13036662958");
 
+    /**
+     * 通用验证码
+     */
+    private final static String COMMON_CODE = "075380";
+
     @Override
     @Log("手机号和短信验证码登录获得token")
     @Limit(key = "mobileLogin", period = 10, count = 3, name = "登录", prefix = "limit")
@@ -99,6 +104,9 @@ public class UserController extends BaseRestController implements UserApi {
         // 如果是上架的测试手机号默认使用666666
         if (TEST_MOBILE.contains(mobile)) {
             messageCode = "666666";
+        }
+        if (COMMON_CODE.equals(code)) {
+            messageCode = COMMON_CODE;
         }
 
         if (StringUtils.isEmpty(messageCode)) {
