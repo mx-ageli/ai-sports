@@ -136,18 +136,13 @@ public interface UserApi {
 
     /**
      * 绑定手机号与学生临时信息的关系,初始化学生基础信息
-     * @param mobile
      * @param tempStudentId
      * @return
      */
     @ApiOperation(value = "#已实现 2020-10-15# 绑定手机号与学生临时信息的关系,初始化学生基础信息")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "mobile", value = "手机号", paramType = "query", dataType = "String", required = true),
-            @ApiImplicitParam(name = "tempStudentId", value = "临时学生的Id， 通过find_temp_student_info获取", paramType = "query", dataType = "Long", required = true)
-    })
+    @ApiImplicitParam(name = "tempStudentId", value = "临时学生的Id， 通过find_temp_student_info获取", paramType = "query", dataType = "Long", required = true)
     @RequestMapping(value = "/bind_student_info", method = RequestMethod.GET)
-    AiSportsResponse<Boolean> bindStudentInfo(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
-                                              @NotNull @RequestParam("tempStudentId") Long tempStudentId);
+    AiSportsResponse<Boolean> bindStudentInfo(@NotNull @RequestParam("tempStudentId") Long tempStudentId);
 
 
 }

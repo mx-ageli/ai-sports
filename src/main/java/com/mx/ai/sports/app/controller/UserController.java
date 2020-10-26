@@ -332,8 +332,7 @@ public class UserController extends BaseRestController implements UserApi {
 
     @Override
     @Log("绑定手机号与学生临时信息的关系")
-    public AiSportsResponse<Boolean> bindStudentInfo(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile,
-                                                     @NotNull @RequestParam("tempStudentId") Long tempStudentId) {
+    public AiSportsResponse<Boolean> bindStudentInfo(@NotNull @RequestParam("tempStudentId") Long tempStudentId) {
         // 先查询到临时信息
         TempStudent tempStudent = tempStudentService.getById(tempStudentId);
         if (tempStudent == null) {
@@ -348,9 +347,9 @@ public class UserController extends BaseRestController implements UserApi {
             return new AiSportsResponse<Boolean>().fail().message("当前学号已经被其他同学所绑定，不能重复绑定！请联系管理员！");
         }
 
-        User user = userService.findByUsername(mobile);
+        User user = getUser();
         if (user == null) {
-            return new AiSportsResponse<Boolean>().fail().message("手机号有误，没有查询到数据！");
+            return new AiSportsResponse<Boolean>().fail().message("获取用户信息异常！");
         }
         if (StringUtils.isNotBlank(user.getFullName())) {
             return new AiSportsResponse<Boolean>().fail().message("当前手机号已经绑定了基础信息，不能重复绑定！");
