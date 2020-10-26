@@ -83,4 +83,17 @@ public class Log implements Serializable {
 
     private transient String createTimeFrom;
     private transient String createTimeTo;
+
+    @Override
+    public String toString() {
+        return "Log{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", operation='" + operation + '\'' +
+                ", time=" + time +
+                ", method='" + method + '\'' +
+                ", params='" + params + '\'' +
+                ", location='" + location + '\'' +
+                '}';
+    }
 }

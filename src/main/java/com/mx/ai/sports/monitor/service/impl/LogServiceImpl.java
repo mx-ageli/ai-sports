@@ -73,9 +73,10 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log> implements ILogS
         logObj.setCreateTime(new Date());
         logObj.setLocation(AddressUtil.getCityInfo(logObj.getIp()));
 
-        log.info(JSON.toJSONString(logObj));
         // 保存系统日志
         save(logObj);
+
+        log.info(logObj.toString());
     }
 
     /**
