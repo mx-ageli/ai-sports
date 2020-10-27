@@ -70,9 +70,6 @@ public class RecordStudentServiceImpl extends ServiceImpl<RecordStudentMapper, R
                     vo.setRunTime(run.getRunTime());
                     vo.setRuleMileage(run.getRuleMileage());
                     vo.setRuleRunTime(run.getRuleRunTime());
-                    vo.setIsRun(true);
-                } else {
-                    vo.setIsRun(false);
                 }
             }
         }
