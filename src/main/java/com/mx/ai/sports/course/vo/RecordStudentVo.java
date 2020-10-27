@@ -91,5 +91,7 @@ public class RecordStudentVo implements Serializable {
     @ApiModelProperty("规则设定跑步时长")
     private Long ruleRunTime;
 
+    @ApiModelProperty("是否为跑步课程")
+    private Boolean isRun;
 
 }
