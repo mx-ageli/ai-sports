@@ -71,7 +71,7 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         deleteHistory(courseRecordId, userId);
 
         // 查询当前这次跑步是否满足规则，满足就合格
-        if (runAddVo.getMileage() > runRule.getMileage() && runAddVo.getRunTime() > runRule.getRunTime()) {
+        if (runAddVo.getMileage() >= runRule.getMileage() && runAddVo.getRunTime() >= runRule.getRunTime()) {
             run.setStatus(RunStatusEnum.PASS.value());
         }
         this.save(run);
