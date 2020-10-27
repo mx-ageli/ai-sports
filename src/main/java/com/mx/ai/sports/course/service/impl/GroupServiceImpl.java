@@ -42,7 +42,6 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
             group.setUserId(course.getUserId());
             group.setMaxCount(maxStudentCount);
             group.setCreateTime(new Date());
-            group.setCurrentCount(0);
             group.setCourseId(course.getCourseId());
 
             group.setGroupName((i + 1) + "组");
@@ -83,8 +82,4 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, Group> implements
         return this.baseMapper.findMyGroup(userId, courseId);
     }
 
-    @Override
-    public void updateCurrentCountTo0(Long courseId) {
-        this.baseMapper.updateCurrentCountTo0(courseId);
-    }
 }

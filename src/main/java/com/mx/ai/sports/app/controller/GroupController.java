@@ -76,7 +76,6 @@ public class GroupController extends BaseRestController implements GroupApi {
         group.setCourseId(addVo.getCourseId());
         group.setGroupName(addVo.getGroupName());
 
-        group.setCurrentCount(0);
         group.setCreateTime(new Date());
         group.setUserId(getCurrentUserId());
 

@@ -69,5 +69,4 @@ public interface IGroupService extends IService<Group> {
 
     Group findMyGroup(Long userId, Long courseId);
 
-    void updateCurrentCountTo0(Long courseId);
 }

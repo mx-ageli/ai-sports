@@ -84,10 +84,6 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
     public Boolean remove(Long userId, Long courseId) {
         // 将用户的小组关系查询出来，得出学生在哪个小组
         GroupStudent groupStudent = groupStudentService.findByCourseIdAndUserId(courseId, userId);
-        // 先给学生所在组人数-1
-        Group group = groupService.getById(groupStudent.getGroupId());
-        group.setCurrentCount(group.getCurrentCount() - 1);
-        groupService.saveOrUpdate(group);
         // 再将学生关系删除掉
         groupStudentService.removeByGroupIdAndUserId(groupStudent.getGroupId(), groupStudent.getUserId());
 
@@ -130,9 +126,6 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
         setEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
 
         try {
-            // 给当前组内人数+1
-            group.setCurrentCount(group.getCurrentCount() + 1);
-            groupService.saveOrUpdate(group);
 
             GroupStudent groupStudent = new GroupStudent();
             groupStudent.setCourseId(courseStudent.getCourseId());

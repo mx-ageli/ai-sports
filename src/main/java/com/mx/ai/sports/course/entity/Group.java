@@ -52,12 +52,6 @@ public class Group implements Serializable {
     private Integer maxCount;
 
     /**
-     * 当前组内人数
-     */
-    @TableId(value = "CURRENT_COUNT")
-    private Integer currentCount;
-
-    /**
      * 创建时间
      */
     @TableField("CREATE_TIME")

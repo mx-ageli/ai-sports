@@ -110,8 +110,6 @@ public class CourseTask {
      */
     public void deleteCourseStudentTask(String courseId) {
         int delCount = courseStudentService.removeByCourseId(courseId);
-        // 将小组中的人数都清空
-        groupService.updateCurrentCountTo0(Long.valueOf(courseId));
         // 还需要将学生与课程的小组关系删除
         groupStudentService.remove(new LambdaQueryWrapper<GroupStudent>().eq(GroupStudent::getCourseId, courseId));
         // 清除报名学生的缓存
