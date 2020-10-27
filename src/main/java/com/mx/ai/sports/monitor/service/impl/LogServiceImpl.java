@@ -74,7 +74,7 @@ public class LogServiceImpl extends ServiceImpl<LogMapper, Log> implements ILogS
         logObj.setLocation(AddressUtil.getCityInfo(logObj.getIp()));
 
         // 保存系统日志
-        save(logObj);
+//        save(logObj);
 
         log.info(logObj.toString());
     }
