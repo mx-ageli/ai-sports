@@ -20,6 +20,8 @@ public class JedisPoolUtil {
                 jedis = jedisPool.getResource();
             }catch (Exception e){
                 e.printStackTrace();
+            } finally {
+                returnResource(jedis);
             }
         }
         return jedis;
