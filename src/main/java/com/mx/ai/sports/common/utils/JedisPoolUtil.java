@@ -30,14 +30,14 @@ public class JedisPoolUtil {
     public synchronized void returnResource(Jedis jedis){
         if(null != jedis){
             jedis.close();
-            jedisPool.returnResource(jedis);
+//            jedisPool.returnResource(jedis);
         }
     }
 
     public synchronized void returnBrokenResource(Jedis jedis){
         if(null != jedis){
             jedis.close();
-            jedisPool.returnBrokenResource(jedis);
+//            jedisPool.returnBrokenResource(jedis);
         }
     }
 
