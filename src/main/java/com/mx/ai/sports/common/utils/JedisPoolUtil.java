@@ -69,6 +69,20 @@ public class JedisPoolUtil {
         return res;
     }
 
+    public Long hLen(String hKey){
+        Long res = 0L;
+        Jedis jedis = getJedis();
+        try {
+            res = jedis.hlen(hKey);
+        } catch (Exception e){
+            returnBrokenResource(jedis);
+            e.printStackTrace();
+        } finally {
+            returnResource(jedis);
+        }
+        return res;
+    }
+
     public Long incrBy(String key, Long add){
         Long res = null;
         Jedis jedis = getJedis();

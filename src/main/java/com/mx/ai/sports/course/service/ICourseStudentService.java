@@ -93,28 +93,6 @@ public interface ICourseStudentService extends IService<CourseStudent> {
      */
     Long findCountByUserId(Long courseId);
 
-
-    /**
-     * 设置课程的计数器
-     * @param courseId
-     * @return
-     */
-    Long setCountByUserId2Redis(Long courseId, Long add);
-
-    /**
-     * 查询课程的计数器
-     * @param courseId
-     * @return
-     */
-    Long findCountByUserId2Redis(Long courseId);
-
-    /**
-     * 删除报名课程的缓存，计数器和学生列表
-     * @param courseId
-     * @return
-     */
-    void removeCountByUserId2Redis(Long courseId);
-
     /**
      * 设置课程学生列表
      * @param courseId
@@ -135,4 +113,18 @@ public interface ICourseStudentService extends IService<CourseStudent> {
      * @return
      */
     void removeEntryStudentList2Redis(Long courseId, Long userId);
+
+    /**
+     * 删除报名课程的学生列表
+     * @param courseId
+     * @return
+     */
+    void removeEntryStudentList2Redis(Long courseId);
+
+    /**
+     * 查询当前报课数量
+     * @param courseId
+     * @return
+     */
+    Long getLenEntryStudentList2Redis(Long courseId);
 }

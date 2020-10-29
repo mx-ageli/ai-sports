@@ -113,7 +113,7 @@ public class CourseTask {
         // 还需要将学生与课程的小组关系删除
         groupStudentService.remove(new LambdaQueryWrapper<GroupStudent>().eq(GroupStudent::getCourseId, courseId));
         // 清除报名学生的缓存
-        courseStudentService.removeCountByUserId2Redis(Long.valueOf(courseId));
+        courseStudentService.removeEntryStudentList2Redis(Long.valueOf(courseId));
         log.info("课程结束，清除所有的学生报名记录，courseId:{}, 清除数量：{}", courseId, delCount);
     }
 

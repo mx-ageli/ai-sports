@@ -88,10 +88,6 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
         groupStudentService.removeByGroupIdAndUserId(groupStudent.getGroupId(), groupStudent.getUserId());
 
         // TODO 需要更新其他学生的排序
-
-
-        // 设置计数器+1
-        setCountByUserId2Redis(courseId, -1L);
         // 将列表中的学生删除掉
         removeEntryStudentList2Redis(courseId, userId);
 
@@ -117,16 +113,11 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
         Group group = groupService.findCanJoinGroup(courseStudent.getCourseId());
         // 如果这里查不到的话，说明所有的小组已经报满了，不能再报课
         if (group == null) {
+            // 在不满足报名条件时，删除报名记录
+            removeEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
             throw new AiSportsException("今日当前课程已经报满，请明日再来！");
         }
-
-        // 设置计数器+1
-        setCountByUserId2Redis(courseStudent.getCourseId(), 1L);
-        // 添加报课学生列表
-        setEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
-
         try {
-
             GroupStudent groupStudent = new GroupStudent();
             groupStudent.setCourseId(courseStudent.getCourseId());
             groupStudent.setGroupId(group.getGroupId());
@@ -147,8 +138,6 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
         } catch (Exception e) {
             log.info("学生报课保存失败，courseId:{}, userId:{}, 发生异常：{}", courseStudent.getCourseId(), courseStudent.getUserId(), e.getMessage());
             e.printStackTrace();
-            // 将数量回滚1
-            setCountByUserId2Redis(courseStudent.getCourseId(), -1L);
             // 将学生列表删除
             removeEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
         }
@@ -168,27 +157,8 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
     }
 
     @Override
-    public Long setCountByUserId2Redis(Long courseId, Long add) {
-        return jedisPoolUtil.incrBy(getEntryKey(courseId), add);
-    }
-
-    @Override
-    public Long findCountByUserId2Redis(Long courseId) {
-        String v = jedisPoolUtil.get(getEntryKey(courseId));
-        if(StringUtils.isBlank(v)){
-            return 0L;
-        }
-        return Long.valueOf(v);
-    }
-
-    @Override
-    public void removeCountByUserId2Redis(Long courseId) {
-        jedisPoolUtil.del(getEntryKey(courseId));
-        jedisPoolUtil.del(getEntryStudentListKey(courseId));
-    }
-
-    @Override
     public Long setEntryStudentList2Redis(Long courseId, Long userId) {
+        // jedisPoolUtil.expire() 设置过期时间
         return jedisPoolUtil.hSet(getEntryStudentListKey(courseId), String.valueOf(userId), "1");
     }
 
@@ -206,9 +176,14 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
         jedisPoolUtil.hDel(getEntryStudentListKey(courseId), String.valueOf(userId));
     }
 
+    @Override
+    public void removeEntryStudentList2Redis(Long courseId) {
+        jedisPoolUtil.del(getEntryStudentListKey(courseId));
+    }
 
-    private String getEntryKey(Long courseId){
-        return "entry_" + courseId;
+    @Override
+    public Long getLenEntryStudentList2Redis(Long courseId) {
+        return jedisPoolUtil.hLen(getEntryStudentListKey(courseId));
     }
 
     private String getEntryStudentListKey(Long courseId){

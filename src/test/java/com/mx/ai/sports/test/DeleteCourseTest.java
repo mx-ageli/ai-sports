@@ -22,7 +22,7 @@ public class DeleteCourseTest {
      */
     @Test
     public void delete() {
-        courseTask.deleteCourseStudentTask("11");
+        courseTask.deleteCourseStudentTask("4");
     }
 
 

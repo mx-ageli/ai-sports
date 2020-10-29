@@ -313,6 +313,14 @@ public class CourseController extends BaseRestController implements CourseApi {
         Long userId = getCurrentUserId();
         // 当前时间
         LocalTime currentTime = LocalTime.now();
+        // 课程的开始时间
+        LocalTime startTime = LocalTime.parse(course.getStartTime());
+        // 课程的结束时间
+        LocalTime endTime = LocalTime.parse(course.getEndTime());
+        // 课程是否已经开始
+        // 今天是否是执行日 startTime > currentTime && currentTime > endTime = true
+        boolean isCheckStart = startTime.isBefore(currentTime) && currentTime.isBefore(endTime);
+
         // 查询学生是否已经报课
         Long isEntryStudent = courseStudentService.findEntryStudentList2Redis(courseId, userId);
         // 如果不存在说明学生还没有报课，只有在学生还没有报课才走下面的校验逻辑。
@@ -325,6 +333,9 @@ public class CourseController extends BaseRestController implements CourseApi {
             // 如果今日不是课程日
             if (!isCheckTime) {
                 return new AiSportsResponse<CourseEntryVo>().fail().message("今天不是课程日，不能预约！");
+            }
+            if (isCheckStart) {
+                return new AiSportsResponse<CourseEntryVo>().fail().message("当前报名课程已经开始，不能报名！");
             }
             // 只有在正式环境才使用这个规则
             if (ActiveProfileConstant.PROD.equals(SpringContextUtil.getActiveProfile())) {
@@ -339,52 +350,42 @@ public class CourseController extends BaseRestController implements CourseApi {
                 }
             }
             // 先查询课程在redis中的报名人数是否已满
-            Long entryCountRedis = courseStudentService.findCountByUserId2Redis(courseId);
+            Long entryCountRedis = courseStudentService.getLenEntryStudentList2Redis(courseId);
             // 如果报名的人数大于了课程的最大人数
             if(entryCountRedis >= course.getMaxCount()){
                 return new AiSportsResponse<CourseEntryVo>().fail().message("今日当前课程已经报满，请明日再来！");
             }
+            // 默认先给学生报名成功
+            courseStudentService.setEntryStudentList2Redis(courseId, userId);
             // 查询数据库中当前报名课程的人数
             Long entryCount = courseStudentService.findCountByUserId(courseId);
             // 如果报名的人数大于了课程的最大人数
             if(entryCount >= course.getMaxCount()){
+                // 在不满足报名条件时，删除报名记录
+                courseStudentService.removeEntryStudentList2Redis(courseId, userId);
                 return new AiSportsResponse<CourseEntryVo>().fail().message("今日当前课程已经报满，请明日再来！");
             }
             // 判断学生有没有报其他的课程，如果学生报了其他的课程，就不能再报
             List<CourseStudent> courseStudentList = courseStudentService.findByUserNoCourseId(userId, courseId);
             if (CollectionUtils.isNotEmpty(courseStudentList)) {
+                // 在不满足报名条件时，删除报名记录
+                courseStudentService.removeEntryStudentList2Redis(courseId, userId);
                 return new AiSportsResponse<CourseEntryVo>().fail().message("今日你已经报了其他课程，不能再报该课程了！");
             }
-        }
 
-        // 课程的开始时间
-        LocalTime startTime = LocalTime.parse(course.getStartTime());
-        // 课程的结束时间
-        LocalTime endTime = LocalTime.parse(course.getEndTime());
+            CourseStudent courseStudent = new CourseStudent();
+            courseStudent.setCourseId(courseId);
+            courseStudent.setUserId(userId);
 
-        // 课程是否已经开始
-        // 今天是否是执行日 startTime > currentTime && currentTime > endTime = true
-        boolean isCheckStart = startTime.isBefore(currentTime) && currentTime.isBefore(endTime);
+            return new AiSportsResponse<CourseEntryVo>().success().data(courseStudentService.saveStudentAndGroup(courseStudent));
 
-        // 查询学生是否报名
-        CourseStudent courseStudent = courseStudentService.findByUserCourseId(userId, courseId);
-        // 如果已经报名了，就删除报名信息，取消报名
-        if (courseStudent != null) {
+        } else {
             if (isCheckStart) {
                 return new AiSportsResponse<CourseEntryVo>().fail().message("当前报名课程已经开始，不能取消报名！");
             }
             // 删除报名信息
             courseStudentService.remove(userId, courseId);
             return new AiSportsResponse<CourseEntryVo>().success().data(new CourseEntryVo());
-        } else {  // 没有报名的话就报名
-            if (isCheckStart) {
-                return new AiSportsResponse<CourseEntryVo>().fail().message("当前报名课程已经开始，不能报名！");
-            }
-            courseStudent = new CourseStudent();
-            courseStudent.setCourseId(courseId);
-            courseStudent.setUserId(userId);
-
-            return new AiSportsResponse<CourseEntryVo>().success().data(courseStudentService.saveStudentAndGroup(courseStudent));
         }
     }
 
