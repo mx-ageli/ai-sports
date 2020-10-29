@@ -90,7 +90,7 @@ public class CourseUpdateTest {
                 // 更新课程信息
                 courseService.updateCourse(course, userId);
                 // 更新小组信息
-                groupService.batchCreate(course, updateVo.getGroupCount(), updateVo.getMaxCount());
+                // groupService.batchCreate(course, updateVo.getGroupCount(), updateVo.getMaxCount());
 
             } catch (AiSportsException e) {
                 e.printStackTrace();
