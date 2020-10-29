@@ -76,11 +76,6 @@ public class RecordStudent implements Serializable {
     private Boolean isPass;
 
 
-    public RecordStudent(){
-
-    }
-
-
     public RecordStudent(Long courseId, Long courseRecordId, Long studentId){
         this.setCourseId(courseId);
         this.setCourseRecordId(courseRecordId);

@@ -56,12 +56,9 @@ public class SignedServiceImpl extends ServiceImpl<SignedMapper, Signed> impleme
             // 先查询学生的课程记录，正常情况是会有一条数据的，如果没有记录说明发生了异常，这里补录一条数据
             RecordStudent recordStudent = recordStudentService.findByCourseRecordIdAndUserId(signed.getCourseRecordId(), signed.getUserId());
             if (recordStudent == null) {
-                recordStudent = new RecordStudent();
-                recordStudent.setCourseRecordId(signed.getCourseRecordId());
-                recordStudent.setCourseId(signed.getCourseId());
+                recordStudent = new RecordStudent(signed.getCourseId(), signed.getCourseRecordId(), signed.getUserId());
                 recordStudent.setCreateTime(new Date());
                 recordStudent.setUpdateTime(new Date());
-                recordStudent.setUserId(signed.getUserId());
             }
             recordStudent.setUpdateTime(new Date());
             // 设置是否迟到
