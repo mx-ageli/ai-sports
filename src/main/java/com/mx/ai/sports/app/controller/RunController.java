@@ -86,7 +86,7 @@ public class RunController extends BaseRestController implements RunApi {
         }
         // 如果跑步里程大于了设置的里程的5倍，不让保存
         if(runAddVo.getMileage() > runRule.getMileage() * 5){
-            return new AiSportsResponse<Boolean>().fail().message("当前跑步里程与设置的里程范围不匹配！");
+//            return new AiSportsResponse<Boolean>().fail().message("当前跑步里程与设置的里程范围不匹配！");
         }
 
 
