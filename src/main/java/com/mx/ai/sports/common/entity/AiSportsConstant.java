@@ -83,6 +83,11 @@ public class AiSportsConstant {
 //    public final static Integer CODE_EXPIRE_TIME = 60 * 60 * 24 * 7;
 
     /**
+     * 报名学生列表的过期时间 默认为15小时 从早上8点开始 在23点的时候过期
+     */
+    public final static Integer ENTRY_EXPIRE_TIME = 15 * 60 * 60;
+
+    /**
      * 不需要token验证的路径
      */
     public static final String[] AUTH_PATH = {"api/user/v/", "api/monitor/v/", "api/replace/v/"};

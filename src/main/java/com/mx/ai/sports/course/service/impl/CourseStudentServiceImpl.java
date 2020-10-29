@@ -17,16 +17,15 @@ import com.mx.ai.sports.system.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.mx.ai.sports.common.entity.AiSportsConstant.ENTRY_EXPIRE_TIME;
 
 /**
  * @author Mengjiaxin
@@ -158,8 +157,16 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
 
     @Override
     public Long setEntryStudentList2Redis(Long courseId, Long userId) {
-        // jedisPoolUtil.expire() 设置过期时间
-        return jedisPoolUtil.hSet(getEntryStudentListKey(courseId), String.valueOf(userId), "1");
+        String key = getEntryStudentListKey(courseId);
+
+        Long success = jedisPoolUtil.hSet(key, String.valueOf(userId), "1");
+        // 先查询key的存活时间
+        Long ttl = jedisPoolUtil.ttl(key);
+        if(ttl < 1L){
+            // 设置过期时间
+            jedisPoolUtil.expire(key, ENTRY_EXPIRE_TIME);
+        }
+        return success;
     }
 
     @Override
