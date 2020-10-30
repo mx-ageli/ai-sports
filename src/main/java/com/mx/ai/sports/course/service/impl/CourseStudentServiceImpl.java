@@ -126,14 +126,14 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
             groupStudentService.save(groupStudent);
 
             // 统计报名序号
-            Long sort = baseMapper.findSortByMax(courseStudent.getCourseId());
-            courseStudent.setSort(sort);
+//            Long sort = baseMapper.findSortByMax(courseStudent.getCourseId());
+//            courseStudent.setSort(sort);
             // 保存报名信息
             this.save(courseStudent);
 
             entryVo.setGroupId(group.getGroupId());
             entryVo.setGroupName(group.getGroupName());
-            entryVo.setSort(sort);
+//            entryVo.setSort(sort);
         } catch (Exception e) {
             log.info("学生报课保存失败，courseId:{}, userId:{}, 发生异常：{}", courseStudent.getCourseId(), courseStudent.getUserId(), e.getMessage());
             e.printStackTrace();
@@ -158,24 +158,26 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
     @Override
     public Long setEntryStudentList2Redis(Long courseId, Long userId) {
         String key = getEntryStudentListKey(courseId);
+        // 当前报名人数
+        Long size = jedisPoolUtil.hLen(key) + 1;
 
-        Long success = jedisPoolUtil.hSet(key, String.valueOf(userId), "1");
+        jedisPoolUtil.hSet(key, String.valueOf(userId), String.valueOf(size));
         // 先查询key的存活时间
-        Long ttl = jedisPoolUtil.ttl(key);
+        long ttl = jedisPoolUtil.ttl(key);
         if(ttl < 1L){
             // 设置过期时间
             jedisPoolUtil.expire(key, ENTRY_EXPIRE_TIME);
         }
-        return success;
+        return size;
     }
 
     @Override
-    public Long findEntryStudentList2Redis(Long courseId, Long userId) {
-        String v = jedisPoolUtil.hGet(getEntryStudentListKey(courseId), String.valueOf(userId));
-        if(StringUtils.isBlank(v)){
+    public Integer findEntryStudentList2Redis(Long courseId, Long userId) {
+        String value = jedisPoolUtil.hGet(getEntryStudentListKey(courseId), String.valueOf(userId));
+        if(StringUtils.isBlank(value)){
             return null;
         }
-        return Long.valueOf(v);
+        return Integer.valueOf(value);
     }
 
     @Override

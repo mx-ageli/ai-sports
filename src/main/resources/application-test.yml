@@ -63,9 +63,9 @@ jetcache:
       valueEncoder: java
       valueDecoder: java
       poolConfig:
-        minIdle: 5
-        maxIdle: 20
-        maxTotal: 50
+        minIdle: 8
+        maxIdle: 500
+        maxTotal: 2000
       host: 127.0.0.1
       password: Kao!Ba~20191108
       port: 6379
