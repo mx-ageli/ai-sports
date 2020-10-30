@@ -1,8 +1,12 @@
 package com.mx.ai.sports.app.api;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
+import com.mx.ai.sports.course.query.KeepAddVo;
+import com.mx.ai.sports.course.query.KeepRecordQuery;
 import com.mx.ai.sports.course.query.RunRecordQuery;
 import com.mx.ai.sports.course.query.RunAddVo;
+import com.mx.ai.sports.course.vo.KeepRecordVo;
 import com.mx.ai.sports.course.vo.RunRecordVo;
 import com.mx.ai.sports.course.vo.RunRuleVo;
 import io.swagger.annotations.Api;
@@ -77,5 +81,28 @@ public interface RunApi {
     })
     @RequestMapping(value = "/pass", method = RequestMethod.GET)
     AiSportsResponse<Boolean> pass(@NotNull @RequestParam("courseId") Long courseId, @NotNull @RequestParam("isPass") Boolean isPass);
+
+
+    /**
+     * 保存健身数据
+     *
+     * @param keepAddVo 新增参数
+     * @return
+     */
+    @ApiOperation(value = "#已实现 # 保存健身数据")
+    @ApiImplicitParam(name = "keepAddVo", value = "新增参数", paramType = "body", dataType = "KeepAddVo", required = true)
+    @RequestMapping(value = "/keep_add", method = RequestMethod.POST)
+    AiSportsResponse<Boolean> keepAdd(@RequestBody @Valid KeepAddVo keepAddVo);
+
+    /**
+     * 查询健身记录
+     *
+     * @param query
+     * @return
+     */
+    @ApiOperation(value = "#已实现 # 查询健身记录")
+    @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "KeepRecordQuery", required = true)
+    @RequestMapping(value = "/find_keep_history", method = RequestMethod.POST)
+    AiSportsResponse<IPage<KeepRecordVo>> findKeepHistory(@RequestBody @Valid KeepRecordQuery query);
 
 }

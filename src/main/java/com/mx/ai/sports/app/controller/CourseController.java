@@ -332,10 +332,10 @@ public class CourseController extends BaseRestController implements CourseApi {
             boolean isCheckTime = course.getWeek().contains(String.valueOf(week));
             // 如果今日不是课程日
             if (!isCheckTime) {
-//                return new AiSportsResponse<CourseEntryVo>().fail().message("今天不是课程日，不能预约！");
+                return new AiSportsResponse<CourseEntryVo>().fail().message("今天不是课程日，不能预约！");
             }
             if (isCheckStart) {
-//                return new AiSportsResponse<CourseEntryVo>().fail().message("当前报名课程已经开始，不能报名！");
+                return new AiSportsResponse<CourseEntryVo>().fail().message("当前报名课程已经开始，不能报名！");
             }
             // 只有在正式环境才使用这个规则
             if (ActiveProfileConstant.PROD.equals(SpringContextUtil.getActiveProfile())) {

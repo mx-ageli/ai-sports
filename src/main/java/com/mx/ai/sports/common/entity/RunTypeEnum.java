@@ -14,7 +14,7 @@ public enum RunTypeEnum {
     /**
      * 2 健身课程
      */
-    SPORT(2L, "健身课程");
+    KEEP(2L, "健身课程");
 
     private final Long value;
 

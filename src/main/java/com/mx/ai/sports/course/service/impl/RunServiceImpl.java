@@ -125,7 +125,8 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
      * @param isPass
      * @param courseRecordId
      */
-    private void calcPass(Long userId, boolean isPass, Long courseId, Long courseRecordId) {
+    @Override
+    public void calcPass(Long userId, boolean isPass, Long courseId, Long courseRecordId) {
         // 需要将是否合格保存到学生记录表中
         RecordStudent recordStudent = recordStudentService.getOne(new LambdaQueryWrapper<RecordStudent>().eq(RecordStudent::getUserId, userId).eq(RecordStudent::getCourseRecordId, courseRecordId));
         // 没有学生记录 需要创建
@@ -158,14 +159,5 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         return countDtos.stream().collect(Collectors.toMap(CourseRunCountDto::getCourseId, CourseRunCountDto::getRunCount, (e1, e2) -> e1));
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Boolean pass(Long courseId, Long currentUserId, Boolean isPass) {
-        // 对应最新的课程记录Id
-        Long courseRecordId = courseRecordService.findIdByNowAndCreate(courseId);
 
-        calcPass(currentUserId, isPass, courseId, courseRecordId);
-
-        return true;
-    }
 }

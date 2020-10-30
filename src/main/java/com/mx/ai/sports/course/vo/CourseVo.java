@@ -2,6 +2,7 @@ package com.mx.ai.sports.course.vo;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.mx.ai.sports.common.entity.AiSportsConstant;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -89,4 +90,11 @@ public class CourseVo implements Serializable {
 
     @ApiModelProperty("小组名称")
     private String groupName;
+
+    @ApiModelProperty("课程的开始报名时间")
+    private String entryStartTime = AiSportsConstant.ENTRY_START_TIME;
+
+    @ApiModelProperty("课程的结束报名时间")
+    private String entryEndTime = AiSportsConstant.ENTRY_END_TIME;
+
 }

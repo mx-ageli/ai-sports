@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mx.ai.sports.course.mapper.KeepMapper">
+
+
+    <select id="findKeepRecordVo" resultType="com.mx.ai.sports.course.vo.KeepRecordVo">
+
+        SELECT
+            ac.COURSE_ID AS courseId,
+            ak.COURSE_RECORD_ID AS courseRecordId,
+            ac.COURSE_NAME AS courseName,
+            ac.IMAGES AS images,
+            ak.`STATUS` AS `status`,
+            ak.START_TIME AS startTime,
+            ak.END_TIME AS endTime,
+            ak.KEEP_TIME AS keepTime
+        FROM
+            APP_KEEP ak
+        LEFT JOIN APP_COURSE ac ON ak.COURSE_ID = ac.COURSE_ID
+        WHERE
+        ak.USER_ID = #{userId}
+        <if test="status != null and status != ''">
+            AND ak.`STATUS` = #{status}
+        </if>
+        ORDER BY
+            ak.CREATE_TIME DESC
+
+    </select>
+</mapper>
