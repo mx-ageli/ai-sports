@@ -433,6 +433,8 @@ public class CourseController extends BaseRestController implements CourseApi {
             if (!Objects.equals(RoleEnum.STUDENT.value(), user.getRoleId())) {
                 return new AiSportsResponse<IPage<RecordStudentVo>>().fail().message("用户Id必须是学生！");
             }
+
+            userId = query.getUserId();
         }
         return new AiSportsResponse<IPage<RecordStudentVo>>().success().data(recordStudentService.findRecordStudentVo(query.getRequest(), userId));
     }

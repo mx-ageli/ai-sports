@@ -72,6 +72,8 @@ public class CourseRecordServiceImpl extends ServiceImpl<CourseRecordMapper, Cou
         courseRecord.setAllCount(allCount);
         // 默认认为所有人都是缺席
         courseRecord.setAbsentCount(allCount);
+        // 默认所有人为不合格
+        courseRecord.setNoPassCount(allCount);
 
         this.save(courseRecord);
 
