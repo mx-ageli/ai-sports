@@ -1,6 +1,7 @@
 package com.mx.ai.sports.course.query;
 
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -27,6 +28,7 @@ public class RunLocationAddVo implements Serializable {
     @ApiModelProperty("跑步结束的坐标点 经度")
     private String lon;
 
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     @NotNull(message = "时间不能为null")
     @ApiModelProperty("时间")
     private Date time;

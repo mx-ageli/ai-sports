@@ -1,16 +1,15 @@
 package com.mx.ai.sports.course.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.RunStatusEnum;
 import com.mx.ai.sports.course.dto.CourseRunCountDto;
-import com.mx.ai.sports.course.dto.CourseStudentCountDto;
 import com.mx.ai.sports.course.entity.*;
 import com.mx.ai.sports.course.mapper.RunMapper;
 import com.mx.ai.sports.course.query.RunAddVo;
-import com.mx.ai.sports.course.query.RunLocationAddVo;
 import com.mx.ai.sports.course.query.RunRecordQuery;
 import com.mx.ai.sports.course.service.ICourseRecordService;
 import com.mx.ai.sports.course.service.IRecordStudentService;
@@ -18,7 +17,6 @@ import com.mx.ai.sports.course.service.IRunLocationService;
 import com.mx.ai.sports.course.service.IRunService;
 import com.mx.ai.sports.course.vo.RunRecordDetailVo;
 import com.mx.ai.sports.course.vo.RunRecordVo;
-import com.mx.ai.sports.course.vo.StudentCourseVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,18 +77,12 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         // 重新计算学生的合格状态
         boolean isPass = Objects.equals(run.getStatus(), RunStatusEnum.PASS.value());
         calcPass(userId, isPass, runAddVo.getCourseId(), courseRecordId);
+        // 保存坐标信息
+        RunLocation runLocation = new RunLocation();
+        runLocation.setRunId(run.getRunId());
+        runLocation.setLocation(JSON.toJSONString(runAddVo.getLocation()));
 
-        List<RunLocation> runList = new ArrayList<>();
-        for (RunLocationAddVo addVo : runAddVo.getLocation()) {
-            RunLocation runLocation = new RunLocation();
-            runLocation.setLat(addVo.getLat());
-            runLocation.setLon(addVo.getLon());
-            runLocation.setRunId(run.getRunId());
-            runLocation.setTime(addVo.getTime());
-            runList.add(runLocation);
-        }
-
-        return runLocationService.saveBatch(runList);
+        return runLocationService.save(runLocation);
     }
 
     /**
