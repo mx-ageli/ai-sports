@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.RoleEnum;
 import com.mx.ai.sports.common.oss.AliyunOssConfig;
+import com.mx.ai.sports.course.entity.RecordStudent;
+import com.mx.ai.sports.course.service.IRecordStudentService;
 import com.mx.ai.sports.system.entity.School;
 import com.mx.ai.sports.system.entity.TeacherRegister;
 import com.mx.ai.sports.system.entity.User;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -48,6 +51,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     private ClassesMapper classesMapper;
+
+    @Autowired
+    private IRecordStudentService recordStudentService;
 
     @Override
     public User findByUsername(String username) {
@@ -144,6 +150,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             classesVo.setTeacherName(subjectStudentVo.getTeacherName());
             userVo.setClasses(classesVo);
 
+            // 查询学生的课程次数和合格次数
+            List<RecordStudent> recordStudentList = recordStudentService.list(new LambdaQueryWrapper<RecordStudent>().eq(RecordStudent::getUserId, userId));
+            if(!CollectionUtils.isEmpty(recordStudentList)){
+                userVo.setCourseCount((long) recordStudentList.size());
+                userVo.setPassCount(recordStudentList.stream().filter(RecordStudent::getIsPass).count());
+            }
         }
         return userVo;
     }

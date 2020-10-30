@@ -69,4 +69,12 @@ public class UserVo implements Serializable {
 
     @ApiModelProperty("学生的主课信息，只有学生才有值")
     private SubjectStudentVo subjectStudent;
+
+    @ApiModelProperty("参加的课程数量")
+    private Long courseCount = 0L;
+
+    @ApiModelProperty("参加课程的合格数量")
+    private Long passCount = 0L;
+
+
 }
