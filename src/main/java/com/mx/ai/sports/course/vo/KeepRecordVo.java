@@ -42,5 +42,8 @@ public class KeepRecordVo implements Serializable {
     @ApiModelProperty("结束时间")
     private Date endTime;
 
+    @ApiModelProperty("健身时长(以秒为单位)")
+    private Long keepTime;
+
 
 }
