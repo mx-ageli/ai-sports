@@ -45,5 +45,13 @@ public class KeepRecordVo implements Serializable {
     @ApiModelProperty("健身时长(以秒为单位)")
     private Long keepTime;
 
+    @ApiModelProperty("课程的坐标点 纬度")
+    private String lat;
+
+    @ApiModelProperty("课程的坐标点 经度")
+    private String lon;
+
+    @ApiModelProperty("课程的坐标点的别名")
+    private String locationName;
 
 }
