@@ -28,6 +28,7 @@ import com.mx.ai.sports.system.service.IUserMessageService;
 import com.mx.ai.sports.system.service.IUserService;
 import com.mx.ai.sports.system.vo.MessageVo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -103,7 +104,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
             return Boolean.TRUE;
         }
         // 推送的设备Id
-        List<String> deviceIds = studentList.stream().map(User::getDeviceId).distinct().collect(Collectors.toList());
+        List<String> deviceIds = studentList.stream().filter(e -> StringUtils.isNotBlank(e.getDeviceId())).map(User::getDeviceId).distinct().collect(Collectors.toList());
         // 推送的学生Id
         List<Long> userIds = studentList.stream().map(User::getUserId).collect(Collectors.toList());
 
@@ -114,9 +115,9 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         String title = "有新的课程发布啦！";
         String content = title + user.getFullName() + "老师发布了【" + course.getCourseName() + "】课程，快去报名吧！";
         // 推送系统消息
-        sendMessage(deviceIds, content, extras);
+        // sendMessage(deviceIds, content, extras);
         // 保存系统消息
-        saveSysMessage(course, userIds, title, content, MsgTypeEnum.COURSE_PUBLISH.value());
+        // saveSysMessage(course, userIds, title, content, MsgTypeEnum.COURSE_PUBLISH.value());
 
         return Boolean.TRUE;
     }
@@ -143,9 +144,9 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         String title = "课程快要开始了！";
         String content = user.getFullName() + "老师发布的【" + course.getCourseName() + "】课程，马上就要开始了！快去打卡吧！";
         // 推送系统消息
-        sendMessage(deviceIds, content, extras);
-        // 保存系统消息
-        saveSysMessage(course, userIds, title, content, MsgTypeEnum.COURSE_START.value());
+//        sendMessage(deviceIds, content, extras);
+//        // 保存系统消息
+//        saveSysMessage(course, userIds, title, content, MsgTypeEnum.COURSE_START.value());
 
         return Boolean.TRUE;
     }
@@ -188,6 +189,8 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
             log.error("Msg ID: " + e.getMsgId());
 
 //            throw new AiSportsException("JPush服务器的错误响应.");
+        } catch (Exception e) {
+            log.error("推送服务：系统错误. ", e);
         }
 
         return Boolean.TRUE;

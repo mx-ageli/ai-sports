@@ -8,15 +8,13 @@ import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.entity.RunTypeEnum;
 import com.mx.ai.sports.common.utils.DateUtil;
 import com.mx.ai.sports.course.entity.Course;
+import com.mx.ai.sports.course.entity.CourseStudent;
 import com.mx.ai.sports.course.entity.RunRule;
 import com.mx.ai.sports.course.query.KeepAddVo;
 import com.mx.ai.sports.course.query.KeepRecordQuery;
 import com.mx.ai.sports.course.query.RunAddVo;
 import com.mx.ai.sports.course.query.RunRecordQuery;
-import com.mx.ai.sports.course.service.ICourseService;
-import com.mx.ai.sports.course.service.IKeepService;
-import com.mx.ai.sports.course.service.IRunRuleService;
-import com.mx.ai.sports.course.service.IRunService;
+import com.mx.ai.sports.course.service.*;
 import com.mx.ai.sports.course.vo.KeepRecordVo;
 import com.mx.ai.sports.course.vo.RunRecordVo;
 import com.mx.ai.sports.course.vo.RunRuleVo;
@@ -54,6 +52,9 @@ public class RunController extends BaseRestController implements RunApi {
     @Autowired
     private ICourseService courseService;
 
+    @Autowired
+    private ICourseStudentService courseStudentService;
+
     @Override
     @Log("保存跑步数据")
     public AiSportsResponse<Boolean> add(@RequestBody @Valid RunAddVo runAddVo) {
@@ -87,6 +88,12 @@ public class RunController extends BaseRestController implements RunApi {
         if (currentTime.isBefore(startTime)) {
             return new AiSportsResponse<Boolean>().fail().message("当前课程还没有到上课时间，不能保存跑步数据！");
         }
+        Long userId = getCurrentUserId();
+        // 检查学生是否已经报课
+        CourseStudent courseStudent = courseStudentService.findByUserCourseId(userId, course.getCourseId());
+        if (courseStudent == null) {
+            return new AiSportsResponse<Boolean>().fail().message("你没有报名这个课程，不能保存跑步数据！");
+        }
 
         RunRule runRule = runRuleService.getById(RunTypeEnum.RUN.value());
         if (runRule == null) {
@@ -98,7 +105,7 @@ public class RunController extends BaseRestController implements RunApi {
         }
 
 
-        return new AiSportsResponse<Boolean>().success().data(runService.saveRun(runAddVo, runRule, getCurrentUserId()));
+        return new AiSportsResponse<Boolean>().success().data(runService.saveRun(runAddVo, runRule, userId));
     }
 
     @Override
@@ -147,8 +154,14 @@ public class RunController extends BaseRestController implements RunApi {
         if (currentTime.isBefore(startTime)) {
             return new AiSportsResponse<Boolean>().fail().message("当前课程还没有到上课时间，不能保存运动数据！");
         }
+        Long userId = getCurrentUserId();
+        // 检查学生是否已经报课
+        CourseStudent courseStudent = courseStudentService.findByUserCourseId(userId, course.getCourseId());
+        if (courseStudent == null) {
+            return new AiSportsResponse<Boolean>().fail().message("你没有报名这个课程，不能保存跑步数据！");
+        }
 
-        return new AiSportsResponse<Boolean>().success().data(keepService.pass(courseId, getCurrentUserId(), isPass));
+        return new AiSportsResponse<Boolean>().success().data(keepService.pass(courseId, userId, isPass));
     }
 
     @Override
