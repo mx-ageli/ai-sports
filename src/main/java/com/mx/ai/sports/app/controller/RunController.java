@@ -158,7 +158,7 @@ public class RunController extends BaseRestController implements RunApi {
         // 检查学生是否已经报课
         CourseStudent courseStudent = courseStudentService.findByUserCourseId(userId, course.getCourseId());
         if (courseStudent == null) {
-            return new AiSportsResponse<Boolean>().fail().message("你没有报名这个课程，不能保存跑步数据！");
+            return new AiSportsResponse<Boolean>().fail().message("你没有报名这个课程，不能保存健身数据！");
         }
 
         return new AiSportsResponse<Boolean>().success().data(keepService.pass(courseId, userId, isPass));
@@ -172,7 +172,7 @@ public class RunController extends BaseRestController implements RunApi {
         }
         // 判断课程是否有跑步课程
         if (course.getIsRun()) {
-            return new AiSportsResponse<Boolean>().fail().message("该课程不是跑步课程，不能保存健身数据!");
+            return new AiSportsResponse<Boolean>().fail().message("该课程不是健身课程，不能保存健身数据!");
         }
 
         // 开始时间小于结束时间
@@ -199,8 +199,14 @@ public class RunController extends BaseRestController implements RunApi {
         if (runRule == null) {
             return new AiSportsResponse<Boolean>().fail().message("没有设置健身规则，请后台设置！");
         }
+        Long userId = getCurrentUserId();
+        // 检查学生是否已经报课
+        CourseStudent courseStudent = courseStudentService.findByUserCourseId(userId, course.getCourseId());
+        if (courseStudent == null) {
+            return new AiSportsResponse<Boolean>().fail().message("你没有报名这个课程，不能保存健身数据！");
+        }
 
-        return new AiSportsResponse<Boolean>().success().data(keepService.saveKeep(keepAddVo, runRule, getCurrentUserId()));
+        return new AiSportsResponse<Boolean>().success().data(keepService.saveKeep(keepAddVo, runRule, userId));
     }
 
     @Override
