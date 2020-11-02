@@ -11,7 +11,12 @@ public class AiSportsException extends Exception {
     private static final long serialVersionUID = 6086923613895968276L;
 
     public AiSportsException(String message) {
+
         super(message);
+    }
+
+    public AiSportsException(String message, boolean writableStackTrace){
+        super(message, null ,false, writableStackTrace);
     }
 
 }
