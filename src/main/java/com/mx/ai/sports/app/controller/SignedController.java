@@ -1,9 +1,11 @@
 package com.mx.ai.sports.app.controller;
 
 import com.mx.ai.sports.app.api.SignedApi;
+import com.mx.ai.sports.common.annotation.Limit;
 import com.mx.ai.sports.common.annotation.Log;
 import com.mx.ai.sports.common.controller.BaseRestController;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
+import com.mx.ai.sports.common.entity.LimitType;
 import com.mx.ai.sports.common.utils.DateUtil;
 import com.mx.ai.sports.course.converter.SignedConverter;
 import com.mx.ai.sports.course.entity.Course;
@@ -75,6 +77,7 @@ public class SignedController extends BaseRestController implements SignedApi {
 
     @Override
     @Log("打卡")
+    @Limit(key = "signed", period = 3, count = 1, name = "打卡", prefix = "limit", limitType = LimitType.IP, message = "系统正在处理为你保存打卡...")
     public AiSportsResponse<Boolean> signed(@RequestBody @Valid SignedAddVo signedAddVo) {
         Course course = courseService.getCacheById(signedAddVo.getCourseId());
 

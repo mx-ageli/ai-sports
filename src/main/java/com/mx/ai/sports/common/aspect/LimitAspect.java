@@ -88,7 +88,7 @@ public class LimitAspect {
             parameterMap.forEach((k, p) -> parameterStr.append(k).append(":").append(Arrays.toString(p)).append(","));
             log.info("当前有请求正在频繁请求，参数：{}", parameterStr);
 
-            throw new AiSportsException("操作太过于频繁，请稍后再试！");
+            throw new AiSportsException(limitAnnotation.message());
         }
     }
 
