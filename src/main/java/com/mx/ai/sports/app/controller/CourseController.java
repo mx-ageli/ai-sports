@@ -155,7 +155,7 @@ public class CourseController extends BaseRestController implements CourseApi {
     @TeacherRole
     @Log("老师修改课程")
     public AiSportsResponse<Boolean> update(@RequestBody @Valid CourseUpdateVo updateVo) throws AiSportsException {
-        Course course = courseService.getById(updateVo.getCourseId());
+        Course course = courseService.getCacheById(updateVo.getCourseId());
         if (course == null) {
             return new AiSportsResponse<Boolean>().fail().message("课程Id不存在，没有查询到数据!");
         }
@@ -303,10 +303,10 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     @Override
     @Log("学生报名课程")
-    @Limit(key = "entry", period = 1, count = 1, name = "报课", prefix = "limit", limitType = LimitType.IP)
+    @Limit(key = "entry", period = 3, count = 1, name = "报课", prefix = "limit", limitType = LimitType.IP)
     public AiSportsResponse<CourseEntryVo> entry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException {
 
-        Course course = courseService.getById(courseId);
+        Course course = courseService.getCacheById(courseId);
         if (course == null) {
             return new AiSportsResponse<CourseEntryVo>().fail().message("课程Id不存在，没有查询到数据!");
         }
@@ -386,10 +386,44 @@ public class CourseController extends BaseRestController implements CourseApi {
             if (isCheckStart) {
                 return new AiSportsResponse<CourseEntryVo>().fail().message("当前报名课程已经开始，不能取消报名！");
             }
+            // TODO 临时代码，在报名时间开始的半个小时内不能从这里取消课程
+            LocalTime localTime = LocalTime.parse(AiSportsConstant.ENTRY_START_TIME);
+            localTime = localTime.plusMinutes(30);
+            if (localTime.isAfter(currentTime)) {
+                return new AiSportsResponse<CourseEntryVo>().success().data(new CourseEntryVo());
+            }
+
             // 删除报名信息
             courseStudentService.remove(userId, courseId);
             return new AiSportsResponse<CourseEntryVo>().success().data(new CourseEntryVo());
         }
+    }
+
+    @Override
+    @Log("学生取消报名")
+    public AiSportsResponse<CourseEntryVo> cancelEntry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException {
+
+        Course course = courseService.getCacheById(courseId);
+        if (course == null) {
+            return new AiSportsResponse<CourseEntryVo>().fail().message("课程Id不存在，没有查询到数据!");
+        }
+        Long userId = getCurrentUserId();
+        // 当前时间
+        LocalTime currentTime = LocalTime.now();
+        // 课程的开始时间
+        LocalTime startTime = LocalTime.parse(course.getStartTime());
+        // 课程的结束时间
+        LocalTime endTime = LocalTime.parse(course.getEndTime());
+        // 课程是否已经开始
+        // 今天是否是执行日 startTime > currentTime && currentTime > endTime = true
+        boolean isCheckStart = startTime.isBefore(currentTime) && currentTime.isBefore(endTime);
+
+        if (isCheckStart) {
+            return new AiSportsResponse<CourseEntryVo>().fail().message("当前报名课程已经开始，不能取消报名！");
+        }
+        // 删除报名信息
+        courseStudentService.remove(userId, courseId);
+        return new AiSportsResponse<CourseEntryVo>().success().data(new CourseEntryVo());
     }
 
 

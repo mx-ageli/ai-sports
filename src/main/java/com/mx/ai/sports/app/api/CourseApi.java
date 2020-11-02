@@ -132,12 +132,23 @@ public interface CourseApi {
      * @param courseId 课程Id
      * @return
      */
-    @ApiOperation(value = "#已实现 图15# 学生报名课程，或者是取消报名（仅限于学生使用）",
+    @ApiOperation(value = "#已实现 图15# 学生报名课程（仅限于学生使用）",
             notes = "1、在课程的开始时间到结束时间的范围内，不能报名或取消报名")
     @ApiImplicitParam(name = "courseId", value = "课程Id", paramType = "query", dataType = "long", required = true)
     @RequestMapping(value = "/entry", method = RequestMethod.GET)
     AiSportsResponse<CourseEntryVo> entry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException;
 
+    /**
+     * 学生报名课程，或者是取消报名（仅限于学生使用）
+     *
+     * @param courseId 课程Id
+     * @return
+     */
+    @ApiOperation(value = "#已实现 图15# 学生取消报名（仅限于学生使用）",
+            notes = "1、在课程的开始时间到结束时间的范围内，不能报名或取消报名")
+    @ApiImplicitParam(name = "courseId", value = "课程Id", paramType = "query", dataType = "long", required = true)
+    @RequestMapping(value = "/cancel_entry", method = RequestMethod.GET)
+    AiSportsResponse<CourseEntryVo> cancelEntry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException;
 
     /**
      * 查询课程的完成情况历史统计分析（仅限于老师使用)

@@ -62,7 +62,7 @@ public class CourseUpdateTest {
             try {
                 log.info("开始添加{}的课程，详情：{}", name, JSON.toJSONString(updateVo));
 
-                Course course = courseService.getById(updateVo.getCourseId());
+                Course course = courseService.getCacheById(updateVo.getCourseId());
                 if (course == null) {
                     throw new AiSportsException("课程Id不存在，没有查询到数据!");
                 }

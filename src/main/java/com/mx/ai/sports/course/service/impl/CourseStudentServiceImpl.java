@@ -82,9 +82,9 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
     @Transactional(rollbackFor = Exception.class)
     public Boolean remove(Long userId, Long courseId) {
         // 将用户的小组关系查询出来，得出学生在哪个小组
-        GroupStudent groupStudent = groupStudentService.findByCourseIdAndUserId(courseId, userId);
-        // 再将学生关系删除掉
-        groupStudentService.removeByGroupIdAndUserId(groupStudent.getGroupId(), groupStudent.getUserId());
+//        GroupStudent groupStudent = groupStudentService.findByCourseIdAndUserId(courseId, userId);
+        // 将学生关系删除掉
+        groupStudentService.removeByUserId(userId);
 
         // TODO 需要更新其他学生的排序
         // 将列表中的学生删除掉
@@ -135,10 +135,10 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
             entryVo.setGroupName(group.getGroupName());
 //            entryVo.setSort(sort);
         } catch (Exception e) {
-            log.info("学生报课保存失败，courseId:{}, userId:{}, 发生异常：{}", courseStudent.getCourseId(), courseStudent.getUserId(), e.getMessage());
-            e.printStackTrace();
             // 将学生列表删除
             removeEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
+            log.info("学生报课保存失败，courseId:{}, userId:{}, 发生异常：{}", courseStudent.getCourseId(), courseStudent.getUserId(), e.getMessage());
+            e.printStackTrace();
         }
 
         return entryVo;

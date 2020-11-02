@@ -59,4 +59,6 @@ public interface IGroupStudentService extends IService<GroupStudent> {
     GroupStudent findByCourseIdAndUserId(Long courseId, Long userId);
 
     Boolean removeByGroupIdAndUserId(Long groupId, Long userId);
+
+    Boolean removeByUserId(Long userId);
 }

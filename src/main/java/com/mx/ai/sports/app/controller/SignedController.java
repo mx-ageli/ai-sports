@@ -76,7 +76,7 @@ public class SignedController extends BaseRestController implements SignedApi {
     @Override
     @Log("打卡")
     public AiSportsResponse<Boolean> signed(@RequestBody @Valid SignedAddVo signedAddVo) {
-        Course course = courseService.getById(signedAddVo.getCourseId());
+        Course course = courseService.getCacheById(signedAddVo.getCourseId());
 
         // 当前学生Id
         Long userId = getCurrentUserId();

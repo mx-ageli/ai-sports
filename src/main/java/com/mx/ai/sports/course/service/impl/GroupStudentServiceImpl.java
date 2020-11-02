@@ -59,4 +59,9 @@ public class GroupStudentServiceImpl extends ServiceImpl<GroupStudentMapper, Gro
     public Boolean removeByGroupIdAndUserId(Long groupId, Long userId) {
         return this.baseMapper.delete(new LambdaQueryWrapper<GroupStudent>().eq(GroupStudent::getGroupId, groupId).eq(GroupStudent::getUserId, userId)) > 0;
     }
+
+    @Override
+    public Boolean removeByUserId(Long userId) {
+        return this.baseMapper.delete(new LambdaQueryWrapper<GroupStudent>().eq(GroupStudent::getUserId, userId)) > 0;
+    }
 }

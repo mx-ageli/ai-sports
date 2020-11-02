@@ -59,7 +59,7 @@ public class RunController extends BaseRestController implements RunApi {
     @Log("保存跑步数据")
     public AiSportsResponse<Boolean> add(@RequestBody @Valid RunAddVo runAddVo) {
 
-        Course course = courseService.getById(runAddVo.getCourseId());
+        Course course = courseService.getCacheById(runAddVo.getCourseId());
         if (course == null) {
             return new AiSportsResponse<Boolean>().fail().message("课程Id不存在，没有查询到数据!");
         }
@@ -132,7 +132,7 @@ public class RunController extends BaseRestController implements RunApi {
     @Override
     @Log("设置学生的运动是否合格")
     public AiSportsResponse<Boolean> pass(@NotNull @RequestParam("courseId") Long courseId, @NotNull @RequestParam("isPass") Boolean isPass) {
-        Course course = courseService.getById(courseId);
+        Course course = courseService.getCacheById(courseId);
         if (course == null) {
             return new AiSportsResponse<Boolean>().fail().message("课程Id不存在，没有查询到数据!");
         }
@@ -166,7 +166,7 @@ public class RunController extends BaseRestController implements RunApi {
 
     @Override
     public AiSportsResponse<Boolean> keepAdd(@RequestBody @Valid KeepAddVo keepAddVo) {
-        Course course = courseService.getById(keepAddVo.getCourseId());
+        Course course = courseService.getCacheById(keepAddVo.getCourseId());
         if (course == null) {
             return new AiSportsResponse<Boolean>().fail().message("课程Id不存在，没有查询到数据!");
         }
