@@ -151,7 +151,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             userVo.setClasses(classesVo);
 
             // 查询学生的课程次数和合格次数
-            List<RecordStudent> recordStudentList = recordStudentService.list(new LambdaQueryWrapper<RecordStudent>().eq(RecordStudent::getUserId, userId));
+            List<RecordStudent> recordStudentList = recordStudentService.list(new LambdaQueryWrapper<RecordStudent>().eq(RecordStudent::getIsAbsent, false).eq(RecordStudent::getUserId, userId));
             if(!CollectionUtils.isEmpty(recordStudentList)){
                 userVo.setCourseCount((long) recordStudentList.size());
                 userVo.setPassCount(recordStudentList.stream().filter(RecordStudent::getIsPass).count());
