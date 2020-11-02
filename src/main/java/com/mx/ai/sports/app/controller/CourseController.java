@@ -388,7 +388,7 @@ public class CourseController extends BaseRestController implements CourseApi {
             }
             // TODO 临时代码，在报名时间开始的半个小时内不能从这里取消课程
             LocalTime localTime = LocalTime.parse(AiSportsConstant.ENTRY_START_TIME);
-            localTime = localTime.plusMinutes(30);
+            localTime = localTime.plusHours(1);
             if (localTime.isAfter(currentTime)) {
                 return new AiSportsResponse<CourseEntryVo>().success().data(new CourseEntryVo());
             }

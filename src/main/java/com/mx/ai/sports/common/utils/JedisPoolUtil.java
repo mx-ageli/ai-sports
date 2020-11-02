@@ -269,6 +269,9 @@ public class JedisPoolUtil {
         Jedis jedis = getJedis();
         try {
             byte[] bits = jedis.get(key.getBytes());
+            if(bits == null){
+                return null;
+            }
             obj = SerializeUtil.unserialize(bits);
         } catch (Exception e) {
             returnBrokenResource(jedis);
