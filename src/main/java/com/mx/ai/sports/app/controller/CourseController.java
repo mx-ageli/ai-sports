@@ -303,7 +303,7 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     @Override
     @Log("学生报名课程")
-    @Limit(key = "entry", period = 3, count = 1, name = "报课", prefix = "limit", limitType = LimitType.IP, message = "系统正在处理你的报课中...")
+    @Limit(key = "entry", period = 3, count = 1, name = "报课", prefix = "limit", limitType = LimitType.IP)
     public AiSportsResponse<CourseEntryVo> entry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException {
 
         Course course = courseService.getCacheById(courseId);
