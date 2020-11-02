@@ -82,7 +82,8 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         runLocation.setRunId(run.getRunId());
         runLocation.setLocation(JSON.toJSONString(runAddVo.getLocation()));
 
-        return runLocationService.save(runLocation);
+//        return runLocationService.save(runLocation);
+        return true;
     }
 
     /**
