@@ -264,6 +264,10 @@ public class CourseController extends BaseRestController implements CourseApi {
             courseVo.setEntryStatus(EntryEnum.NO.value());
         }
 
+        if (LocalTime.parse(courseVo.getEndTime()).isBefore(LocalTime.now())) {
+            courseVo.setEntryStatus(EntryEnum.FINISH.value());
+        }
+
         // 判断课程是否暂停状态
         if (Objects.equals(courseVo.getStatus(), Job.ScheduleStatus.PAUSE.getValue())) {
             courseVo.setEntryStatus(EntryEnum.FINISH.value());
