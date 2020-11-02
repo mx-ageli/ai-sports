@@ -352,7 +352,7 @@ public class CourseController extends BaseRestController implements CourseApi {
             // 先查询课程在redis中的报名人数是否已满
             Long entryCountRedis = courseStudentService.getLenEntryStudentList2Redis(courseId);
             // 如果报名的人数大于了课程的最大人数
-            if(entryCountRedis >= course.getMaxCount()){
+            if(entryCountRedis != null && entryCountRedis >= course.getMaxCount()){
                 return new AiSportsResponse<CourseEntryVo>().fail().message("今日当前课程已经报满，请明日再来！");
             }
             // 默认先给学生报名成功
