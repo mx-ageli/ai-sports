@@ -6,7 +6,10 @@ import com.mx.ai.sports.course.entity.Keep;
 import com.mx.ai.sports.course.entity.RunRule;
 import com.mx.ai.sports.course.query.KeepAddVo;
 import com.mx.ai.sports.course.query.KeepRecordQuery;
+import com.mx.ai.sports.course.vo.CountVo;
 import com.mx.ai.sports.course.vo.KeepRecordVo;
+
+import java.util.List;
 
 /**
  * 健身记录
@@ -30,4 +33,5 @@ public interface IKeepService extends IService<Keep> {
     Boolean pass(Long courseId, Long userId, Boolean isPass);
 
 
+    List<CountVo> findCountByCourseRecordId(Long courseRecordId);
 }

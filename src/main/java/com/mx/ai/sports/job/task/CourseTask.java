@@ -1,16 +1,18 @@
 package com.mx.ai.sports.job.task;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.mx.ai.sports.common.entity.RunStatusEnum;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.course.entity.*;
 import com.mx.ai.sports.course.service.*;
+import com.mx.ai.sports.course.vo.CountVo;
 import com.mx.ai.sports.system.service.IMessageService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,7 +45,13 @@ public class CourseTask {
     private IGroupStudentService groupStudentService;
 
     @Autowired
-    private IGroupService groupService;
+    private ISignedService signedService;
+
+    @Autowired
+    private IRunService runService;
+
+    @Autowired
+    private IKeepService keepService;
 
     /**
      * 课程活动开始创建课程记录数据， 在打卡时间开始前5分钟创建
@@ -109,12 +117,54 @@ public class CourseTask {
      * @param courseId
      */
     public void deleteCourseStudentTask(String courseId) {
+        // 统计课程的打卡数量、迟到数量、缺席数量、合格数量、不合格数量
+        CourseRecord courseRecord = courseRecordService.findByNow(Long.valueOf(courseId));
+        // 查询出签到的人和迟到人数量
+        List<CountVo> signedCountList = signedService.findCountByCourseRecordId(courseRecord.getCourseRecordId());
+        for (CountVo countVo : signedCountList) {
+            if ("0".equals(countVo.getKey())) {
+                courseRecord.setSingedCount(countVo.getCount());
+            } else if ("1".equals(countVo.getKey())) {
+                courseRecord.setLateCount(countVo.getCount());
+            }
+        }
+        // 缺席的人等于 全部人-签到的人-迟到的人
+        courseRecord.setAbsentCount(courseRecord.getAllCount() - courseRecord.getSingedCount() - courseRecord.getLateCount());
+
+        List<CountVo> runCountList = runService.findCountByCourseRecordId(courseRecord.getCourseRecordId());
+        if (CollectionUtils.isNotEmpty(runCountList)) {
+            setCourseRecord(courseRecord, runCountList);
+        }
+
+        List<CountVo> keepCountList = keepService.findCountByCourseRecordId(courseRecord.getCourseRecordId());
+        if (CollectionUtils.isNotEmpty(keepCountList)) {
+            setCourseRecord(courseRecord, keepCountList);
+        }
+        // 重新保存统计数据
+        courseRecordService.saveOrUpdate(courseRecord);
+
         int delCount = courseStudentService.removeByCourseId(courseId);
         // 还需要将学生与课程的小组关系删除
         groupStudentService.remove(new LambdaQueryWrapper<GroupStudent>().eq(GroupStudent::getCourseId, courseId));
         // 清除报名学生的缓存
         courseStudentService.removeEntryStudentList2Redis(Long.valueOf(courseId));
         log.info("课程结束，清除所有的学生报名记录，courseId:{}, 清除数量：{}", courseId, delCount);
+    }
+
+    /**
+     * 健身课程的赋值
+     *
+     * @param courseRecord
+     * @param runCountList
+     */
+    private void setCourseRecord(CourseRecord courseRecord, List<CountVo> runCountList) {
+        for (CountVo countVo : runCountList) {
+            if (RunStatusEnum.PASS.value().equals(countVo.getKey())) {
+                courseRecord.setPassCount(countVo.getCount());
+            } else if (RunStatusEnum.NO_PASS.value().equals(countVo.getKey())) {
+                courseRecord.setNoPassCount(countVo.getCount());
+            }
+        }
     }
 
 

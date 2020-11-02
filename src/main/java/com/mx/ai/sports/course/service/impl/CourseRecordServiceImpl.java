@@ -40,6 +40,11 @@ public class CourseRecordServiceImpl extends ServiceImpl<CourseRecordMapper, Cou
     }
 
     @Override
+    public CourseRecord findByNow(Long courseId) {
+        return baseMapper.findIdByNow(courseId);
+    }
+
+    @Override
     public Long findIdByNowAndCreate(Long courseId) {
         CourseRecord courseRecord = baseMapper.findIdByNow(courseId);
         // 如果没有查询到，说明这种情况是没有执行定时任务去创建的
@@ -70,10 +75,16 @@ public class CourseRecordServiceImpl extends ServiceImpl<CourseRecordMapper, Cou
         List<Long> userIds = courseStudentService.findByCourseId(courseId);
         Long allCount = (long) userIds.size();
         courseRecord.setAllCount(allCount);
-        // 默认认为所有人都是缺席
-        courseRecord.setAbsentCount(allCount);
-        // 默认所有人为不合格
-        courseRecord.setNoPassCount(allCount);
+//        // 默认认为所有人都是缺席
+//        courseRecord.setAbsentCount(allCount);
+//        // 默认所有人为不合格
+//        courseRecord.setNoPassCount(allCount);
+        // 全都先默认为0
+        courseRecord.setSingedCount(0L);
+        courseRecord.setAbsentCount(0L);
+        courseRecord.setLateCount(0L);
+        courseRecord.setPassCount(0L);
+        courseRecord.setNoPassCount(0L);
 
         this.save(courseRecord);
 

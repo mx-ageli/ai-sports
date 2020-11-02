@@ -1,12 +1,11 @@
 package com.mx.ai.sports.course.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mx.ai.sports.common.entity.AiSportsResponse;
-import com.mx.ai.sports.course.dto.ExportRecordTotalDto;
 import com.mx.ai.sports.course.entity.Run;
 import com.mx.ai.sports.course.entity.RunRule;
 import com.mx.ai.sports.course.query.RunAddVo;
 import com.mx.ai.sports.course.query.RunRecordQuery;
+import com.mx.ai.sports.course.vo.CountVo;
 import com.mx.ai.sports.course.vo.RunRecordVo;
 
 import java.util.Date;
@@ -49,4 +48,6 @@ public interface IRunService extends IService<Run> {
 
 
     void calcPass(Long userId, boolean isPass, Long courseId, Long courseRecordId);
+
+    List<CountVo> findCountByCourseRecordId(Long courseRecordId);
 }

@@ -1,10 +1,11 @@
 package com.mx.ai.sports.course.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mx.ai.sports.course.dto.CourseSignedCountDto;
 import com.mx.ai.sports.course.entity.Signed;
+import com.mx.ai.sports.course.vo.CountVo;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,4 +48,6 @@ public interface ISignedService extends IService<Signed> {
      * @return
      */
     Map<Long, Map<Long, Long>> findCourseSignedCount(Date startTime, Date endTime);
+
+    List<CountVo> findCountByCourseRecordId(Long courseRecordId);
 }

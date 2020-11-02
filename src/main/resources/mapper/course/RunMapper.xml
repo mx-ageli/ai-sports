@@ -66,4 +66,8 @@
             ar.COURSE_ID
 
     </select>
+    <select id="findCountByCourseRecordId" resultType="com.mx.ai.sports.course.vo.CountVo">
+
+        select `STATUS` as `key`, COUNT(RUN_ID) as `count` from APP_RUN where COURSE_RECORD_ID = #{courseRecordId} GROUP BY `STATUS`
+    </select>
 </mapper>

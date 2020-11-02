@@ -29,4 +29,7 @@
             ak.CREATE_TIME DESC
 
     </select>
+    <select id="findCountByCourseRecordId" resultType="com.mx.ai.sports.course.vo.CountVo">
+        select `STATUS` as `key`, COUNT(KEEP_ID) as `count` from APP_KEEP where COURSE_RECORD_ID = #{courseRecordId} GROUP BY `STATUS`
+    </select>
 </mapper>

@@ -3,10 +3,8 @@ package com.mx.ai.sports.course.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mx.ai.sports.common.entity.QueryRequest;
-import com.mx.ai.sports.course.entity.Course;
 import com.mx.ai.sports.course.entity.CourseRecord;
 import com.mx.ai.sports.course.vo.CourseRecordVo;
-import com.mx.ai.sports.course.vo.CourseVo;
 
 /**
  * 课程记录Service
@@ -22,6 +20,13 @@ public interface ICourseRecordService extends IService<CourseRecord> {
      * @return
      */
     Long findIdByNow(Long courseId);
+
+    /**
+     * 获取课程最新的记录Id
+     * @param courseId
+     * @return
+     */
+    CourseRecord findByNow(Long courseId);
 
     /**
      * 获取课程最新的记录Id，如果没有获取到就创建

@@ -13,6 +13,7 @@ import com.mx.ai.sports.course.query.KeepRecordQuery;
 import com.mx.ai.sports.course.service.ICourseRecordService;
 import com.mx.ai.sports.course.service.IKeepService;
 import com.mx.ai.sports.course.service.IRunService;
+import com.mx.ai.sports.course.vo.CountVo;
 import com.mx.ai.sports.course.vo.KeepRecordVo;
 import com.mx.ai.sports.course.vo.RunRecordDetailVo;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -40,6 +42,7 @@ public class KeepServiceImpl extends ServiceImpl<KeepMapper, Keep> implements IK
     private IRunService runService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean saveKeep(KeepAddVo keepAddVo, RunRule runRule, Long userId) {
         Keep keep = new Keep();
         keep.setCourseId(keepAddVo.getCourseId());
@@ -108,5 +111,10 @@ public class KeepServiceImpl extends ServiceImpl<KeepMapper, Keep> implements IK
         runService.calcPass(userId, isPass, courseId, courseRecordId);
 
         return success;
+    }
+
+    @Override
+    public List<CountVo> findCountByCourseRecordId(Long courseRecordId) {
+        return baseMapper.findCountByCourseRecordId(courseRecordId);
     }
 }

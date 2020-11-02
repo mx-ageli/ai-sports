@@ -2,15 +2,14 @@ package com.mx.ai.sports.course.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mx.ai.sports.course.dto.CourseRunCountDto;
 import com.mx.ai.sports.course.dto.CourseSignedCountDto;
-import com.mx.ai.sports.course.entity.CourseRecord;
 import com.mx.ai.sports.course.entity.RecordStudent;
 import com.mx.ai.sports.course.entity.Signed;
 import com.mx.ai.sports.course.mapper.SignedMapper;
 import com.mx.ai.sports.course.service.ICourseRecordService;
 import com.mx.ai.sports.course.service.IRecordStudentService;
 import com.mx.ai.sports.course.service.ISignedService;
+import com.mx.ai.sports.course.vo.CountVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -67,21 +65,21 @@ public class SignedServiceImpl extends ServiceImpl<SignedMapper, Signed> impleme
             recordStudent.setIsAbsent(false);
             // 更新学生的课程记录
             recordStudentService.saveOrUpdate(recordStudent);
-            // 需要更新课程记录总表
-            CourseRecord courseRecord = courseRecordService.getById(signed.getCourseRecordId());
-            // 打卡人数加1
-            courseRecord.setSingedCount(courseRecord.getSingedCount() + 1);
-
-            if(courseRecord.getAbsentCount() > 0){
-                // 缺席人数减1
-                courseRecord.setAbsentCount(courseRecord.getAbsentCount() - 1);
-            }
-            // 是否已经迟到
-            if (signed.getIsLate()) {
-                // 迟到人数加1
-                courseRecord.setLateCount(courseRecord.getLateCount() + 1);
-            }
-            courseRecordService.saveOrUpdate(courseRecord);
+//            // 需要更新课程记录总表
+//            CourseRecord courseRecord = courseRecordService.getById(signed.getCourseRecordId());
+//            // 打卡人数加1
+//            courseRecord.setSingedCount(courseRecord.getSingedCount() + 1);
+//
+//            if(courseRecord.getAbsentCount() > 0){
+//                // 缺席人数减1
+//                courseRecord.setAbsentCount(courseRecord.getAbsentCount() - 1);
+//            }
+//            // 是否已经迟到
+//            if (signed.getIsLate()) {
+//                // 迟到人数加1
+//                courseRecord.setLateCount(courseRecord.getLateCount() + 1);
+//            }
+//            courseRecordService.saveOrUpdate(courseRecord);
         }
         return isSuccess;
     }
@@ -103,5 +101,10 @@ public class SignedServiceImpl extends ServiceImpl<SignedMapper, Signed> impleme
         }
 
         return countDtos.stream().collect(Collectors.groupingBy(CourseSignedCountDto::getCourseId, Collectors.groupingBy(CourseSignedCountDto::getUserId, Collectors.counting())));
+    }
+
+    @Override
+    public List<CountVo> findCountByCourseRecordId(Long courseRecordId) {
+        return baseMapper.findCountByCourseRecordId(courseRecordId);
     }
 }

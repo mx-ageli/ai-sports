@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mx.ai.sports.course.dto.CourseRunCountDto;
 import com.mx.ai.sports.course.entity.Run;
+import com.mx.ai.sports.course.vo.CountVo;
 import com.mx.ai.sports.course.vo.RunRecordDetailVo;
 import com.mx.ai.sports.course.vo.RunRecordVo;
 
@@ -25,4 +26,6 @@ public interface RunMapper extends BaseMapper<Run> {
     IPage<RunRecordDetailVo> findRunRecordDetailVo(Page<RunRecordDetailVo> page, Long userId, Date startTime, Date endTime, String status);
 
     List<CourseRunCountDto> findCourseRunCount(Date startTime, Date endTime);
+
+    List<CountVo> findCountByCourseRecordId(Long courseRecordId);
 }

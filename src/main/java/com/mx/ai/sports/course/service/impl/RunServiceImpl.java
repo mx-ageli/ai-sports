@@ -15,6 +15,7 @@ import com.mx.ai.sports.course.service.ICourseRecordService;
 import com.mx.ai.sports.course.service.IRecordStudentService;
 import com.mx.ai.sports.course.service.IRunLocationService;
 import com.mx.ai.sports.course.service.IRunService;
+import com.mx.ai.sports.course.vo.CountVo;
 import com.mx.ai.sports.course.vo.RunRecordDetailVo;
 import com.mx.ai.sports.course.vo.RunRecordVo;
 import lombok.extern.slf4j.Slf4j;
@@ -78,10 +79,10 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         boolean isPass = Objects.equals(run.getStatus(), RunStatusEnum.PASS.value());
         calcPass(userId, isPass, runAddVo.getCourseId(), courseRecordId);
         // 保存坐标信息
-        RunLocation runLocation = new RunLocation();
-        runLocation.setRunId(run.getRunId());
-        runLocation.setLocation(JSON.toJSONString(runAddVo.getLocation()));
-
+//        RunLocation runLocation = new RunLocation();
+//        runLocation.setRunId(run.getRunId());
+//        runLocation.setLocation(JSON.toJSONString(runAddVo.getLocation()));
+//
 //        return runLocationService.save(runLocation);
         return true;
     }
@@ -137,17 +138,22 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         recordStudent.setIsPass(isPass);
         recordStudentService.saveOrUpdate(recordStudent);
 
-        // 如果学生合格就将 合格人数+1 不合格人数-1
-        if (recordStudent.getIsPass()) {
-            // 还需要重新统计课程记录的合格人数
-            CourseRecord courseRecord = courseRecordService.getById(courseRecordId);
-            // 合格人数+1
-            courseRecord.setPassCount(courseRecord.getPassCount() + 1);
-            // 不合格人数-1
-            courseRecord.setNoPassCount(courseRecord.getNoPassCount() - 1);
-            courseRecordService.saveOrUpdate(courseRecord);
-        }
+//        // 如果学生合格就将 合格人数+1 不合格人数-1
+//        if (recordStudent.getIsPass()) {
+//            // 还需要重新统计课程记录的合格人数
+//            CourseRecord courseRecord = courseRecordService.getById(courseRecordId);
+//            // 合格人数+1
+//            courseRecord.setPassCount(courseRecord.getPassCount() + 1);
+//            // 不合格人数-1
+//            courseRecord.setNoPassCount(courseRecord.getNoPassCount() - 1);
+//            courseRecordService.saveOrUpdate(courseRecord);
+//        }
 
+    }
+
+    @Override
+    public List<CountVo> findCountByCourseRecordId(Long courseRecordId) {
+        return baseMapper.findCountByCourseRecordId(courseRecordId);
     }
 
     @Override

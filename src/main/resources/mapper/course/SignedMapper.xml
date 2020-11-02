@@ -15,4 +15,7 @@
             AND asi.CREATE_TIME < #{endTime}
         ]]>
     </select>
+    <select id="findCountByCourseRecordId" resultType="com.mx.ai.sports.course.vo.CountVo">
+        select IS_LATE as `key`, COUNT(SIGNED_ID) as `count` from APP_SIGNED where COURSE_RECORD_ID = #{courseRecordId} GROUP BY IS_LATE
+    </select>
 </mapper>
