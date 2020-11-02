@@ -264,7 +264,7 @@ public class CourseController extends BaseRestController implements CourseApi {
             courseVo.setEntryStatus(EntryEnum.NO.value());
         }
 
-        if (LocalTime.parse(courseVo.getEndTime()).isBefore(LocalTime.now())) {
+        if (isCheckTime && LocalTime.parse(courseVo.getEndTime()).isBefore(LocalTime.now())) {
             courseVo.setEntryStatus(EntryEnum.FINISH.value());
         }
 
