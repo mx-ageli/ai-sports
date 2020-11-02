@@ -158,10 +158,14 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
     @Override
     public Long setEntryStudentList2Redis(Long courseId, Long userId) {
         String key = getEntryStudentListKey(courseId);
-        // 当前报名人数
-        Long size = jedisPoolUtil.hLen(key) + 1;
 
-        jedisPoolUtil.hSet(key, String.valueOf(userId), String.valueOf(size));
+        // 当前报名人数
+//        Long size = jedisPoolUtil.hLen(key) + 1;
+
+//        jedisPoolUtil.hSet(key, String.valueOf(userId), String.valueOf(size));
+        // 改为lua
+        Long size =  jedisPoolUtil.entryStudent(key, String.valueOf(userId));
+
         // 先查询key的存活时间
         long ttl = jedisPoolUtil.ttl(key);
         if(ttl < 1L){

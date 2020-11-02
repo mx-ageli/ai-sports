@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -216,5 +218,33 @@ public class JedisPoolUtil {
             returnResource(jedis);
         }
         return res;
+    }
+
+    /**
+     * 学生报名
+     * @param key
+     * @param userId
+     * @return
+     */
+    public Long entryStudent(String key, String userId){
+        Long res = null;
+        Jedis jedis = getJedis();
+        try {
+            res = (Long) jedis.evalsha(jedis.scriptLoad(buildLuaScript()), Arrays.asList(key, userId), new ArrayList<>());
+        } catch (Exception e){
+            returnBrokenResource(jedis);
+            e.printStackTrace();
+        } finally {
+            returnResource(jedis);
+        }
+        return res;
+    }
+
+
+
+    private String buildLuaScript() {
+        return "local num = redis.call('HLEN', KEYS[1]) + 1" +
+                "\nlocal c = redis.call('HSET',KEYS[1],KEYS[2],num)" +
+                "\nreturn num;" ;
     }
 }
