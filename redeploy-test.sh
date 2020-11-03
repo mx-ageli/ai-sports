@@ -1,5 +1,7 @@
 #进入代码文件夹，必须有git管理
 cd /home/AiSports/ai-sports
+# 先切换分支到test
+git checkout test
 #更新代码
 git pull
 #清理原来的jar包重新打包
