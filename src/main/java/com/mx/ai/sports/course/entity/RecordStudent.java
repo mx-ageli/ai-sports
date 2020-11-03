@@ -25,7 +25,7 @@ public class RecordStudent implements Serializable {
      * 学生的课程记录Id
      */
     @TableId(value = "RECORD_STUDENT_ID", type = IdType.AUTO)
-    private Long courseStudentId;
+    private Long recordStudentId;
 
     /**
      * 课程记录Id

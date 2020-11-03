@@ -48,4 +48,6 @@ public interface IRecordStudentService extends IService<RecordStudent> {
      * @param userId
      */
     RecordStudent findByCourseRecordIdAndUserId(Long courseRecordId, Long userId);
+
+    void updatePass(Long recordStudentId, boolean isPass);
 }

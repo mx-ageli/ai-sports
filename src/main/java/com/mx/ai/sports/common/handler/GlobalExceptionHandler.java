@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public AiSportsResponse handleException(Exception e) {
         log.error("系统内部异常，异常信息", e);
-        return new AiSportsResponse().code(HttpStatus.INTERNAL_SERVER_ERROR).message("系统内部异常");
+        return new AiSportsResponse().code(HttpStatus.INTERNAL_SERVER_ERROR).message("服务器繁忙中...请稍后再试！");
     }
 
     @ExceptionHandler(value = AiSportsException.class)

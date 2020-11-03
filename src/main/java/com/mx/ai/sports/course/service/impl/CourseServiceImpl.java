@@ -126,7 +126,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
             // 创建同步学生报名列表的任务
             course.setStudentJobId(jobService.createRecordStudentJob(course));
             // 创建课程开始前的消息推送任务
-            course.setStartJobId(jobService.createCourseStartJob(course));
+//            course.setStartJobId(jobService.createCourseStartJob(course));
             // 创建课程结束后删除所有的报名学生任务
             course.setFinishJobId(jobService.deleteCourseStudentJob(course));
         }
@@ -151,7 +151,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
             // 创建同步学生报名列表的任务
             course.setStudentJobId(jobService.createRecordStudentJob(course));
             // 创建课程开始前的消息推送任务
-            course.setStartJobId(jobService.createCourseStartJob(course));
+//            course.setStartJobId(jobService.createCourseStartJob(course));
             // 创建课程结束后删除所有的报名学生任务
             course.setFinishJobId(jobService.deleteCourseStudentJob(course));
         }

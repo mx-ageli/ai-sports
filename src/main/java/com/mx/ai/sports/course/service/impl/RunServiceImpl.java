@@ -134,20 +134,11 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         // 没有学生记录 需要创建
         if (recordStudent == null) {
             recordStudent = new RecordStudent(courseId, courseRecordId, userId);
+            recordStudent.setIsPass(isPass);
+            recordStudentService.save(recordStudent);
+        } else {
+            recordStudentService.updatePass(recordStudent.getRecordStudentId(), isPass);
         }
-        recordStudent.setIsPass(isPass);
-        recordStudentService.saveOrUpdate(recordStudent);
-
-//        // 如果学生合格就将 合格人数+1 不合格人数-1
-//        if (recordStudent.getIsPass()) {
-//            // 还需要重新统计课程记录的合格人数
-//            CourseRecord courseRecord = courseRecordService.getById(courseRecordId);
-//            // 合格人数+1
-//            courseRecord.setPassCount(courseRecord.getPassCount() + 1);
-//            // 不合格人数-1
-//            courseRecord.setNoPassCount(courseRecord.getNoPassCount() - 1);
-//            courseRecordService.saveOrUpdate(courseRecord);
-//        }
 
     }
 

@@ -105,4 +105,10 @@ public class RecordStudentServiceImpl extends ServiceImpl<RecordStudentMapper, R
         return this.baseMapper.selectOne(new LambdaQueryWrapper<RecordStudent>().eq(RecordStudent::getCourseRecordId, courseRecordId)
                 .eq(RecordStudent::getUserId, userId));
     }
+
+    @Override
+    public void updatePass(Long recordStudentId, boolean isPass) {
+
+        this.baseMapper.updatePass(recordStudentId, isPass);
+    }
 }

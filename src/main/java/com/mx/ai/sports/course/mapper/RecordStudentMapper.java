@@ -32,4 +32,5 @@ public interface RecordStudentMapper extends BaseMapper<RecordStudent> {
      */
     IPage<RecordStudentVo> findRecordStudentVo(Page<RecordStudentVo> page, Long userId);
 
+    void updatePass(Long recordStudentId, boolean isPass);
 }

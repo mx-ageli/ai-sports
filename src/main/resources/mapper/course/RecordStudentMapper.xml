@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mx.ai.sports.course.mapper.RecordStudentMapper">
+    <update id="updatePass">
+        update APP_RECORD_STUDENT set IS_PASS = #{isPass} where RECORD_STUDENT_ID = #{recordStudentId}
+
+    </update>
     <select id="findVoByCourseRecordId" resultType="com.mx.ai.sports.course.vo.StudentCourseVo">
         SELECT
             su.USER_ID AS userId,
