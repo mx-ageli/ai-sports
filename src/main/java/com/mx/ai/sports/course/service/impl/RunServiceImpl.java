@@ -94,7 +94,7 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
      * @param userId
      */
     private void deleteHistory(Long courseRecordId, Long userId) {
-        this.baseMapper.delete(new LambdaQueryWrapper<Run>().eq(Run::getCourseRecordId, courseRecordId).eq(Run::getUserId, userId));
+//        this.baseMapper.delete(new LambdaQueryWrapper<Run>().eq(Run::getCourseRecordId, courseRecordId).eq(Run::getUserId, userId));
     }
 
     @Override

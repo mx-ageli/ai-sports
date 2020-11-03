@@ -79,7 +79,7 @@ public class KeepServiceImpl extends ServiceImpl<KeepMapper, Keep> implements IK
      * @param userId
      */
     private void deleteHistory(Long courseRecordId, Long userId) {
-        this.baseMapper.delete(new LambdaQueryWrapper<Keep>().eq(Keep::getCourseRecordId, courseRecordId).eq(Keep::getUserId, userId));
+//        this.baseMapper.delete(new LambdaQueryWrapper<Keep>().eq(Keep::getCourseRecordId, courseRecordId).eq(Keep::getUserId, userId));
     }
 
     @Override
