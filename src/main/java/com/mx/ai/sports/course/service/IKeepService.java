@@ -10,6 +10,7 @@ import com.mx.ai.sports.course.vo.CountVo;
 import com.mx.ai.sports.course.vo.KeepRecordVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 健身记录
@@ -34,4 +35,6 @@ public interface IKeepService extends IService<Keep> {
 
 
     List<CountVo> findCountByCourseRecordId(Long courseRecordId);
+
+    Map<Long, Keep> findByCourseRecordIds(Long userId, List<Long> courseRecordIds);
 }

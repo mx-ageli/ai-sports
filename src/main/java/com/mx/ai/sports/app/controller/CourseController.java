@@ -326,9 +326,9 @@ public class CourseController extends BaseRestController implements CourseApi {
         boolean isCheckStart = startTime.isBefore(currentTime) && currentTime.isBefore(endTime);
 
         // 查询学生是否已经报课
-        Integer isEntryStudent = courseStudentService.findEntryStudentList2Redis(courseId, userId);
+        String isEntryStudent = courseStudentService.findEntryStudentList2Redis(courseId, userId);
         // 如果不存在说明学生还没有报课，只有在学生还没有报课才走下面的校验逻辑。
-        if(isEntryStudent == null){
+        if(StringUtils.isBlank(isEntryStudent)){
             // 先判断课程是否是今天的课程
             // 获取今天是星期几
             int week = DateUtil.getWeek();

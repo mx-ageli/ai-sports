@@ -105,7 +105,7 @@ public interface ICourseStudentService extends IService<CourseStudent> {
      * @param courseId
      * @return
      */
-    Integer findEntryStudentList2Redis(Long courseId, Long userId);
+    String findEntryStudentList2Redis(Long courseId, Long userId);
 
     /**
      * 删除报名课程的学生列表

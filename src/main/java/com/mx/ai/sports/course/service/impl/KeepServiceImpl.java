@@ -21,10 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Mengjiaxin
@@ -116,5 +117,14 @@ public class KeepServiceImpl extends ServiceImpl<KeepMapper, Keep> implements IK
     @Override
     public List<CountVo> findCountByCourseRecordId(Long courseRecordId) {
         return baseMapper.findCountByCourseRecordId(courseRecordId);
+    }
+
+    @Override
+    public Map<Long, Keep> findByCourseRecordIds(Long userId, List<Long> courseRecordIds) {
+        List<Keep> keepList = baseMapper.selectList(new LambdaQueryWrapper<Keep>().eq(Keep::getUserId, userId).in(Keep::getCourseRecordId, courseRecordIds));
+        if (CollectionUtils.isEmpty(keepList)) {
+            return new HashMap<>(0);
+        }
+        return keepList.stream().collect(Collectors.toMap(Keep::getCourseRecordId, Function.identity(), (e1, e2) -> e1));
     }
 }

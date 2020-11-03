@@ -7,7 +7,10 @@ import redis.clients.jedis.JedisPool;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+
+import static com.mx.ai.sports.common.entity.AiSportsConstant.ENTRY_EXPIRE_TIME;
 
 @Component
 public class JedisPoolUtil {
@@ -234,7 +237,7 @@ public class JedisPoolUtil {
         Long res = null;
         Jedis jedis = getJedis();
         try {
-            res = (Long) jedis.evalsha(jedis.scriptLoad(buildLuaScript()), Arrays.asList(key, userId), new ArrayList<>());
+            res = (Long) jedis.evalsha(jedis.scriptLoad(buildLuaScript()), Arrays.asList(key, userId), Collections.singletonList(String.valueOf(ENTRY_EXPIRE_TIME)));
         } catch (Exception e) {
             returnBrokenResource(jedis);
             e.printStackTrace();
@@ -246,9 +249,18 @@ public class JedisPoolUtil {
 
 
     private String buildLuaScript() {
+//        return "local num = redis.call('HLEN', KEYS[1]) + 1" +
+//                "\nlocal c = redis.call('HSET',KEYS[1],KEYS[2],num)" +
+//                "\nreturn num;";
+
         return "local num = redis.call('HLEN', KEYS[1]) + 1" +
                 "\nlocal c = redis.call('HSET',KEYS[1],KEYS[2],num)" +
+                "\nlocal times = redis.call('ttl',KEYS[1])" +
+                "\nif tonumber(times) < 1 then" +
+                "\nredis.call('expire',KEYS[1],ARGV[1])" +
+                "\nend"+
                 "\nreturn num;";
+
     }
 
     public void setObj(String key, Object value) {

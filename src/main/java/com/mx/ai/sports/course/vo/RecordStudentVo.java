@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Date;
 
 /**
@@ -93,5 +92,8 @@ public class RecordStudentVo implements Serializable {
 
     @ApiModelProperty("是否为跑步课程")
     private Boolean isRun;
+
+    @ApiModelProperty("打卡状态：1正常 2迟到 3缺席 4缺卡")
+    private String signedStatus;
 
 }

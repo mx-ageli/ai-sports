@@ -5,10 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.QueryRequest;
+import com.mx.ai.sports.common.entity.SignedStatusEnum;
+import com.mx.ai.sports.course.entity.Keep;
 import com.mx.ai.sports.course.entity.RecordStudent;
 import com.mx.ai.sports.course.entity.Run;
 import com.mx.ai.sports.course.mapper.RecordStudentMapper;
 import com.mx.ai.sports.course.query.StudentCourseQuery;
+import com.mx.ai.sports.course.service.IKeepService;
 import com.mx.ai.sports.course.service.IRecordStudentService;
 import com.mx.ai.sports.course.service.IRunService;
 import com.mx.ai.sports.course.vo.RecordStudentVo;
@@ -37,6 +40,9 @@ public class RecordStudentServiceImpl extends ServiceImpl<RecordStudentMapper, R
     @Autowired
     private IRunService runService;
 
+    @Autowired
+    private IKeepService keepService;
+
     @Override
     public List<Long> findUserIdByCourseRecordId(Long courseRecordId) {
         List<RecordStudent> recordStudentList = this.baseMapper.selectList(new LambdaQueryWrapper<RecordStudent>().eq(RecordStudent::getCourseRecordId, courseRecordId));
@@ -63,6 +69,8 @@ public class RecordStudentServiceImpl extends ServiceImpl<RecordStudentMapper, R
             List<Long> courseRecordIds = recordPage.getRecords().stream().map(RecordStudentVo::getCourseRecordId).collect(Collectors.toList());
             Map<Long, Run> runMap = runService.findByCourseRecordIds(userId, courseRecordIds);
 
+            Map<Long, Keep> keepMap = keepService.findByCourseRecordIds(userId, courseRecordIds);
+
             for (RecordStudentVo vo : recordPage.getRecords()){
                 if(runMap.containsKey(vo.getCourseRecordId())){
                     Run run = runMap.get(vo.getCourseRecordId());
@@ -70,7 +78,22 @@ public class RecordStudentServiceImpl extends ServiceImpl<RecordStudentMapper, R
                     vo.setRunTime(run.getRunTime());
                     vo.setRuleMileage(run.getRuleMileage());
                     vo.setRuleRunTime(run.getRuleRunTime());
+                } else if(keepMap.containsKey(vo.getCourseRecordId())){
+                    Keep keep = keepMap.get(vo.getCourseRecordId());
+                    vo.setRunTime(keep.getKeepTime());
                 }
+
+                vo.setSignedStatus(SignedStatusEnum.NORMAL.value());
+                if (vo.getEndTime() == null) {
+                    vo.setSignedStatus(SignedStatusEnum.NO_SIGNED.value());
+                }
+                if (vo.getIsAbsent()) {
+                    vo.setSignedStatus(SignedStatusEnum.ABSENT.value());
+                }
+                if (vo.getIsLate()) {
+                    vo.setSignedStatus(SignedStatusEnum.LATE.value());
+                }
+
             }
         }
 

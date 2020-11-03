@@ -164,24 +164,24 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
 
 //        jedisPoolUtil.hSet(key, String.valueOf(userId), String.valueOf(size));
         // 改为lua
-        Long size =  jedisPoolUtil.entryStudent(key, String.valueOf(userId));
 
-        // 先查询key的存活时间
-        long ttl = jedisPoolUtil.ttl(key);
-        if(ttl < 1L){
-            // 设置过期时间
-            jedisPoolUtil.expire(key, ENTRY_EXPIRE_TIME);
-        }
-        return size;
+        // 先查询key的存活时间 TODO 改到lua中
+//        long ttl = jedisPoolUtil.ttl(key);
+//        if(ttl < 1L){
+//            // 设置过期时间
+//            jedisPoolUtil.expire(key, ENTRY_EXPIRE_TIME);
+//        }
+        // 使用lua脚本来完成 查询序号 保存报名 设置过期时间
+        return jedisPoolUtil.entryStudent(key, String.valueOf(userId));
     }
 
     @Override
-    public Integer findEntryStudentList2Redis(Long courseId, Long userId) {
+    public String findEntryStudentList2Redis(Long courseId, Long userId) {
         String value = jedisPoolUtil.hGet(getEntryStudentListKey(courseId), String.valueOf(userId));
         if(StringUtils.isBlank(value)){
             return null;
         }
-        return Integer.valueOf(value);
+        return value;
     }
 
     @Override
