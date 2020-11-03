@@ -59,7 +59,7 @@ public class RunController extends BaseRestController implements RunApi {
 
     @Override
     @Log("保存跑步数据")
-    @Limit(key = "runAdd", period = 3, count = 1, name = "保存跑步数据", prefix = "limit", limitType = LimitType.IP, message = "系统正在处理为你保存运动数据...")
+//    @Limit(key = "runAdd", period = 3, count = 1, name = "保存跑步数据", prefix = "limit", limitType = LimitType.IP, message = "系统正在处理为你保存运动数据...")
     public AiSportsResponse<Boolean> add(@RequestBody @Valid RunAddVo runAddVo) {
 
         Course course = courseService.getCacheById(runAddVo.getCourseId());
@@ -134,7 +134,7 @@ public class RunController extends BaseRestController implements RunApi {
 
     @Override
     @Log("设置学生的运动是否合格")
-    @Limit(key = "pass", period = 3, count = 1, name = "设置学生的运动是否合格", prefix = "limit", limitType = LimitType.IP, message = "系统正在处理为你保存运动数据...")
+//    @Limit(key = "pass", period = 3, count = 1, name = "设置学生的运动是否合格", prefix = "limit", limitType = LimitType.IP, message = "系统正在处理为你保存运动数据...")
     public AiSportsResponse<Boolean> pass(@NotNull @RequestParam("courseId") Long courseId, @NotNull @RequestParam("isPass") Boolean isPass) {
         Course course = courseService.getCacheById(courseId);
         if (course == null) {
@@ -170,7 +170,7 @@ public class RunController extends BaseRestController implements RunApi {
 
     @Override
     @Log("保存健身数据")
-    @Limit(key = "keepAdd", period = 3, count = 1, name = "保存健身数据", prefix = "limit", limitType = LimitType.IP, message = "系统正在处理为你保存健身数据...")
+//    @Limit(key = "keepAdd", period = 3, count = 1, name = "保存健身数据", prefix = "limit", limitType = LimitType.IP, message = "系统正在处理为你保存健身数据...")
     public AiSportsResponse<Boolean> keepAdd(@RequestBody @Valid KeepAddVo keepAddVo) {
         Course course = courseService.getCacheById(keepAddVo.getCourseId());
         if (course == null) {
