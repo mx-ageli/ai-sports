@@ -392,9 +392,9 @@ public class CourseController extends BaseRestController implements CourseApi {
             }
             // TODO 临时代码，在报名时间开始的半个小时内不能从这里取消课程
             LocalTime localTime = LocalTime.parse(AiSportsConstant.ENTRY_START_TIME);
-            localTime = localTime.plusHours(1);
+            localTime = localTime.plusMinutes(30);
             if (localTime.isAfter(currentTime)) {
-                return new AiSportsResponse<CourseEntryVo>().success().data(new CourseEntryVo());
+                return new AiSportsResponse<CourseEntryVo>().fail().message("现在是报课高峰期不能取消课程，请在" + localTime + "之后再取消课程！");
             }
 
             // 删除报名信息
