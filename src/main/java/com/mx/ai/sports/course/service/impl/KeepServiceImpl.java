@@ -45,7 +45,15 @@ public class KeepServiceImpl extends ServiceImpl<KeepMapper, Keep> implements IK
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean saveKeep(KeepAddVo keepAddVo, RunRule runRule, Long userId) {
-        Keep keep = new Keep();
+
+        // 对应最新的课程记录Id
+        Long courseRecordId = courseRecordService.findIdByNowAndCreate(keepAddVo.getCourseId());
+        // 查询健身数据是否存在
+        Keep keep = findByCourseRecordUserId(courseRecordId, userId);
+
+        if(keep == null){
+            keep = new Keep();
+        }
         keep.setCourseId(keepAddVo.getCourseId());
         keep.setUserId(userId);
         keep.setCreateTime(new Date());
@@ -53,33 +61,19 @@ public class KeepServiceImpl extends ServiceImpl<KeepMapper, Keep> implements IK
         keep.setEndTime(keepAddVo.getEndTime());
         keep.setKeepTime(keepAddVo.getKeepTime());
         keep.setStatus(RunStatusEnum.NO_PASS.value());
-        // 对应最新的课程记录Id
-        Long courseRecordId = courseRecordService.findIdByNowAndCreate(keepAddVo.getCourseId());
-        keep.setCourseRecordId(courseRecordId);
-        // 先清除历史数据， 只保存最后一次运动记录
-        deleteHistory(courseRecordId, userId);
 
+        keep.setCourseRecordId(courseRecordId);
         // 查询当前这次健身是否满足规则，满足就合格
         if (keepAddVo.getKeepTime() >= runRule.getRunTime()) {
             keep.setStatus(RunStatusEnum.PASS.value());
         }
-        boolean success = this.save(keep);
+        boolean success = this.saveOrUpdate(keep);
 
         // 重新计算所有学生的合格状态
         boolean isPass = Objects.equals(keep.getStatus(), RunStatusEnum.PASS.value());
         runService.calcPass(userId, isPass, keepAddVo.getCourseId(), courseRecordId);
 
         return success;
-    }
-
-    /**
-     * 先删除以往的记录
-     *
-     * @param courseRecordId
-     * @param userId
-     */
-    private void deleteHistory(Long courseRecordId, Long userId) {
-//        this.baseMapper.delete(new LambdaQueryWrapper<Keep>().eq(Keep::getCourseRecordId, courseRecordId).eq(Keep::getUserId, userId));
     }
 
     @Override
@@ -92,23 +86,26 @@ public class KeepServiceImpl extends ServiceImpl<KeepMapper, Keep> implements IK
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean pass(Long courseId, Long userId, Boolean isPass) {
-        Keep keep = new Keep();
+
+        // 对应最新的课程记录Id
+        Long courseRecordId = courseRecordService.findIdByNowAndCreate(courseId);
+        Keep keep = findByCourseRecordUserId(courseRecordId, userId);
+        if(keep == null){
+            keep = new Keep();
+        }
         keep.setCourseId(courseId);
         keep.setUserId(userId);
         keep.setCreateTime(new Date());
 
         keep.setStatus(RunStatusEnum.NO_PASS.value());
-        // 对应最新的课程记录Id
-        Long courseRecordId = courseRecordService.findIdByNowAndCreate(courseId);
+
         keep.setCourseRecordId(courseRecordId);
-        // 先清除历史数据， 只保存最后一次运动记录
-        deleteHistory(courseRecordId, userId);
 
         // 合格设置为pass
         if (isPass) {
             keep.setStatus(RunStatusEnum.PASS.value());
         }
-        boolean success = this.save(keep);
+        boolean success = this.saveOrUpdate(keep);
         runService.calcPass(userId, isPass, courseId, courseRecordId);
 
         return success;
@@ -117,6 +114,11 @@ public class KeepServiceImpl extends ServiceImpl<KeepMapper, Keep> implements IK
     @Override
     public List<CountVo> findCountByCourseRecordId(Long courseRecordId) {
         return baseMapper.findCountByCourseRecordId(courseRecordId);
+    }
+
+    @Override
+    public Keep findByCourseRecordUserId(Long courseRecordId, Long userId) {
+        return baseMapper.findByCourseRecordUserId(courseRecordId,  userId);
     }
 
     @Override

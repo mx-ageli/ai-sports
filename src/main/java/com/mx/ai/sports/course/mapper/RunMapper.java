@@ -28,4 +28,6 @@ public interface RunMapper extends BaseMapper<Run> {
     List<CourseRunCountDto> findCourseRunCount(Date startTime, Date endTime);
 
     List<CountVo> findCountByCourseRecordId(Long courseRecordId);
+
+    Run findByCourseRecordUserId(Long courseRecordId, Long userId);
 }

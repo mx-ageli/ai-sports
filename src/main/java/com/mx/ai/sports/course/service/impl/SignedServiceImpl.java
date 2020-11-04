@@ -57,29 +57,11 @@ public class SignedServiceImpl extends ServiceImpl<SignedMapper, Signed> impleme
                 recordStudent = new RecordStudent(signed.getCourseId(), signed.getCourseRecordId(), signed.getUserId());
                 recordStudent.setCreateTime(new Date());
                 recordStudent.setUpdateTime(new Date());
+                recordStudentService.save(recordStudent);
+            } else {
+                // 更新学生的课程记录 与上课更新课程记录一致
+                recordStudentService.updateSigned(recordStudent.getRecordStudentId(), false, signed.getIsLate());
             }
-            recordStudent.setUpdateTime(new Date());
-            // 设置是否迟到
-            recordStudent.setIsLate(signed.getIsLate());
-            // 设置缺席，既然打卡成功了，所以就没有缺席
-            recordStudent.setIsAbsent(false);
-            // 更新学生的课程记录
-            recordStudentService.saveOrUpdate(recordStudent);
-//            // 需要更新课程记录总表
-//            CourseRecord courseRecord = courseRecordService.getById(signed.getCourseRecordId());
-//            // 打卡人数加1
-//            courseRecord.setSingedCount(courseRecord.getSingedCount() + 1);
-//
-//            if(courseRecord.getAbsentCount() > 0){
-//                // 缺席人数减1
-//                courseRecord.setAbsentCount(courseRecord.getAbsentCount() - 1);
-//            }
-//            // 是否已经迟到
-//            if (signed.getIsLate()) {
-//                // 迟到人数加1
-//                courseRecord.setLateCount(courseRecord.getLateCount() + 1);
-//            }
-//            courseRecordService.saveOrUpdate(courseRecord);
         }
         return isSuccess;
     }

@@ -50,4 +50,6 @@ public interface IRunService extends IService<Run> {
     void calcPass(Long userId, boolean isPass, Long courseId, Long courseRecordId);
 
     List<CountVo> findCountByCourseRecordId(Long courseRecordId);
+
+    Run findByCourseRecordUserId(Long courseRecordId, Long userId);
 }

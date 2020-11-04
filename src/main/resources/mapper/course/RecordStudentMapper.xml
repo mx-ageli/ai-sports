@@ -2,8 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mx.ai.sports.course.mapper.RecordStudentMapper">
     <update id="updatePass">
-        update APP_RECORD_STUDENT set IS_PASS = #{isPass} where RECORD_STUDENT_ID = #{recordStudentId}
+        UPDATE APP_RECORD_STUDENT SET IS_PASS = #{isPass} WHERE RECORD_STUDENT_ID = #{recordStudentId}
 
+    </update>
+    <update id="updateSigned">
+        UPDATE APP_RECORD_STUDENT SET IS_ABSENT = #{isAbsent}, IS_LATE =#{isLate} WHERE RECORD_STUDENT_ID = #{recordStudentId}
     </update>
     <select id="findVoByCourseRecordId" resultType="com.mx.ai.sports.course.vo.StudentCourseVo">
         SELECT
@@ -75,5 +78,8 @@
                 LEFT JOIN APP_COURSE ac ON temp.courseId = ac.COURSE_ID
 
 
+    </select>
+    <select id="getIdByCourseRecordIdUserId" resultType="java.lang.Long">
+        SELECT RECORD_STUDENT_ID FROM APP_RECORD_STUDENT ars WHERE ars.COURSE_RECORD_ID = #{courseRecordId} AND USER_ID = #{userId}
     </select>
 </mapper>

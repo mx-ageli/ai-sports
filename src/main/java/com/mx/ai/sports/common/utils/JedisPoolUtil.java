@@ -255,8 +255,8 @@ public class JedisPoolUtil {
 
         return "local num = redis.call('HLEN', KEYS[1]) + 1" +
                 "\nlocal c = redis.call('HSET',KEYS[1],KEYS[2],num)" +
-                "\nlocal times = redis.call('ttl',KEYS[1])" +
-                "\nif tonumber(times) < 1 then" +
+//                "\nlocal times = redis.call('ttl',KEYS[1])" +
+                "\nif num <= 1 then" +
                 "\nredis.call('expire',KEYS[1],ARGV[1])" +
                 "\nend"+
                 "\nreturn num;";

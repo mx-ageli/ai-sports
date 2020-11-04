@@ -111,4 +111,14 @@ public class RecordStudentServiceImpl extends ServiceImpl<RecordStudentMapper, R
 
         this.baseMapper.updatePass(recordStudentId, isPass);
     }
+
+    @Override
+    public void updateSigned(Long recordStudentId, boolean isAbsent, boolean isLate) {
+        this.baseMapper.updateSigned(recordStudentId, isAbsent, isLate);
+    }
+
+    @Override
+    public Long getIdByCourseRecordIdUserId(Long courseRecordId, Long userId) {
+        return baseMapper.getIdByCourseRecordIdUserId(courseRecordId, userId);
+    }
 }

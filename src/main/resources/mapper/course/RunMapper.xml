@@ -70,4 +70,7 @@
 
         select `STATUS` as `key`, COUNT(RUN_ID) as `count` from APP_RUN where COURSE_RECORD_ID = #{courseRecordId} GROUP BY `STATUS`
     </select>
+    <select id="findByCourseRecordUserId" resultType="com.mx.ai.sports.course.entity.Run">
+        SELECT * FROM APP_RUN ar WHERE ar.COURSE_RECORD_ID = #{courseRecordId} AND ar.USER_ID =#{userId} LIMIT 1
+    </select>
 </mapper>

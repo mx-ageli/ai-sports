@@ -36,5 +36,7 @@ public interface IKeepService extends IService<Keep> {
 
     List<CountVo> findCountByCourseRecordId(Long courseRecordId);
 
+    Keep findByCourseRecordUserId(Long courseRecordId, Long userId);
+
     Map<Long, Keep> findByCourseRecordIds(Long userId, List<Long> courseRecordIds);
 }

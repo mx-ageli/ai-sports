@@ -51,7 +51,13 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
     @Transactional(rollbackFor = Exception.class)
     public Boolean saveRun(RunAddVo runAddVo, RunRule runRule, Long userId) {
 
-        Run run = new Run();
+        // 对应最新的课程记录Id
+        Long courseRecordId = courseRecordService.findIdByNowAndCreate(runAddVo.getCourseId());
+
+        Run run = findByCourseRecordUserId(courseRecordId, userId);
+        if(run == null){
+            run = new Run();
+        }
         run.setCourseId(runAddVo.getCourseId());
         run.setUserId(userId);
         run.setCreateTime(new Date());
@@ -63,17 +69,14 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
         run.setRuleMileage(runRule.getMileage());
         run.setSpeed(runAddVo.getSpeed());
         run.setStatus(RunStatusEnum.NO_PASS.value());
-        // 对应最新的课程记录Id
-        Long courseRecordId = courseRecordService.findIdByNowAndCreate(runAddVo.getCourseId());
+
         run.setCourseRecordId(courseRecordId);
-        // 先清除历史数据， 只保存最后一次运动记录
-        deleteHistory(courseRecordId, userId);
 
         // 查询当前这次跑步是否满足规则，满足就合格
         if (runAddVo.getMileage() >= runRule.getMileage() && runAddVo.getRunTime() >= runRule.getRunTime()) {
             run.setStatus(RunStatusEnum.PASS.value());
         }
-        this.save(run);
+        this.saveOrUpdate(run);
 
         // 重新计算学生的合格状态
         boolean isPass = Objects.equals(run.getStatus(), RunStatusEnum.PASS.value());
@@ -85,16 +88,6 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
 //
 //        return runLocationService.save(runLocation);
         return true;
-    }
-
-    /**
-     * 先删除以往的记录
-     *
-     * @param courseRecordId
-     * @param userId
-     */
-    private void deleteHistory(Long courseRecordId, Long userId) {
-//        this.baseMapper.delete(new LambdaQueryWrapper<Run>().eq(Run::getCourseRecordId, courseRecordId).eq(Run::getUserId, userId));
     }
 
     @Override
@@ -129,15 +122,15 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
      */
     @Override
     public void calcPass(Long userId, boolean isPass, Long courseId, Long courseRecordId) {
-        // 需要将是否合格保存到学生记录表中
-        RecordStudent recordStudent = recordStudentService.getOne(new LambdaQueryWrapper<RecordStudent>().eq(RecordStudent::getUserId, userId).eq(RecordStudent::getCourseRecordId, courseRecordId));
+        // 需要将是否合格保存到学生记录表中 只返回一个ID
+        Long recordStudentId = recordStudentService.getIdByCourseRecordIdUserId(courseRecordId, userId);
         // 没有学生记录 需要创建
-        if (recordStudent == null) {
-            recordStudent = new RecordStudent(courseId, courseRecordId, userId);
+        if (recordStudentId == null) {
+            RecordStudent recordStudent = new RecordStudent(courseId, courseRecordId, userId);
             recordStudent.setIsPass(isPass);
             recordStudentService.save(recordStudent);
         } else {
-            recordStudentService.updatePass(recordStudent.getRecordStudentId(), isPass);
+            recordStudentService.updatePass(recordStudentId, isPass);
         }
 
     }
@@ -145,6 +138,11 @@ public class RunServiceImpl extends ServiceImpl<RunMapper, Run> implements IRunS
     @Override
     public List<CountVo> findCountByCourseRecordId(Long courseRecordId) {
         return baseMapper.findCountByCourseRecordId(courseRecordId);
+    }
+
+    @Override
+    public Run findByCourseRecordUserId(Long courseRecordId, Long userId) {
+        return baseMapper.findByCourseRecordUserId(courseRecordId,  userId);
     }
 
     @Override

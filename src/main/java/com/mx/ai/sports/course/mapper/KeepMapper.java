@@ -22,4 +22,6 @@ public interface KeepMapper extends BaseMapper<Keep> {
     IPage<KeepRecordVo> findKeepRecordVo(Page<RunRecordDetailVo> page, Long userId, String status);
 
     List<CountVo> findCountByCourseRecordId(Long courseRecordId);
+
+    Keep findByCourseRecordUserId(Long courseRecordId, Long userId);
 }
