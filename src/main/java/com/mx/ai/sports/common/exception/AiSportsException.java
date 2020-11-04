@@ -5,7 +5,7 @@ package com.mx.ai.sports.common.exception;
  * @author Mengjiaxin
  * @date 2019-08-20 16:20
  */
-public class AiSportsException extends Exception {
+public class AiSportsException extends RuntimeException {
 
 
     private static final long serialVersionUID = 6086923613895968276L;
