@@ -57,6 +57,9 @@ public class SignedServiceImpl extends ServiceImpl<SignedMapper, Signed> impleme
                 recordStudent = new RecordStudent(signed.getCourseId(), signed.getCourseRecordId(), signed.getUserId());
                 recordStudent.setCreateTime(new Date());
                 recordStudent.setUpdateTime(new Date());
+                // 设置打卡了就不缺席
+                recordStudent.setIsAbsent(false);
+                recordStudent.setIsLate(signed.getIsLate());
                 recordStudentService.save(recordStudent);
             } else {
                 // 更新学生的课程记录 与上课更新课程记录一致
