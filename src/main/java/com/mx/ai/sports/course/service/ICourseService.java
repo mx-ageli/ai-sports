@@ -105,5 +105,5 @@ public interface ICourseService extends IService<Course> {
      * @param courseId
      * @return
      */
-    Course getCacheById(Long courseId);
+    Course getCacheById1(Long courseId);
 }

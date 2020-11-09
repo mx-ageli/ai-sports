@@ -202,10 +202,16 @@
             <version>1.2.0.Final</version>
         </dependency>
         <!-- jetcache 缓存框架 -->
+<!--        <dependency>-->
+<!--            <groupId>com.alicp.jetcache</groupId>-->
+<!--            <artifactId>jetcache-starter-redis</artifactId>-->
+<!--            <version>2.4.4</version>-->
+<!--        </dependency>-->
+
         <dependency>
-            <groupId>com.alicp.jetcache</groupId>
-            <artifactId>jetcache-starter-redis</artifactId>
-            <version>2.4.4</version>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0</version>
         </dependency>
 
         <dependency>

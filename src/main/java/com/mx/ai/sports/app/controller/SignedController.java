@@ -78,7 +78,7 @@ public class SignedController extends BaseRestController implements SignedApi {
     @Log("打卡")
     @Limit(key = "signed", period = 3, count = 1, name = "打卡", prefix = "limit", limitType = LimitType.IP, message = "系统正在处理为你保存打卡...")
     public AiSportsResponse<Boolean> signed(@RequestBody @Valid SignedAddVo signedAddVo) {
-        Course course = courseService.getCacheById(signedAddVo.getCourseId());
+        Course course = courseService.getById(signedAddVo.getCourseId());
 
         // 当前学生Id
         Long userId = getCurrentUserId();

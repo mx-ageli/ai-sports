@@ -236,7 +236,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     }
 
     @Override
-    public Course getCacheById(Long courseId) {
+    public Course getCacheById1(Long courseId) {
         String key = "course_" + courseId;
         Course course = (Course) jedisPoolUtil.getObj(key);
         if (course == null) {

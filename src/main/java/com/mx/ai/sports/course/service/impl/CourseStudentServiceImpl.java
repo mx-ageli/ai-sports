@@ -117,6 +117,9 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
             throw new AiSportsException("今日当前课程已经报满，请明日再来！");
         }
         try {
+            // 先保存报名信息，在往小组里面加
+            this.save(courseStudent);
+
             GroupStudent groupStudent = new GroupStudent();
             groupStudent.setCourseId(courseStudent.getCourseId());
             groupStudent.setGroupId(group.getGroupId());
@@ -128,8 +131,6 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
             // 统计报名序号
 //            Long sort = baseMapper.findSortByMax(courseStudent.getCourseId());
 //            courseStudent.setSort(sort);
-            // 保存报名信息
-            this.save(courseStudent);
 
             entryVo.setGroupId(group.getGroupId());
             entryVo.setGroupName(group.getGroupName());
