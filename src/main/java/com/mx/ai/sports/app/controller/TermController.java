@@ -27,7 +27,7 @@ public class TermController extends BaseRestController implements TermApi {
     private ITermService termService;
 
     @Override
-    @Log("查询所有的学期列表")
+//    @Log("查询所有的学期列表")
     public AiSportsResponse<List<TermVo>> findAll() {
 
         return new AiSportsResponse<List<TermVo>>().success().data(termService.findByCurrentDate());

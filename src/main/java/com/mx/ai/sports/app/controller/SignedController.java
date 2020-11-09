@@ -55,7 +55,7 @@ public class SignedController extends BaseRestController implements SignedApi {
     private SignedConverter signedConverter;
 
     @Override
-    @Log("通过课程Id查询我最近的一次打卡记录")
+//    @Log("通过课程Id查询我最近的一次打卡记录")
     public AiSportsResponse<SignedVo> findLastByCourseId(@NotNull @RequestParam("courseId") Long courseId) {
         Signed signed = signedService.findLastByCourseId(courseId, getCurrentUserId());
         if (signed == null) {
@@ -65,7 +65,7 @@ public class SignedController extends BaseRestController implements SignedApi {
     }
 
     @Override
-    @Log("通过课程记录Id查询我以往的课程打卡记录")
+//    @Log("通过课程记录Id查询我以往的课程打卡记录")
     public AiSportsResponse<SignedVo> findByCourseRecordId(@NotNull @RequestParam("courseRecordId") Long courseRecordId) {
         Signed signed = signedService.findByCourseRecordId(courseRecordId, getCurrentUserId());
         if (signed == null) {

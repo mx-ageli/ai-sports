@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
@@ -68,7 +67,7 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     @Override
     @TeacherRole
-    @Log("查询我发布的课程列表")
+//    @Log("查询我发布的课程列表")
     public AiSportsResponse<IPage<CourseVo>> findMyPublish(@RequestBody @Valid QueryRequest request) throws AiSportsException {
         return new AiSportsResponse<IPage<CourseVo>>().success().data(courseService.findAll(request, getCurrentUserId()));
     }
@@ -193,7 +192,7 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     @Override
     @TeacherRole
-    @Log("查询某一个课程报名数量")
+//    @Log("查询某一个课程报名数量")
     public AiSportsResponse<CourseNumVo> findNumById(@NotNull @RequestParam("courseRecordId") Long courseRecordId) {
         CourseRecord courseRecord = courseRecordService.getById(courseRecordId);
         if (courseRecord == null) {
@@ -211,13 +210,13 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     @Override
     @TeacherRole
-    @Log("查询某一个课程的完成情的学生列表")
+//    @Log("查询某一个课程的完成情的学生列表")
     public AiSportsResponse<IPage<StudentCourseVo>> findStudentById(@RequestBody @Valid StudentCourseQuery query) throws AiSportsException {
         return new AiSportsResponse<IPage<StudentCourseVo>>().success().data(recordStudentService.findVoByCourseRecordId(query));
     }
 
     @Override
-    @Log("查询所有的课程列表")
+//    @Log("查询所有的课程列表")
     public AiSportsResponse<IPage<CourseVo>> findAll(@RequestBody @Valid QueryRequest request) {
         UserSimple user = getCurrentUser();
         // 直接查询全部数据返回
@@ -275,13 +274,13 @@ public class CourseController extends BaseRestController implements CourseApi {
     }
 
     @Override
-    @Log("查询我已经报名的课程")
+//    @Log("查询我已经报名的课程")
     public AiSportsResponse<IPage<CourseVo>> findMyEntry(@RequestBody @Valid QueryRequest request) {
         return new AiSportsResponse<IPage<CourseVo>>().success().data(courseService.findMyEntry(request, getCurrentUserId()));
     }
 
     @Override
-    @Log("查询课程详细信息")
+//    @Log("查询课程详细信息")
     public AiSportsResponse<CourseVo> findById(@NotNull @RequestParam("courseId") Long courseId) {
 
         UserSimple user = getCurrentUser();
@@ -549,13 +548,13 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     @Override
     @TeacherRole
-    @Log("查询课程的完成情况历史统计分析")
+//    @Log("查询课程的完成情况历史统计分析")
     public AiSportsResponse<IPage<CourseRecordVo>> findHistoryAnalysis(@RequestBody @Valid CourseQuery query) throws AiSportsException {
         return new AiSportsResponse<IPage<CourseRecordVo>>().success().data(courseRecordService.findByCourseId(query.getRequest(), query.getCourseId()));
     }
 
     @Override
-    @Log("查询上课的历史记录")
+//    @Log("查询上课的历史记录")
     public AiSportsResponse<IPage<RecordStudentVo>> findCourseHistory(@RequestBody @Valid UserCourseQuery query) {
         Long userId = getCurrentUserId();
         if (Objects.nonNull(query.getUserId())) {
@@ -574,7 +573,7 @@ public class CourseController extends BaseRestController implements CourseApi {
     }
 
     @Override
-    @Log("查询我报名的正在进行的课程")
+//    @Log("查询我报名的正在进行的课程")
     public AiSportsResponse<List<CourseVo>> findMyEntryByCurrent() {
         return new AiSportsResponse<List<CourseVo>>().success().data(courseService.findMyEntryByCurrent(getCurrentUserId()));
     }

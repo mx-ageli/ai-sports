@@ -87,7 +87,7 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     }
 
     @Override
-    @Log("查询班级列表")
+//    @Log("查询班级列表")
     public AiSportsResponse<List<ClassesSmallVo>> findBySchoolId(@NotNull @RequestParam("schoolId") Long schoolId) {
         School school = schoolService.getById(schoolId);
         if (school == null) {
@@ -97,14 +97,14 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     }
 
     @Override
-    @Log("根据班级Id查询班级详情")
+//    @Log("根据班级Id查询班级详情")
     public AiSportsResponse<ClassesSmallVo> findById(@NotNull @RequestParam("classesId") Long classesId) {
         return new AiSportsResponse<ClassesSmallVo>().success().data(classesService.findById(classesId));
     }
 
     @Override
     @TeacherRole
-    @Log("查询当前老师所创建的班级")
+//    @Log("查询当前老师所创建的班级")
     public AiSportsResponse<List<ClassesSmallVo>> findByTeacher() throws AiSportsException {
 
         UserSimple userSimple = getCurrentUser();
@@ -113,7 +113,7 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     }
 
     @Override
-    @Log("查询所有的学校列表")
+//    @Log("查询所有的学校列表")
     public AiSportsResponse<List<SchoolVo>> findSchool() {
         List<School> schools = schoolService.list();
 
@@ -132,7 +132,7 @@ public class ClassesController extends BaseRestController implements ClassesApi 
     }
 
     @Override
-    @Log("查询一个班级中的学生列表")
+//    @Log("查询一个班级中的学生列表")
     public AiSportsResponse<IPage<UserSmallVo>> findStudentByClassesId(@RequestBody @Valid ClassesQuery query) {
         Classes classes = classesService.getById(query.getClassesId());
         if (classes == null) {

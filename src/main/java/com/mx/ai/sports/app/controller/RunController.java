@@ -112,7 +112,7 @@ public class RunController extends BaseRestController implements RunApi {
     }
 
     @Override
-    @Log("查询合格的跑步规则")
+//    @Log("查询合格的跑步规则")
     public AiSportsResponse<RunRuleVo> findRunRule(@NotNull @RequestParam("runRuleId") Long runRuleId) {
         RunRule runRule = runRuleService.getById(runRuleId);
         if (runRule == null) {
@@ -126,7 +126,7 @@ public class RunController extends BaseRestController implements RunApi {
     }
 
     @Override
-    @Log("按照指定的时间区间查询跑步记录")
+//    @Log("按照指定的时间区间查询跑步记录")
     public AiSportsResponse<RunRecordVo> findRunHistory(@RequestBody @Valid RunRecordQuery query) {
 
         return new AiSportsResponse<RunRecordVo>().success().data(runService.getRunRecordVo(getCurrentUserId(), query));
