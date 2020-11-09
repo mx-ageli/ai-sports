@@ -156,7 +156,7 @@ public class UserController extends BaseRestController implements UserApi {
     }
 
     @Override
-    @Log("获取手机验证码")
+//    @Log("获取手机验证码")
     @Limit(key = "getCode", period = 10, count = 3, name = "获取手机验证码", prefix = "limit", limitType = LimitType.IP)
     public AiSportsResponse<Boolean> getCode(@NotBlank @Pattern(regexp = AccountValidatorUtil.REGEX_MOBILE, message = "格式不正确") @RequestParam("mobile") String mobile) throws AiSportsException {
         boolean isMobile = AccountValidatorUtil.isMobile(mobile);
@@ -218,7 +218,7 @@ public class UserController extends BaseRestController implements UserApi {
     }
 
     @Override
-    @Log("刷新token信息")
+//    @Log("刷新token信息")
     public AiSportsResponse<String> refresh() {
         UserSimple userSimple = getCurrentUser();
 
