@@ -54,11 +54,24 @@ public class RedisConfigure extends CachingConfigurerSupport {
     @Value("${spring.redis.database:0}")
     private int database;
 
+    @Value("${spring.redis.jedis.pool.min-idle}")
+    private int minIdle;
+    @Value("${spring.redis.jedis.pool.max-active}")
+    private int maxActive;
+
+
     @Bean
     public JedisPool redisPoolFactory() {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxIdle(maxIdle);
         jedisPoolConfig.setMaxWaitMillis(maxWaitMillis);
+
+        jedisPoolConfig.setMinIdle(minIdle);
+        jedisPoolConfig.setMaxTotal(maxActive);
+
+//        jedisPoolConfig.setTestOnBorrow(true);
+//        jedisPoolConfig.setTestOnReturn(true);
+
         if (StringUtils.isNotBlank(password)) {
             return new JedisPool(jedisPoolConfig, host, port, timeout, password, database);
         } else {
