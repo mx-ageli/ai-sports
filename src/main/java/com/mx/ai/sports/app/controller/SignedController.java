@@ -148,7 +148,7 @@ public class SignedController extends BaseRestController implements SignedApi {
                 return new AiSportsResponse<Boolean>().fail().message("课程还没有开始，不能打下课卡！");
             }
 
-            LocalTime endTimePlus30 = endTime.plusMinutes(5);
+            LocalTime endTimePlus30 = endTime.plusMinutes(30);
             // 当前时间 < 下课时间 不能打卡
             if (currentTime.isBefore(endTime)) {
                 return new AiSportsResponse<Boolean>().fail().message("现在还没有下课，不能打下课卡！请在" + endTime + "-" + endTimePlus30 + "之间打下课卡！");
