@@ -84,7 +84,7 @@ public class RecordStudentServiceImpl extends ServiceImpl<RecordStudentMapper, R
                 }
 
                 vo.setSignedStatus(SignedStatusEnum.NORMAL.value());
-                if (vo.getEndTime() == null) {
+                if (vo.getEndTime() == null || vo.getIsGone()) {
                     vo.setSignedStatus(SignedStatusEnum.NO_SIGNED.value());
                 }
                 if (vo.getIsAbsent()) {
