@@ -51,6 +51,9 @@ public class RecordStudentVo implements Serializable {
     @ApiModelProperty("是否迟到")
     private Boolean isLate;
 
+    @ApiModelProperty("是否早退")
+    private Boolean isGone;
+
     @ApiModelProperty("是否合格")
     private Boolean isPass;
 
@@ -95,5 +98,17 @@ public class RecordStudentVo implements Serializable {
 
     @ApiModelProperty("打卡状态：1正常 2迟到 3缺席 4缺卡")
     private String signedStatus;
+
+    @JsonFormat(pattern = "HH:mm", timezone = "GMT+8")
+    @ApiModelProperty("课程的开始时间")
+    private String courseStartTime;
+
+    @JsonFormat(pattern = "HH:mm", timezone = "GMT+8")
+    @ApiModelProperty("课程的结束时间")
+    private String courseEndTime;
+
+    @JsonFormat(pattern = "HH:mm", timezone = "GMT+8")
+    @ApiModelProperty("课程打卡的时间")
+    private String courseSignedTime;
 
 }

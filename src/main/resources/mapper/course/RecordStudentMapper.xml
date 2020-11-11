@@ -8,6 +8,9 @@
     <update id="updateSigned">
         UPDATE APP_RECORD_STUDENT SET IS_ABSENT = #{isAbsent}, IS_LATE =#{isLate} WHERE RECORD_STUDENT_ID = #{recordStudentId}
     </update>
+    <update id="updateSignedToGone">
+        UPDATE APP_RECORD_STUDENT SET IS_GONE = #{isGone} WHERE RECORD_STUDENT_ID = #{recordStudentId}
+    </update>
     <select id="findVoByCourseRecordId" resultType="com.mx.ai.sports.course.vo.StudentCourseVo">
         SELECT
             su.USER_ID AS userId,
@@ -40,7 +43,10 @@
             temp.*,
             ac.COURSE_NAME AS courseName,
             ac.IMAGES AS images,
-            ac.IS_RUN isRun
+            ac.IS_RUN AS isRun,
+            ac.START_TIME AS courseStartTime,
+            ac.END_TIME AS courseEndTime,
+            ac.SIGNED_TIME AS courseSignedTime
         FROM
             (
             SELECT
@@ -60,6 +66,7 @@
                     ars.IS_ABSENT AS isAbsent,
                     ars.IS_LATE AS isLate,
                     ars.IS_PASS AS isPass,
+                    ars.IS_GONE AS isGone,
                     asi.START_LAT AS startLat,
                     asi.START_LON AS startLon,
                     asi.START_LOCATION_NAME AS startLocationName,

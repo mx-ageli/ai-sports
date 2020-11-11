@@ -53,5 +53,7 @@ public interface IRecordStudentService extends IService<RecordStudent> {
 
     void updateSigned(Long recordStudentId, boolean isAbsent, boolean isLate);
 
+    void updateSignedToGone(Long recordStudentId, boolean isGone);
+
     Long getIdByCourseRecordIdUserId(Long courseRecordId, Long userId);
 }

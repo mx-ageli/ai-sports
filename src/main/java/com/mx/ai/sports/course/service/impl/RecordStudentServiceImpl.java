@@ -118,6 +118,11 @@ public class RecordStudentServiceImpl extends ServiceImpl<RecordStudentMapper, R
     }
 
     @Override
+    public void updateSignedToGone(Long recordStudentId, boolean isGone) {
+        this.baseMapper.updateSignedToGone(recordStudentId, isGone);
+    }
+
+    @Override
     public Long getIdByCourseRecordIdUserId(Long courseRecordId, Long userId) {
         return baseMapper.getIdByCourseRecordIdUserId(courseRecordId, userId);
     }

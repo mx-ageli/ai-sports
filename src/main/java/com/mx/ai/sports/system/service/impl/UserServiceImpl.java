@@ -154,7 +154,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             List<RecordStudent> recordStudentList = recordStudentService.list(new LambdaQueryWrapper<RecordStudent>().eq(RecordStudent::getIsAbsent, false).eq(RecordStudent::getUserId, userId));
             if(!CollectionUtils.isEmpty(recordStudentList)){
                 userVo.setCourseCount((long) recordStudentList.size());
-                userVo.setPassCount(recordStudentList.stream().filter(RecordStudent::getIsPass).count());
+                // 没有缺席、没有迟到、没有早退、成绩合格才算数量
+                userVo.setPassCount(recordStudentList.stream()
+                        .filter(e -> !e.getIsAbsent() && !e.getIsLate() && !e.getIsGone() && e.getIsPass()).count());
             }
         }
         return userVo;

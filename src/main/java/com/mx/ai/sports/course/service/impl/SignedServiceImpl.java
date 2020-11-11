@@ -65,6 +65,13 @@ public class SignedServiceImpl extends ServiceImpl<SignedMapper, Signed> impleme
                 // 更新学生的课程记录 与上课更新课程记录一致
                 recordStudentService.updateSigned(recordStudent.getRecordStudentId(), false, signed.getIsLate());
             }
+        } else {
+            // 如果是打下课卡，将学生的早退状态改为false
+            RecordStudent recordStudent = recordStudentService.findByCourseRecordIdAndUserId(signed.getCourseRecordId(), signed.getUserId());
+            if (null != recordStudent) {
+                recordStudentService.updateSignedToGone(recordStudent.getRecordStudentId(), false);
+            }
+
         }
         return isSuccess;
     }

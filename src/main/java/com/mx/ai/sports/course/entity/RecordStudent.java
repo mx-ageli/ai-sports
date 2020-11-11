@@ -75,6 +75,12 @@ public class RecordStudent implements Serializable {
     @TableField("IS_PASS")
     private Boolean isPass;
 
+    /**
+     * 是否早退
+     */
+    @TableField("IS_GONE")
+    private Boolean isGone;
+
 
     public RecordStudent(Long courseId, Long courseRecordId, Long studentId){
         this.setCourseId(courseId);
@@ -88,7 +94,8 @@ public class RecordStudent implements Serializable {
         this.setIsLate(Boolean.FALSE);
         // 默认为不合格
         this.setIsPass(Boolean.FALSE);
-
+        // 默认早退
+        this.setIsGone(Boolean.TRUE);
     }
 
 }

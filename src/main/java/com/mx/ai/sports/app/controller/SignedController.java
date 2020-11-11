@@ -76,7 +76,7 @@ public class SignedController extends BaseRestController implements SignedApi {
 
     @Override
     @Log("打卡")
-    @Limit(key = "signed", period = 3, count = 1, name = "打卡", prefix = "limit", limitType = LimitType.IP, message = "系统正在处理为你保存打卡...")
+    @Limit(key = "signed", period = 3, count = 1, name = "打卡", prefix = "limit", limitType = LimitType.IP, message = "正在提交打卡，请稍后再试...")
     public AiSportsResponse<Boolean> signed(@RequestBody @Valid SignedAddVo signedAddVo) {
         Course course = courseService.getById(signedAddVo.getCourseId());
 
@@ -105,7 +105,7 @@ public class SignedController extends BaseRestController implements SignedApi {
 
         // 当前时间 < 打卡时间 不能打卡
         if (currentTime.isBefore(signedTime)) {
-            return new AiSportsResponse<Boolean>().fail().message("还没有到打卡时间，不能打卡！");
+            return new AiSportsResponse<Boolean>().fail().message("还没有到打卡时间，不能打卡！请在" + signedTime + "后打卡！");
         }
 
         // 查询到当前课程记录Id
@@ -143,10 +143,21 @@ public class SignedController extends BaseRestController implements SignedApi {
             if (signed.getEndTime() != null) {
                 return new AiSportsResponse<Boolean>().fail().message("已经打卡完成，无需重复打卡！");
             }
-            // 当前时间 < 打卡时间 不能打卡
+            // 当前时间 < 上课时间 不能打卡
             if (currentTime.isBefore(startTime)) {
                 return new AiSportsResponse<Boolean>().fail().message("课程还没有开始，不能打下课卡！");
             }
+
+            LocalTime endTimePlus30 = endTime.plusHours(30);
+            // 当前时间 < 下课时间 不能打卡
+            if (currentTime.isBefore(endTime)) {
+                return new AiSportsResponse<Boolean>().fail().message("现在还没有下课，不能打下课卡！请在" + endTime + "-" + endTimePlus30 + "之间打下课卡！");
+            }
+            // 当前时间 > 下课时间+30分钟 也就是19:15分钟后 不能打卡
+            if (currentTime.isAfter(endTimePlus30)) {
+                return new AiSportsResponse<Boolean>().fail().message("你已经错过了打卡时间，视为早退！应在" + endTime + "-" + endTimePlus30 + "之间打下课卡！");
+            }
+
 
             // 正常打下课卡
             signed.setEndTime(new Date());
@@ -157,6 +168,6 @@ public class SignedController extends BaseRestController implements SignedApi {
         }
         // 保存打卡记录
         AiSportsResponse<Boolean> response = new AiSportsResponse<Boolean>().success().data(signedService.saveSigned(signed));
-        return signed.getIsLate() && isFirst ? response.message("迟到打卡！") : response.message("打卡成功！");
+        return signed.getIsLate() && isFirst ? response.message("迟到打卡！请下次在" + signedTime + "-" + startTime + "之间打卡！") : response.message("打卡成功！");
     }
 }
