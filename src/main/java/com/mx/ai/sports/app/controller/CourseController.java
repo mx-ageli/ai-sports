@@ -479,7 +479,7 @@ public class CourseController extends BaseRestController implements CourseApi {
             courseStudent.setUserId(userId);
 
             CourseEntryVo courseEntryVo = courseStudentService.saveStudentAndGroup(courseStudent);
-            courseEntryVo.setSort(currentStudentSize);
+            courseEntryVo.setSort(entryCount + 1);
 
             return new AiSportsResponse<CourseEntryVo>().success().data(courseEntryVo);
 
