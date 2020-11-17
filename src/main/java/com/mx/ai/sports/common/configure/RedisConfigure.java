@@ -69,14 +69,14 @@ public class RedisConfigure extends CachingConfigurerSupport {
         jedisPoolConfig.setMinIdle(minIdle);
         jedisPoolConfig.setMaxTotal(maxActive);
 
-        jedisPoolConfig.setTestOnBorrow(true);
-        jedisPoolConfig.setTestOnReturn(true);
-        jedisPoolConfig.setBlockWhenExhausted(false);
+//        jedisPoolConfig.setTestOnBorrow(true);
+//        jedisPoolConfig.setTestOnReturn(true);
+//        jedisPoolConfig.setBlockWhenExhausted(false);
 
-        jedisPoolConfig.setNumTestsPerEvictionRun(1024);
-        jedisPoolConfig.setTimeBetweenEvictionRunsMillis(30000);
-        jedisPoolConfig.setMinEvictableIdleTimeMillis(1800000);
-        jedisPoolConfig.setSoftMinEvictableIdleTimeMillis(1800000);
+//        jedisPoolConfig.setNumTestsPerEvictionRun(1024);
+//        jedisPoolConfig.setTimeBetweenEvictionRunsMillis(30000);
+//        jedisPoolConfig.setMinEvictableIdleTimeMillis(1800000);
+//        jedisPoolConfig.setSoftMinEvictableIdleTimeMillis(1800000);
 
         if (StringUtils.isNotBlank(password)) {
             return new JedisPool(jedisPoolConfig, host, port, timeout, password, database);
