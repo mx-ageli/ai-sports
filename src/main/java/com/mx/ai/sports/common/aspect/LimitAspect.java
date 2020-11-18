@@ -77,7 +77,7 @@ public class LimitAspect {
         String luaScript = buildLuaScript();
         RedisScript<Number> redisScript = new DefaultRedisScript<>(luaScript, Number.class);
         Number count = limitRedisTemplate.execute(redisScript, keys, limitCount, limitPeriod);
-        log.info("IP:{} 第 {} 次访问key为 {}，描述为 [{}] 的接口", ip, count, keys, name);
+//        log.info("IP:{} 第 {} 次访问key为 {}，描述为 [{}] 的接口", ip, count, keys, name);
         if (count != null && count.intValue() <= limitCount) {
             return point.proceed();
         } else {
@@ -86,7 +86,7 @@ public class LimitAspect {
 
             StringBuilder parameterStr = new StringBuilder();
             parameterMap.forEach((k, p) -> parameterStr.append(k).append(":").append(Arrays.toString(p)).append(","));
-            log.info("当前有请求正在频繁请求，参数：{}", parameterStr);
+//            log.info("当前有请求正在频繁请求，参数：{}", parameterStr);
 
             throw new AiSportsException(limitAnnotation.message(), false);
         }
