@@ -40,10 +40,10 @@ public class JedisPoolUtil {
     }
 
     public synchronized void returnBrokenResource(Jedis jedis) {
-        if (null != jedis) {
-            jedis.close();
+//        if (null != jedis) {
+//            jedis.close();
 //            jedisPool.returnBrokenResource(jedis);
-        }
+//        }
     }
 
     public List<String> hmGet(String hKey, String... keys) {

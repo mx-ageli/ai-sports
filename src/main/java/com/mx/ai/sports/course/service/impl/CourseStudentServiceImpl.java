@@ -113,7 +113,11 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
         // 如果这里查不到的话，说明所有的小组已经报满了，不能再报课
         if (group == null) {
             // 在不满足报名条件时，删除报名记录
-            removeEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
+            // 先去数据库里面查询学生， 如果学生已经报名了，就不删除缓存。
+            CourseStudent existCourseStudent = findByUserCourseId(courseStudent.getUserId(), courseStudent.getCourseId());
+            if (existCourseStudent == null) {
+                removeEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
+            }
             throw new AiSportsException("今日当前课程已经报满，请明日再来！");
         }
         try {
@@ -128,16 +132,14 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
             // 保存小组和学生的关系
             groupStudentService.save(groupStudent);
 
-            // 统计报名序号
-//            Long sort = baseMapper.findSortByMax(courseStudent.getCourseId());
-//            courseStudent.setSort(sort);
-
             entryVo.setGroupId(group.getGroupId());
             entryVo.setGroupName(group.getGroupName());
-//            entryVo.setSort(sort);
         } catch (Exception e) {
-            // 将学生列表删除
-            removeEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
+            // 先去数据库里面查询学生， 如果学生已经报名了，就不删除缓存。
+            CourseStudent existCourseStudent = findByUserCourseId(courseStudent.getUserId(), courseStudent.getCourseId());
+            if (existCourseStudent == null) {
+                removeEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
+            }
             log.info("学生报课保存失败，courseId:{}, userId:{}, 发生异常：{}", courseStudent.getCourseId(), courseStudent.getUserId(), e.getMessage());
             e.printStackTrace();
         }
@@ -179,7 +181,7 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
     @Override
     public String findEntryStudentList2Redis(Long courseId, Long userId) {
         String value = jedisPoolUtil.hGet(getEntryStudentListKey(courseId), String.valueOf(userId));
-        if(StringUtils.isBlank(value)){
+        if (StringUtils.isBlank(value)) {
             return null;
         }
         return value;
@@ -200,7 +202,7 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
         return jedisPoolUtil.hLen(getEntryStudentListKey(courseId));
     }
 
-    private String getEntryStudentListKey(Long courseId){
+    private String getEntryStudentListKey(Long courseId) {
         return "entry_student_list_" + courseId;
     }
 
