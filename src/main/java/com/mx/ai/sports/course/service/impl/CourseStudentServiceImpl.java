@@ -116,6 +116,7 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
             // 先去数据库里面查询学生， 如果学生已经报名了，就不删除缓存。
             CourseStudent existCourseStudent = findByUserCourseId(courseStudent.getUserId(), courseStudent.getCourseId());
             if (existCourseStudent == null) {
+                log.info("执行删除报课redis操作，courseId:{}, userId:{}", courseStudent.getCourseId(), courseStudent.getUserId());
                 removeEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
             }
             throw new AiSportsException("今日当前课程已经报满，请明日再来！");
@@ -138,6 +139,7 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
             // 先去数据库里面查询学生， 如果学生已经报名了，就不删除缓存。
             CourseStudent existCourseStudent = findByUserCourseId(courseStudent.getUserId(), courseStudent.getCourseId());
             if (existCourseStudent == null) {
+                log.info("执行删除报课redis操作，courseId:{}, userId:{}", courseStudent.getCourseId(), courseStudent.getUserId());
                 removeEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
             }
             log.info("学生报课保存失败，courseId:{}, userId:{}, 发生异常：{}", courseStudent.getCourseId(), courseStudent.getUserId(), e.getMessage());

@@ -481,9 +481,12 @@ public class CourseController extends BaseRestController implements CourseApi {
             CourseEntryVo courseEntryVo = courseStudentService.saveStudentAndGroup(courseStudent);
             courseEntryVo.setSort(currentStudentSize);
 
+            log.info("{}号学生报课成功，courseId:{}, userId:{}, courseName:{}, groupName:{}", courseEntryVo.getSort(), courseStudent.getCourseId(), courseStudent.getUserId(), course.getCourseName(), courseEntryVo.getGroupName());
+
             return new AiSportsResponse<CourseEntryVo>().success().data(courseEntryVo);
 
         } else {
+            log.info("学生正在重复报课，courseId:{}, userId:{}", courseId, userId);
             return new AiSportsResponse<CourseEntryVo>().fail().message("你已经成功报名了该课程，不能重复报名！");
         }
     }
