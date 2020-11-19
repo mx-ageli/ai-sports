@@ -403,7 +403,6 @@ public class CourseController extends BaseRestController implements CourseApi {
 //    }
 
     @Override
-//    @Log("学生报名课程")
     @Limit(key = "entry", period = 5, count = 1, name = "报课", prefix = "limit", limitType = LimitType.CUSTOMER)
     public AiSportsResponse<CourseEntryVo> entry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException {
 
@@ -492,7 +491,6 @@ public class CourseController extends BaseRestController implements CourseApi {
     }
 
     @Override
-    @Log("学生取消报名")
     public AiSportsResponse<CourseEntryVo> cancelEntry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException {
 
         Course course = courseService.getById(courseId);
@@ -526,6 +524,8 @@ public class CourseController extends BaseRestController implements CourseApi {
         }
         // 删除报名信息
         courseStudentService.remove(userId, courseId);
+
+        log.info("{} 学生取消报课成功，courseId:{}, courseName:{}", courseStudent.getUserId(), courseStudent.getCourseId(), course.getCourseName());
         return new AiSportsResponse<CourseEntryVo>().success().data(new CourseEntryVo());
     }
 
