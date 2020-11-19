@@ -448,7 +448,7 @@ public class CourseController extends BaseRestController implements CourseApi {
         }
 
         // 先查询课程在redis中的报名人数是否已满
-        Long entryCountRedis = courseStudentService.getLenEntryStudentList2Redis(courseId);
+        Long entryCountRedis = courseStudentService.getCountEntryStudent2Redis(courseId);
         // 如果报名的人数大于了课程的最大人数
         if(entryCountRedis != null && entryCountRedis >= course.getMaxCount()){
             return new AiSportsResponse<CourseEntryVo>().fail().message("今日当前课程已经报满，请明日再来！");
@@ -472,7 +472,7 @@ public class CourseController extends BaseRestController implements CourseApi {
         // 如果不存在说明学生还没有报课，只有在学生还没有报课才走下面的校验逻辑。
         if(entrySn == null || entrySn == 0L){
             // 默认先给学生报名成功
-            Long currentStudentSize = courseStudentService.setEntryStudentList2Redis(courseId, userId, entryCountRedis);
+            Long currentStudentSize = courseStudentService.setEntryStudentList2Redis(courseId, userId);
 
             CourseStudent courseStudent = new CourseStudent();
             courseStudent.setCourseId(courseId);
@@ -519,6 +519,10 @@ public class CourseController extends BaseRestController implements CourseApi {
 
         if (isCheckStart) {
             return new AiSportsResponse<CourseEntryVo>().fail().message("当前报名课程已经开始，不能取消报名！");
+        }
+        CourseStudent courseStudent = courseStudentService.findByUserCourseId(userId, courseId);
+        if(null == courseStudent){
+            return new AiSportsResponse<CourseEntryVo>().fail().message("你没有报名该课程，不能取消报名！");
         }
         // 删除报名信息
         courseStudentService.remove(userId, courseId);

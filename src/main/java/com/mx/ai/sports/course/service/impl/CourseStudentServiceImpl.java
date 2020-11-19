@@ -86,6 +86,9 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
 
         // TODO 需要更新其他学生的排序
         // 将列表中的学生删除掉
+        // 报课数量中自减一
+        minusCountEntryStudent2Redis(courseId);
+        // 将学生移除
         removeEntryStudentList2Redis(courseId, userId);
 
         return this.baseMapper.delete(new LambdaQueryWrapper<CourseStudent>().eq(CourseStudent::getCourseId, courseId).eq(CourseStudent::getUserId, userId)) > 0;
@@ -115,6 +118,9 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
             CourseStudent existCourseStudent = findByUserCourseId(courseStudent.getUserId(), courseStudent.getCourseId());
             if (existCourseStudent == null) {
                 log.info("执行删除报课redis操作，courseId:{}, userId:{}", courseStudent.getCourseId(), courseStudent.getUserId());
+                // 报课数量中自减一
+                minusCountEntryStudent2Redis(courseStudent.getCourseId());
+                // 将学生移除
                 removeEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
             }
             throw new AiSportsException("今日当前课程已经报满，请明日再来！");
@@ -138,6 +144,9 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
             CourseStudent existCourseStudent = findByUserCourseId(courseStudent.getUserId(), courseStudent.getCourseId());
             if (existCourseStudent == null) {
                 log.info("执行删除报课redis操作，courseId:{}, userId:{}", courseStudent.getCourseId(), courseStudent.getUserId());
+                // 报课数量中自减一
+                minusCountEntryStudent2Redis(courseStudent.getCourseId());
+                // 将学生移除
                 removeEntryStudentList2Redis(courseStudent.getCourseId(), courseStudent.getUserId());
             }
             log.info("学生报课保存失败，courseId:{}, userId:{}, 发生异常：{}", courseStudent.getCourseId(), courseStudent.getUserId(), e.getMessage());
@@ -159,47 +168,85 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
     }
 
     @Override
-    public Long setEntryStudentList2Redis(Long courseId, Long userId, Long entryCountRedis) {
-        String key = getEntryStudentListKey(courseId);
-        entryCountRedis++;
-        // 数量自加1
+    public Long setEntryStudentList2Redis(Long courseId, Long userId) {
+        String key = getHashEntryStudentKey(courseId);
+
+        // 给课程往redis中计数加1
+        Long entryCountRedis = plusCountEntryStudent2Redis(courseId);
+        // 使用计数器中的数量
         RedisUtil.getHashHandler().putAsObj(key, String.valueOf(userId), entryCountRedis);
 
         if(entryCountRedis <= 1L){
             RedisUtil.getKeyHandler().expire(key, ENTRY_EXPIRE_TIME, TimeUnit.SECONDS);
+            // 给计数器的key也设置过期时间
+            RedisUtil.getKeyHandler().expire(getCountEntryStudentKey(courseId), ENTRY_EXPIRE_TIME, TimeUnit.SECONDS);
         }
         return entryCountRedis;
     }
 
     @Override
     public Long findEntryStudentList2Redis(Long courseId, Long userId) {
-        String key = getEntryStudentListKey(courseId);
+        String key = getHashEntryStudentKey(courseId);
 
         return RedisUtil.getHashHandler().getAsObj(key, String.valueOf(userId));
     }
 
     @Override
     public void removeEntryStudentList2Redis(Long courseId, Long userId) {
-        String key = getEntryStudentListKey(courseId);
+        String key = getHashEntryStudentKey(courseId);
 
         RedisUtil.getHashHandler().remove(key, String.valueOf(userId));
     }
 
     @Override
     public void removeEntryStudentList2Redis(Long courseId) {
-        String key = getEntryStudentListKey(courseId);
+        String key = getHashEntryStudentKey(courseId);
 
         RedisUtil.getKeyHandler().remove(key);
     }
 
     @Override
     public Long getLenEntryStudentList2Redis(Long courseId) {
-        String key = getEntryStudentListKey(courseId);
+        String key = getHashEntryStudentKey(courseId);
         return RedisUtil.getHashHandler().size(key);
     }
 
-    private String getEntryStudentListKey(Long courseId) {
+
+
+    @Override
+    public void removeCountEntryStudent2Redis(Long courseId) {
+        String key = getCountEntryStudentKey(courseId);
+
+        RedisUtil.getKeyHandler().remove(key);
+    }
+
+    @Override
+    public Long minusCountEntryStudent2Redis(Long courseId) {
+        String key = getCountEntryStudentKey(courseId);
+
+        return RedisUtil.getNumberHandler().decrementLong(key);
+    }
+
+    @Override
+    public Long plusCountEntryStudent2Redis(Long courseId) {
+        String key = getCountEntryStudentKey(courseId);
+
+        return RedisUtil.getNumberHandler().incrementLong(key);
+    }
+
+    @Override
+    public Long getCountEntryStudent2Redis(Long courseId) {
+        String key = getCountEntryStudentKey(courseId);
+
+        return RedisUtil.getNumberHandler().getLong(key);
+    }
+
+    private String getHashEntryStudentKey(Long courseId) {
         return "hash_entry_student_" + courseId;
+    }
+
+    private String getCountEntryStudentKey(Long courseId){
+        return "count_entry_student_" + courseId;
     }
 
 }

@@ -1,19 +1,14 @@
 package com.mx.ai.sports.test;
 
 import com.mx.ai.sports.AiSportsApplication;
-import com.mx.ai.sports.course.query.CourseAddVo;
 import com.mx.ai.sports.course.service.ICourseService;
 import com.mx.ai.sports.course.service.ICourseStudentService;
-import com.mx.ai.sports.system.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RunWith(SpringRunner.class)

@@ -148,6 +148,8 @@ public class CourseTask {
         groupStudentService.remove(new LambdaQueryWrapper<GroupStudent>().eq(GroupStudent::getCourseId, courseId));
         // 清除报名学生的缓存
         courseStudentService.removeEntryStudentList2Redis(Long.valueOf(courseId));
+        // 将计数器也清除掉
+        courseStudentService.removeCountEntryStudent2Redis(Long.valueOf(courseId));
         log.info("课程结束，清除所有的学生报名记录，courseId:{}, 清除数量：{}", courseId, delCount);
     }
 
