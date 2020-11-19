@@ -404,7 +404,7 @@ public class CourseController extends BaseRestController implements CourseApi {
 
     @Override
 //    @Log("学生报名课程")
-    @Limit(key = "entry", period = 5, count = 1, name = "报课", prefix = "limit", limitType = LimitType.IP)
+    @Limit(key = "entry", period = 5, count = 1, name = "报课", prefix = "limit", limitType = LimitType.CUSTOMER)
     public AiSportsResponse<CourseEntryVo> entry(@NotNull @RequestParam("courseId") Long courseId) throws AiSportsException {
 
         Course course = courseService.getById(courseId);
@@ -468,11 +468,11 @@ public class CourseController extends BaseRestController implements CourseApi {
         }
 
         // 查询学生是否已经报课
-        String isEntryStudent = courseStudentService.findEntryStudentList2Redis(courseId, userId);
+        Long entrySn = courseStudentService.findEntryStudentList2Redis(courseId, userId);
         // 如果不存在说明学生还没有报课，只有在学生还没有报课才走下面的校验逻辑。
-        if(StringUtils.isBlank(isEntryStudent)){
+        if(entrySn == null || entrySn == 0L){
             // 默认先给学生报名成功
-            Long currentStudentSize = courseStudentService.setEntryStudentList2Redis(courseId, userId);
+            Long currentStudentSize = courseStudentService.setEntryStudentList2Redis(courseId, userId, entryCountRedis);
 
             CourseStudent courseStudent = new CourseStudent();
             courseStudent.setCourseId(courseId);

@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import wiki.xsx.core.util.RedisUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -43,6 +44,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static com.mx.ai.sports.common.entity.AiSportsConstant.*;
 
@@ -57,8 +59,6 @@ import static com.mx.ai.sports.common.entity.AiSportsConstant.*;
 @RestController("UserApi")
 public class UserController extends BaseRestController implements UserApi {
 
-    @Autowired
-    private JedisPoolUtil jedisPoolUtil;
 
     @Autowired
     private ILoginLogService loginLogService;
@@ -81,7 +81,7 @@ public class UserController extends BaseRestController implements UserApi {
     @Autowired
     private ITempStudentService tempStudentService;
 
-    private final static List<String> TEST_MOBILE = Arrays.asList("13708075380", "13036662958");
+    public final static List<String> TEST_MOBILE = Arrays.asList("13708075380", "13036662958");
 
     /**
      * 通用验证码
@@ -99,7 +99,7 @@ public class UserController extends BaseRestController implements UserApi {
         }
 
         // 根据phone从redis中取出发送的短信验证码，并与用户输入的验证码比较
-        String messageCode = jedisPoolUtil.get(mobile);
+        String messageCode = RedisUtil.getStringHandler().get(mobile);
 
         // 如果是上架的测试手机号默认使用666666
         if (TEST_MOBILE.contains(mobile)) {
@@ -136,7 +136,7 @@ public class UserController extends BaseRestController implements UserApi {
             userService.saveOrUpdate(updateUser);
 
             // 登录成功后,删除验证码
-            jedisPoolUtil.del(mobile);
+            RedisUtil.getStringHandler().remove(mobile);
 
             return new AiSportsResponse<String>().success().data(token);
         }
@@ -165,10 +165,10 @@ public class UserController extends BaseRestController implements UserApi {
         }
         String keyMobile = CODE_DATE_OUT + mobile;
         // 先判断key是否存在，不存在则直接发送短信
-        Boolean isExists = jedisPoolUtil.exists(keyMobile);
-        if (isExists) {
+        String isExistCode = RedisUtil.getStringHandler().get(keyMobile);
+        if (StringUtils.isNotBlank(isExistCode)) {
             // key存在，获取过期时间
-            Long ttlMobile = jedisPoolUtil.ttl(keyMobile);
+            Long ttlMobile = RedisUtil.getKeyHandler().getExpire(keyMobile, TimeUnit.SECONDS);
             if (ttlMobile > 0) {
                 log.info("手机号:{}, 正在重复获取验证码, 间隔时间: {} 秒, 请求默认拒绝!", mobile, ttlMobile);
                 String msg = "获取验证码太过频繁, 请等待" + ttlMobile + "秒后再次获取！";
@@ -176,26 +176,23 @@ public class UserController extends BaseRestController implements UserApi {
             }
         }
 
-        String code = JwtTokenUtil.getRandomCode();
-        // 只有在非正式环境才使用666666
-        if (!ActiveProfileConstant.PROD.equals(SpringContextUtil.getActiveProfile())) {
-            code = "666666";
-        }
+        String code = JwtTokenUtil.getRandomCode(mobile);
+
         log.info("手机号:{}, 获取验证码:{}", mobile, code);
 
-        // 如果是上架的测试手机号默认使用666666
-        if (TEST_MOBILE.contains(mobile)) {
-            code = "666666";
-        }
-
-        // TODO 需要考虑事物的问题
+        // 使用事物来提交
         // 往redis中存放验证码，设置过期时间为五分钟
-        jedisPoolUtil.set(mobile, code);
-        jedisPoolUtil.expire(mobile, CODE_EXPIRE_TIME);
+        RedisUtil.getTransactionHandler().execute(handler -> {
+            handler.beginTransaction();
 
-        // 记录手机号重复获取验证码的时间，间隔为一分钟
-        jedisPoolUtil.set(keyMobile, code);
-        jedisPoolUtil.expire(keyMobile, CODE_DATE_OUT_VALUE);
+            handler.getStringHandler().set(mobile, code);
+            handler.getKeyHandler().expire(mobile, CODE_EXPIRE_TIME, TimeUnit.SECONDS);
+
+            handler.getStringHandler().set(keyMobile, code);
+            handler.getKeyHandler().expire(keyMobile, CODE_DATE_OUT_VALUE, TimeUnit.SECONDS);
+
+            return handler.commit();
+        });
 
         // 只有在非正式环境才发送短信
         if (ActiveProfileConstant.PROD.equals(SpringContextUtil.getActiveProfile())) {

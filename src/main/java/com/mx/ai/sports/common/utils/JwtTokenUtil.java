@@ -1,6 +1,7 @@
 package com.mx.ai.sports.common.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.mx.ai.sports.common.entity.ActiveProfileConstant;
 import com.mx.ai.sports.system.vo.UserSimple;
 import com.mx.ai.sports.common.entity.AiSportsConstant;
 import io.jsonwebtoken.*;
@@ -9,6 +10,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import static com.mx.ai.sports.app.controller.UserController.TEST_MOBILE;
 
 /**
  * <p>jwt token工具类</p>
@@ -133,14 +136,26 @@ public class JwtTokenUtil {
      *
      * @return
      */
-    public static String getRandomCode() {
+    public static String getRandomCode(String mobile) {
 
         int flag = new Random().nextInt(999999);
         if (flag < 100000) {
             flag += 100000;
         }
 
-        return String.valueOf(flag);
+        String code = String.valueOf(flag);
+        // 只有在非正式环境才使用666666
+        if (!ActiveProfileConstant.PROD.equals(SpringContextUtil.getActiveProfile())) {
+            code = "666666";
+        }
+
+
+        // 如果是上架的测试手机号默认使用666666
+        if (TEST_MOBILE.contains(mobile)) {
+            code = "666666";
+        }
+
+        return code;
     }
 
     /**

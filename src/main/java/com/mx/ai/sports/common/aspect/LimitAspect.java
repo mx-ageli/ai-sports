@@ -19,13 +19,16 @@ import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import wiki.xsx.core.util.RedisUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -37,13 +40,6 @@ import java.util.Objects;
 @Aspect
 @Component
 public class LimitAspect {
-
-    private final RedisTemplate<String, Serializable> limitRedisTemplate;
-
-    @Autowired
-    public LimitAspect(RedisTemplate<String, Serializable> limitRedisTemplate) {
-        this.limitRedisTemplate = limitRedisTemplate;
-    }
 
     @Pointcut("@annotation(com.mx.ai.sports.common.annotation.Limit)")
     public void pointcut() {
@@ -73,41 +69,20 @@ public class LimitAspect {
             default:
                 key = StringUtils.upperCase(method.getName());
         }
-        ImmutableList<String> keys = ImmutableList.of(StringUtils.join(limitAnnotation.prefix() + "_", key, ip));
-        String luaScript = buildLuaScript();
-        RedisScript<Number> redisScript = new DefaultRedisScript<>(luaScript, Number.class);
-        Number count = limitRedisTemplate.execute(redisScript, keys, limitCount, limitPeriod);
-//        log.info("IP:{} 第 {} 次访问key为 {}，描述为 [{}] 的接口", ip, count, keys, name);
-        if (count != null && count.intValue() <= limitCount) {
+        String keys = StringUtils.join(limitAnnotation.prefix() + "_", key, ip);
+
+        Long count = RedisUtil.getNumberHandler().getLong(keys);
+
+        if(count == null || count < limitCount ){
+            count = RedisUtil.getNumberHandler().incrementLong(keys);
+            if(count == 1){
+                RedisUtil.getKeyHandler().expire(keys, limitPeriod, TimeUnit.SECONDS);
+            }
             return point.proceed();
         } else {
-            // TODO 这里可以发送短信进行预警
-            Map<String, String[]> parameterMap = request.getParameterMap();
-
-            StringBuilder parameterStr = new StringBuilder();
-            parameterMap.forEach((k, p) -> parameterStr.append(k).append(":").append(Arrays.toString(p)).append(","));
-//            log.info("当前有请求正在频繁请求，参数：{}", parameterStr);
-
             throw new AiSportsException(limitAnnotation.message(), false);
         }
+
     }
 
-    /**
-     * 限流脚本
-     * 调用的时候不超过阈值，则直接返回并执行计算器自加。
-     *
-     * @return lua脚本
-     */
-    private String buildLuaScript() {
-        return "local c" +
-                "\nc = redis.call('get',KEYS[1])" +
-                "\nif c and tonumber(c) > tonumber(ARGV[1]) then" +
-                "\nreturn c;" +
-                "\nend" +
-                "\nc = redis.call('incr',KEYS[1])" +
-                "\nif tonumber(c) == 1 then" +
-                "\nredis.call('expire',KEYS[1],ARGV[2])" +
-                "\nend" +
-                "\nreturn c;";
-    }
 }

@@ -1,14 +1,11 @@
 package com.mx.ai.sports.common.configure;
 
-//import com.alicp.jetcache.autoconfigure.JedisPoolFactory;
-//import com.alicp.jetcache.autoconfigure.RedisAutoConfiguration;
+
 import com.mx.ai.sports.common.xss.XssFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import redis.clients.jedis.JedisPool;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,9 +52,4 @@ public class AiSportsConfigure {
         return filterRegistrationBean;
     }
 
-//    @Bean(name = "defaultPool")
-//    @DependsOn(RedisAutoConfiguration.AUTO_INIT_BEAN_NAME)//jetcache2.2+
-//    public JedisPoolFactory defaultPool() {
-//        return new JedisPoolFactory("remote.default", JedisPool.class);
-//    }
 }

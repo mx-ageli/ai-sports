@@ -31,6 +31,6 @@ public class CourseCacheTest {
      */
     @Test
     public void cache() {
-        courseStudentService.setEntryStudentList2Redis(7L, 10L);
+//        courseStudentService.setEntryStudentList2Redis(7L, 10L, 1L);
     }
 }

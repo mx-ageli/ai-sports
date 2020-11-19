@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.common.utils.DateUtil;
-import com.mx.ai.sports.common.utils.JedisPoolUtil;
 import com.mx.ai.sports.course.converter.CourseConverter;
 import com.mx.ai.sports.course.dto.ExportRecordStudentDto;
 import com.mx.ai.sports.course.dto.ExportRecordTotalDto;
@@ -63,8 +62,6 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     @Autowired
     private IGroupService groupService;
 
-    @Autowired
-    private JedisPoolUtil jedisPoolUtil;
 
     @Override
     public Course findByCourseName(Long courseId, String courseName) {
@@ -235,16 +232,5 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         return studentVos.stream().collect(Collectors.groupingBy(ExportRecordStudentDto::getCourseName));
     }
 
-    @Override
-    public Course getCacheById1(Long courseId) {
-        String key = "course_" + courseId;
-        Course course = (Course) jedisPoolUtil.getObj(key);
-        if (course == null) {
-            course = this.getById(courseId);
-            jedisPoolUtil.setObj(key, course);
-            jedisPoolUtil.expire(key, ENTRY_EXPIRE_TIME);
-        }
-        return course;
-    }
 
 }

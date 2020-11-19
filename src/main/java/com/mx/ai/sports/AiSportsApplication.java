@@ -1,7 +1,5 @@
 package com.mx.ai.sports;
 
-//import com.alicp.jetcache.anno.config.EnableCreateCacheAnnotation;
-//import com.alicp.jetcache.anno.config.EnableMethodCache;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -20,8 +18,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @EnableTransactionManagement
 @MapperScan("com.mx.ai.sports.*.mapper")
-//@EnableMethodCache(basePackages = "com.mx.ai.sports")
-//@EnableCreateCacheAnnotation
 public class AiSportsApplication {
 
     public static void main(String[] args) {

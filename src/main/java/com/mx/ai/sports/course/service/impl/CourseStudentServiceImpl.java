@@ -3,7 +3,6 @@ package com.mx.ai.sports.course.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.exception.AiSportsException;
-import com.mx.ai.sports.common.utils.JedisPoolUtil;
 import com.mx.ai.sports.course.dto.CourseStudentCountDto;
 import com.mx.ai.sports.course.entity.CourseStudent;
 import com.mx.ai.sports.course.entity.Group;
@@ -21,8 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import wiki.xsx.core.util.RedisUtil;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.mx.ai.sports.common.entity.AiSportsConstant.ENTRY_EXPIRE_TIME;
@@ -41,9 +42,6 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
 
     @Autowired
     private IGroupService groupService;
-
-    @Autowired
-    private JedisPoolUtil jedisPoolUtil;
 
     @Override
     public List<Long> findByCourseId(Long courseId) {
@@ -161,51 +159,47 @@ public class CourseStudentServiceImpl extends ServiceImpl<CourseStudentMapper, C
     }
 
     @Override
-    public Long setEntryStudentList2Redis(Long courseId, Long userId) {
+    public Long setEntryStudentList2Redis(Long courseId, Long userId, Long entryCountRedis) {
         String key = getEntryStudentListKey(courseId);
+        entryCountRedis++;
+        // 数量自加1
+        RedisUtil.getHashHandler().putAsObj(key, String.valueOf(userId), entryCountRedis);
 
-        // 当前报名人数
-//        Long size = jedisPoolUtil.hLen(key) + 1;
-
-//        jedisPoolUtil.hSet(key, String.valueOf(userId), String.valueOf(size));
-        // 改为lua
-
-        // 先查询key的存活时间 TODO 改到lua中
-//        long ttl = jedisPoolUtil.ttl(key);
-//        if(ttl < 1L){
-//            // 设置过期时间
-//            jedisPoolUtil.expire(key, ENTRY_EXPIRE_TIME);
-//        }
-        // 使用lua脚本来完成 查询序号 保存报名 设置过期时间
-        return jedisPoolUtil.entryStudent(key, String.valueOf(userId));
+        if(entryCountRedis <= 1L){
+            RedisUtil.getKeyHandler().expire(key, ENTRY_EXPIRE_TIME, TimeUnit.SECONDS);
+        }
+        return entryCountRedis;
     }
 
     @Override
-    public String findEntryStudentList2Redis(Long courseId, Long userId) {
-        String value = jedisPoolUtil.hGet(getEntryStudentListKey(courseId), String.valueOf(userId));
-        if (StringUtils.isBlank(value)) {
-            return null;
-        }
-        return value;
+    public Long findEntryStudentList2Redis(Long courseId, Long userId) {
+        String key = getEntryStudentListKey(courseId);
+
+        return RedisUtil.getHashHandler().getAsObj(key, String.valueOf(userId));
     }
 
     @Override
     public void removeEntryStudentList2Redis(Long courseId, Long userId) {
-        jedisPoolUtil.hDel(getEntryStudentListKey(courseId), String.valueOf(userId));
+        String key = getEntryStudentListKey(courseId);
+
+        RedisUtil.getHashHandler().remove(key, String.valueOf(userId));
     }
 
     @Override
     public void removeEntryStudentList2Redis(Long courseId) {
-        jedisPoolUtil.del(getEntryStudentListKey(courseId));
+        String key = getEntryStudentListKey(courseId);
+
+        RedisUtil.getKeyHandler().remove(key);
     }
 
     @Override
     public Long getLenEntryStudentList2Redis(Long courseId) {
-        return jedisPoolUtil.hLen(getEntryStudentListKey(courseId));
+        String key = getEntryStudentListKey(courseId);
+        return RedisUtil.getHashHandler().size(key);
     }
 
     private String getEntryStudentListKey(Long courseId) {
-        return "entry_student_list_" + courseId;
+        return "hash_entry_student_" + courseId;
     }
 
 }

@@ -99,11 +99,4 @@ public interface ICourseService extends IService<Course> {
      */
     Map<String, List<ExportRecordStudentDto>> findExportRecordStudent(Date startTime, Date endTime);
 
-    /**
-     * 查询课程详情
-     *
-     * @param courseId
-     * @return
-     */
-    Course getCacheById1(Long courseId);
 }

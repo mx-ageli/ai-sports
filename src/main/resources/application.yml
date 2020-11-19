@@ -25,13 +25,13 @@ spring:
       max-file-size: 20MB
       # 单个请求的文件总大小上限
       max-request-size: 30MB
-
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: /*
+#
+#
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: /*
 
 mybatis-plus:
   # 实体类扫描路径
