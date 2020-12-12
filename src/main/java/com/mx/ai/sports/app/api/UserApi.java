@@ -161,12 +161,12 @@ public interface UserApi {
     AiSportsResponse<List<UserCountVo>> findActiveUserCount(@RequestBody @Valid UserCountQuery query);
 
     /**
-     * 查询时间范围内的每日用户活跃数量
+     * 查询时间范围内的每日用户新增数量
      *
      * @param query
      * @return
      */
-    @ApiOperation(value = "#已实现 2020-12-11# 查询时间范围内的每日用户活跃数量")
+    @ApiOperation(value = "#已实现 2020-12-11# 查询时间范围内的每日用户新增数量")
     @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "UserCountQuery", required = true)
     @RequestMapping(value = "/find_add_user_count", method = RequestMethod.POST)
     AiSportsResponse<List<UserCountVo>> findAddUserCount(@RequestBody @Valid UserCountQuery query);
