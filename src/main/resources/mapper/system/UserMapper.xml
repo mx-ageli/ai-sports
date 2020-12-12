@@ -66,4 +66,83 @@
             AND su.USER_ID = #{userId}
     </select>
 
+    <select id="findAddUserCount" resultType="com.mx.ai.sports.system.vo.UserCountVo">
+       SELECT
+            t1.createTime AS date,
+            t1.studentCount,
+            IFNULL( t2.teacherCount, 0 ) AS teacherCount
+        FROM
+        (
+            SELECT DISTINCT
+            (
+                DATE_FORMAT( su.CREATE_TIME, '%Y-%m-%d' )) AS createTime,
+                count( su.USER_ID ) AS studentCount
+            FROM
+                SYS_USER su
+            WHERE
+                su.CREATE_TIME >= #{startTime}
+                <![CDATA[
+                AND su.CREATE_TIME <= #{endTime}
+                ]]>
+                AND su.ROLE_ID = 1
+            GROUP BY
+                createTime
+        ) t1
+        LEFT JOIN (
+            SELECT DISTINCT
+            (
+                DATE_FORMAT( su.CREATE_TIME, '%Y-%m-%d' )) AS createTime,
+                count( su.USER_ID ) AS teacherCount
+            FROM
+                SYS_USER su
+            WHERE
+                su.CREATE_TIME >= #{startTime}
+                <![CDATA[
+                AND su.CREATE_TIME <= #{endTime}
+                ]]>
+                AND su.ROLE_ID = 2
+            GROUP BY
+                createTime
+            ) t2 ON t1.createTime = t2.createTime
+    </select>
+    <select id="findActiveUserCount" resultType="com.mx.ai.sports.system.vo.UserCountVo">
+        SELECT
+            t1.lastLoginTime AS date,
+            t1.studentCount,
+            IFNULL( t2.teacherCount, 0 ) AS teacherCount
+        FROM
+        (
+            SELECT DISTINCT
+            (
+                DATE_FORMAT( su.LAST_LOGIN_TIME, '%Y-%m-%d' )) AS lastLoginTime,
+                count( su.USER_ID ) AS studentCount
+            FROM
+                SYS_USER su
+            WHERE
+                su.LAST_LOGIN_TIME >= #{startTime}
+                <![CDATA[
+                AND su.LAST_LOGIN_TIME <= #{endTime}
+                ]]>
+                AND su.ROLE_ID = 1
+            GROUP BY
+                lastLoginTime
+        ) t1
+        LEFT JOIN (
+            SELECT DISTINCT
+            (
+                DATE_FORMAT( su.LAST_LOGIN_TIME, '%Y-%m-%d' )) AS lastLoginTime,
+                count( su.USER_ID ) AS teacherCount
+            FROM
+                SYS_USER su
+            WHERE
+                su.LAST_LOGIN_TIME >= #{startTime}
+                <![CDATA[
+                AND su.LAST_LOGIN_TIME <= #{endTime}
+                ]]>
+                AND su.ROLE_ID = 2
+            GROUP BY
+                lastLoginTime
+            ) t2 ON t1.lastLoginTime = t2.lastLoginTime
+    </select>
+
 </mapper>

@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mx.ai.sports.system.entity.User;
 import com.mx.ai.sports.system.vo.SubjectStudentVo;
+import com.mx.ai.sports.system.vo.UserCountVo;
 import com.mx.ai.sports.system.vo.UserSmallVo;
 import com.mx.ai.sports.system.vo.UserVo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,5 +50,21 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     SubjectStudentVo findSubjectByUserId(Long userId);
+
+    /**
+     * 每日用户活跃数量
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<UserCountVo> findActiveUserCount(Date startTime, Date endTime);
+
+    /**
+     * 每日用户活跃数量
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<UserCountVo> findAddUserCount(Date startTime, Date endTime);
 
 }

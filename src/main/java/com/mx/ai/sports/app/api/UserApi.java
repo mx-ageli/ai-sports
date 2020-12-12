@@ -3,8 +3,10 @@ package com.mx.ai.sports.app.api;
 import com.mx.ai.sports.common.entity.AiSportsResponse;
 import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.common.utils.AccountValidatorUtil;
+import com.mx.ai.sports.system.query.UserCountQuery;
 import com.mx.ai.sports.system.query.UserUpdateVo;
 import com.mx.ai.sports.system.vo.TempStudentVo;
+import com.mx.ai.sports.system.vo.UserCountVo;
 import com.mx.ai.sports.system.vo.UserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -23,6 +25,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 用户相关接口
@@ -38,8 +42,8 @@ public interface UserApi {
     /**
      * 手机号和短信验证码登录获得token
      *
-     * @param mobile   手机号
-     * @param code     验证码
+     * @param mobile 手机号
+     * @param code   验证码
      * @return token
      */
     @ApiOperation(value = "#已实现 图21# 手机号和短信验证码登录获得token,如果账号没有注册则会在第一次登录时自动注册。<接口限流：一分钟内只能访问3次>")
@@ -136,6 +140,7 @@ public interface UserApi {
 
     /**
      * 绑定手机号与学生临时信息的关系,初始化学生基础信息
+     *
      * @param tempStudentId
      * @return
      */
@@ -144,5 +149,25 @@ public interface UserApi {
     @RequestMapping(value = "/bind_student_info", method = RequestMethod.GET)
     AiSportsResponse<Boolean> bindStudentInfo(@NotNull @RequestParam("tempStudentId") Long tempStudentId);
 
+    /**
+     * 查询时间范围内的每日用户活跃数量
+     *
+     * @param query
+     * @return
+     */
+    @ApiOperation(value = "#已实现 2020-12-11# 查询时间范围内的每日用户活跃数量")
+    @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "UserCountQuery", required = true)
+    @RequestMapping(value = "/find_active_user_count", method = RequestMethod.POST)
+    AiSportsResponse<List<UserCountVo>> findActiveUserCount(@RequestBody @Valid UserCountQuery query);
 
+    /**
+     * 查询时间范围内的每日用户活跃数量
+     *
+     * @param query
+     * @return
+     */
+    @ApiOperation(value = "#已实现 2020-12-11# 查询时间范围内的每日用户活跃数量")
+    @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "UserCountQuery", required = true)
+    @RequestMapping(value = "/find_add_user_count", method = RequestMethod.POST)
+    AiSportsResponse<List<UserCountVo>> findAddUserCount(@RequestBody @Valid UserCountQuery query);
 }

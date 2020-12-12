@@ -177,4 +177,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public List<User> findByRole(Long value) {
         return this.baseMapper.selectList(new LambdaQueryWrapper<User>().eq(User::getRoleId, value));
     }
+
+    @Override
+    public List<UserCountVo> findActiveUserCount(Date startTime, Date endTime) {
+        return this.baseMapper.findActiveUserCount(startTime, endTime);
+    }
+
+    @Override
+    public List<UserCountVo> findAddUserCount(Date startTime, Date endTime) {
+        return this.baseMapper.findAddUserCount(startTime, endTime);
+    }
 }

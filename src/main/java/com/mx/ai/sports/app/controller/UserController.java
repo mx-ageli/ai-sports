@@ -16,10 +16,12 @@ import com.mx.ai.sports.system.entity.Classes;
 import com.mx.ai.sports.system.entity.TeacherRegister;
 import com.mx.ai.sports.system.entity.TempStudent;
 import com.mx.ai.sports.system.entity.User;
+import com.mx.ai.sports.system.query.UserCountQuery;
 import com.mx.ai.sports.system.service.IClassesService;
 import com.mx.ai.sports.system.service.ITempStudentService;
 import com.mx.ai.sports.system.service.IUserService;
 import com.mx.ai.sports.system.vo.TempStudentVo;
+import com.mx.ai.sports.system.vo.UserCountVo;
 import com.mx.ai.sports.system.vo.UserSimple;
 import com.mx.ai.sports.system.query.UserUpdateVo;
 import com.mx.ai.sports.system.vo.UserVo;
@@ -361,5 +363,17 @@ public class UserController extends BaseRestController implements UserApi {
         }
         // 绑定基础信息
         return new AiSportsResponse<Boolean>().success().data(tempStudentService.bind(tempStudent, user));
+    }
+
+    @Override
+    public AiSportsResponse<List<UserCountVo>> findActiveUserCount(@RequestBody @Valid UserCountQuery query) {
+
+        return new AiSportsResponse<List<UserCountVo>>().success().data(userService.findActiveUserCount(query.getStartTime(), query.getEndTime()));
+    }
+
+    @Override
+    public AiSportsResponse<List<UserCountVo>> findAddUserCount(@RequestBody @Valid UserCountQuery query) {
+
+        return new AiSportsResponse<List<UserCountVo>>().success().data(userService.findAddUserCount(query.getStartTime(), query.getEndTime()));
     }
 }

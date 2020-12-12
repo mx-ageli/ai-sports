@@ -6,9 +6,11 @@ import com.mx.ai.sports.system.entity.School;
 import com.mx.ai.sports.system.entity.TeacherRegister;
 import com.mx.ai.sports.system.entity.User;
 import com.mx.ai.sports.system.query.ClassesQuery;
+import com.mx.ai.sports.system.vo.UserCountVo;
 import com.mx.ai.sports.system.vo.UserSmallVo;
 import com.mx.ai.sports.system.vo.UserVo;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -98,4 +100,20 @@ public interface IUserService extends IService<User> {
      * @return
      */
     List<User> findByRole(Long value);
+
+    /**
+     * 每日用户活跃数量
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<UserCountVo> findActiveUserCount(Date startTime, Date endTime);
+
+    /**
+     * 每日用户活跃数量
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    List<UserCountVo> findAddUserCount(Date startTime, Date endTime);
 }
