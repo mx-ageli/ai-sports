@@ -1,6 +1,7 @@
 package com.mx.ai.sports.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mx.ai.sports.system.dto.SubjectTeacherDto;
 import com.mx.ai.sports.system.entity.Subject;
 import com.mx.ai.sports.system.mapper.SubjectMapper;
 import com.mx.ai.sports.system.service.ISubjectService;
@@ -39,6 +40,11 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectMapper, Subject> impl
         }
 
         return oldSubjects;
+    }
+
+    @Override
+    public List<SubjectTeacherDto> findSubjectTeacherDto() {
+        return this.baseMapper.findSubjectTeacherDto();
     }
 
 }

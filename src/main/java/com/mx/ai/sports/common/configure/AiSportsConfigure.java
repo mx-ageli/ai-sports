@@ -19,14 +19,14 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 public class AiSportsConfigure {
 
-    @Bean("ekbAsyncThreadPool")
+    @Bean("aiSportAsyncThreadPool")
     public ThreadPoolTaskExecutor asyncThreadPoolTaskExecutor(){
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(5);
         executor.setMaxPoolSize(20);
         executor.setQueueCapacity(200);
         executor.setKeepAliveSeconds(30);
-        executor.setThreadNamePrefix("Ekb-Async-Thread");
+        executor.setThreadNamePrefix("Ai-Sport-Async-Thread");
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setAwaitTerminationSeconds(60);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());

@@ -3,6 +3,7 @@ package com.mx.ai.sports.course.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mx.ai.sports.common.entity.QueryRequest;
+import com.mx.ai.sports.course.dto.StudentRecordTotalDto;
 import com.mx.ai.sports.course.entity.RecordStudent;
 import com.mx.ai.sports.course.query.StudentCourseQuery;
 import com.mx.ai.sports.course.vo.RecordStudentVo;
@@ -56,4 +57,12 @@ public interface IRecordStudentService extends IService<RecordStudent> {
     void updateSignedToGone(Long recordStudentId, boolean isGone);
 
     Long getIdByCourseRecordIdUserId(Long courseRecordId, Long userId);
+
+    /**
+     * 查询学生成绩统计记录
+     * @param subjectId
+     * @return
+     */
+    List<StudentRecordTotalDto> findStudentRecordDetailBySubjectId(Long subjectId);
+
 }

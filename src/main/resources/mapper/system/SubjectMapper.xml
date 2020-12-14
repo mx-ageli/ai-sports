@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mx.ai.sports.system.mapper.SubjectMapper">
+
+    <select id="findSubjectTeacherDto" resultType="com.mx.ai.sports.system.dto.SubjectTeacherDto">
+        SELECT
+            asu.SUBJECT_ID AS subjectId,
+            asu.`NAME` AS subjectName,
+            asu.NUMBER AS number,
+            ass.SUBJECT_SEQ_ID AS subjectSeqId,
+            ass.SEQ AS seq,
+            su.USER_ID AS userId,
+            su.FULL_NAME AS fullName
+        FROM
+            APP_SUBJECT_SEQ ass,
+            APP_SUBJECT asu,
+            APP_SUBJECT_TEACHER ast,
+            SYS_USER su
+        WHERE
+            ass.SUBJECT_ID = asu.SUBJECT_ID
+            AND ast.SUBJECT_SEQ_ID = ass.SUBJECT_SEQ_ID
+            AND su.USER_ID = ast.USER_ID
+        ORDER BY
+            ass.SUBJECT_ID,
+            ass.SEQ
+    </select>
+</mapper>

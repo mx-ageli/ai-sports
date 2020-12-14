@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mx.ai.sports.common.entity.QueryRequest;
 import com.mx.ai.sports.common.entity.SignedStatusEnum;
+import com.mx.ai.sports.course.dto.StudentRecordTotalDto;
 import com.mx.ai.sports.course.entity.Keep;
 import com.mx.ai.sports.course.entity.RecordStudent;
 import com.mx.ai.sports.course.entity.Run;
@@ -125,5 +126,10 @@ public class RecordStudentServiceImpl extends ServiceImpl<RecordStudentMapper, R
     @Override
     public Long getIdByCourseRecordIdUserId(Long courseRecordId, Long userId) {
         return baseMapper.getIdByCourseRecordIdUserId(courseRecordId, userId);
+    }
+
+    @Override
+    public List<StudentRecordTotalDto> findStudentRecordDetailBySubjectId(Long subjectId) {
+        return baseMapper.findStudentRecordDetailBySubjectId(subjectId);
     }
 }

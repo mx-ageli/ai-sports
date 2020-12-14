@@ -4,9 +4,12 @@ package com.mx.ai.sports.course.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.mx.ai.sports.course.dto.StudentRecordTotalDto;
 import com.mx.ai.sports.course.entity.RecordStudent;
 import com.mx.ai.sports.course.vo.RecordStudentVo;
 import com.mx.ai.sports.course.vo.StudentCourseVo;
+
+import java.util.List;
 
 /**
  *
@@ -39,5 +42,8 @@ public interface RecordStudentMapper extends BaseMapper<RecordStudent> {
     void updateSignedToGone(Long recordStudentId, boolean isGone);
 
     Long getIdByCourseRecordIdUserId(Long courseRecordId, Long userId);
+
+    List<StudentRecordTotalDto> findStudentRecordDetailBySubjectId(Long subjectId);
+
 
 }

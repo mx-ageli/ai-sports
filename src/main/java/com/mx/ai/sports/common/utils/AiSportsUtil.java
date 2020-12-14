@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 /**
- * EKB工具类
+ * 工具类
  *
  * @author Mengjiaxin
  * @date 2019-08-20 16:25

@@ -9,7 +9,7 @@ import java.util.Date;
  * @author Mengjiaxin
  * @date 2019-08-15
  */
-public class EkbOssObject {
+public class AiSportOssObject {
     /**
      * The key under which this object is stored
      */

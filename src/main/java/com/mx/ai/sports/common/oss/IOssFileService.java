@@ -18,9 +18,9 @@ public interface IOssFileService {
      * 列出某个目录下的所有文件与子文件，文件夹，子文件夹
      *
      * @param path 必填,文件在oss上的全路径
-     * @return List<EkbOssObject>
+     * @return List<AiSportOssObject>
      */
-    List<EkbOssObject> listDir(String path);
+    List<AiSportOssObject> listDir(String path);
 
     /**
      * 上传本地文件

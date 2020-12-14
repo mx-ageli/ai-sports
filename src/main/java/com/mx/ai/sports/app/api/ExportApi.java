@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -56,5 +57,15 @@ public interface ExportApi {
     @ApiOperation(value = "#已实现 2020-10-14# 导入学生基础信息-初始化主课、班级、学生信息")
     @RequestMapping(value = "/import_student", method = RequestMethod.POST)
     AiSportsResponse<Boolean> importStudent(@NotNull MultipartFile file);
+
+    /**
+     * 导出时间段内的课程统计数据
+     *
+     * @return
+     */
+    @ApiOperation(value = "#已实现 2020-12-13# 导出某一个学期内的学生合格上课记录")
+    @ApiImplicitParam(name = "termId", value = "学期Id", paramType = "query", dataType = "long", required = true)
+    @RequestMapping(value = "/export_student_record", method = RequestMethod.POST)
+    AiSportsResponse<String> exportStudentRecord(@NotNull @RequestParam("termId") Long termId);
 
 }

@@ -31,15 +31,15 @@ public class AliyunOssFileServiceImpl implements IOssFileService {
     }
 
     @Override
-    public List<EkbOssObject> listDir(String path) {
+    public List<AiSportOssObject> listDir(String path) {
         ListObjectsRequest listObjectsRequest = new ListObjectsRequest(aliyunOssConfig.getBucketName());
         listObjectsRequest.setPrefix(path);
-        List<EkbOssObject> list = new ArrayList<>();
+        List<AiSportOssObject> list = new ArrayList<>();
         OSSClient ossClient = this.getOssClient();
         try {
             ObjectListing listing = ossClient.listObjects(listObjectsRequest);
             for (OSSObjectSummary objectSummary : listing.getObjectSummaries()) {
-                EkbOssObject obj = new EkbOssObject();
+                AiSportOssObject obj = new AiSportOssObject();
                 obj.setOssFilePath(objectSummary.getKey());
                 obj.setOssType(OssTypeEnum.ALI_YUN);
                 obj.setFileSize(objectSummary.getSize());

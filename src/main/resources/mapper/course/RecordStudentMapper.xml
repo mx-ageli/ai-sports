@@ -89,4 +89,51 @@
     <select id="getIdByCourseRecordIdUserId" resultType="java.lang.Long">
         SELECT RECORD_STUDENT_ID FROM APP_RECORD_STUDENT ars WHERE ars.COURSE_RECORD_ID = #{courseRecordId} AND USER_ID = #{userId}
     </select>
+    <select id="findStudentRecordDetailBySubjectId"
+            resultType="com.mx.ai.sports.course.dto.StudentRecordTotalDto">
+        SELECT
+            t1.userId,
+            t1.sno,
+            t1.fullName,
+            t1.classId,
+            t1.classesName,
+            t1.subjectId,
+            t1.subjectSeqId,
+            t2.courseId,
+            t2.courseName,
+            t2.isPass
+        FROM
+            (
+            SELECT
+                su.USER_ID AS userId,
+                su.SNO AS sno,
+                su.FULL_NAME AS fullName,
+                su.CLASSES_ID AS classId,
+                sc.CLASSES_NAME AS classesName,
+                su.SUBJECT_ID AS subjectId,
+                su.SUBJECT_SEQ_ID AS subjectSeqId
+            FROM
+                SYS_USER su,
+                SYS_CLASSES sc
+            WHERE
+                su.CLASSES_ID = sc.CLASSES_ID
+                AND su.SUBJECT_ID = #{subjectId}
+            ORDER BY
+                su.CLASSES_ID
+            ) t1
+            LEFT JOIN (
+            SELECT
+                ars.COURSE_ID AS courseId,
+                ac.COURSE_NAME AS courseName,
+                ars.USER_ID AS userId,
+                ars.IS_PASS AS isPass
+            FROM
+                APP_RECORD_STUDENT ars,
+                APP_COURSE ac
+            WHERE
+                ars.COURSE_ID = ac.COURSE_ID
+            AND IS_PASS = 1
+            ) t2 ON t1.userId = t2.userId
+
+    </select>
 </mapper>

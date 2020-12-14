@@ -1,7 +1,7 @@
 package com.mx.ai.sports.common.exception;
 
 /**
- * Ekb系统内部异常
+ * 系统内部异常
  * @author Mengjiaxin
  * @date 2019-08-20 16:20
  */
