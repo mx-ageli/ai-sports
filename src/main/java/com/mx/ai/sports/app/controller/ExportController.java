@@ -30,6 +30,7 @@ import com.mx.ai.sports.system.service.ITeacherRegisterService;
 import com.mx.ai.sports.system.service.ITermService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -237,15 +238,19 @@ public class ExportController extends BaseRestController implements ExportApi {
 
                 // 基于模板导出Excel
                 try {
-                    File templateFile = ResourceUtils.getFile("classpath:ai_student_record_template.xlsx");
+                    String templateFileName = "ai_student_record_template.xlsx";
+
+                    FileUtil.writeToLocal(templateFileName, (new DefaultResourceLoader()).getResource("classpath:" + templateFileName).getInputStream());
                     // 最后输出的文件名称
                     String fileName = allFileName + "/" + dto.getSubjectName() + "/" + dto.getSubjectName() + "-" + dto.getSeq() + "-" + dto.getFullName() + ".xlsx";
 
                     cn.hutool.core.io.FileUtil.mkdir(new File(allFileName + "/" + dto.getSubjectName()));
 
-                    ExcelUtils.getInstance().exportObjects2Excel(templateFile.getAbsolutePath(), 0, totalDtoList, titleData, ExportStudentRecordTotalDto.class, false, fileName);
+                    ExcelUtils.getInstance().exportObjects2Excel(templateFileName, 0, totalDtoList, titleData, ExportStudentRecordTotalDto.class, false, fileName);
 
                 } catch (Excel4JException | FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
