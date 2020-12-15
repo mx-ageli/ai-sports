@@ -179,7 +179,7 @@ public class ExportController extends BaseRestController implements ExportApi {
                 // 一个课程序号下面的所有的学生健身记录，这里也就对应到一个sheet的数据
                 List<StudentRecordTotalDto> seqStudentRecordList = studentRecordTotalMap.get(dto.getSubjectSeqId());
                 if (CollectionUtils.isEmpty(seqStudentRecordList)) {
-                    return;
+                    continue;
                 }
                 log.info("课程：{}-{}, 对应有{}条数据 ", dto.getSubjectName(), dto.getSeq(), seqStudentRecordList.size());
                 // 每一个学生对应的多次成绩
@@ -198,6 +198,10 @@ public class ExportController extends BaseRestController implements ExportApi {
 
                     totalDto.setClassesName(studentRecordList.get(0).getClassesName());
                     totalDto.setScore(studentRecordList.stream().filter(e -> e.getCourseId() != null).count());
+                    // 如果学生的及格次数大于10，就直接赋值为10分
+                    if(totalDto.getScore() > 10){
+                        totalDto.setScore(10);
+                    }
                     totalDto.setFullName(studentRecordList.get(0).getFullName());
                     totalDto.setSno(studentRecordList.get(0).getSno());
 
@@ -248,9 +252,7 @@ public class ExportController extends BaseRestController implements ExportApi {
 
                     ExcelUtils.getInstance().exportObjects2Excel(templateFileName, 0, totalDtoList, titleData, ExportStudentRecordTotalDto.class, false, fileName);
 
-                } catch (Excel4JException | FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
+                } catch (Excel4JException | IOException e) {
                     e.printStackTrace();
                 }
             }
