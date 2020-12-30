@@ -68,4 +68,14 @@ public interface ExportApi {
     @RequestMapping(value = "/export_student_record", method = RequestMethod.POST)
     AiSportsResponse<String> exportStudentRecord(@NotNull @RequestParam("termId") Long termId);
 
+    /**
+     * 导出某一个学期内的学生平时成绩表
+     *
+     * @return
+     */
+    @ApiOperation(value = "#已实现 2020-12-30# 导出某一个学期内的学生平时成绩表")
+    @ApiImplicitParam(name = "termId", value = "学期Id", paramType = "query", dataType = "long", required = true)
+    @RequestMapping(value = "/export_student_score", method = RequestMethod.POST)
+    AiSportsResponse<String> exportStudentScore(@NotNull @RequestParam("termId") Long termId);
+
 }

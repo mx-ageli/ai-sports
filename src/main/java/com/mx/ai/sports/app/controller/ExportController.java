@@ -13,10 +13,7 @@ import com.mx.ai.sports.common.exception.AiSportsException;
 import com.mx.ai.sports.common.oss.OssUploadUtil;
 import com.mx.ai.sports.common.utils.FileUtil;
 import com.mx.ai.sports.common.utils.ZipMultiFile;
-import com.mx.ai.sports.course.dto.ExportRecordStudentDto;
-import com.mx.ai.sports.course.dto.ExportRecordTotalDto;
-import com.mx.ai.sports.course.dto.ExportStudentRecordTotalDto;
-import com.mx.ai.sports.course.dto.StudentRecordTotalDto;
+import com.mx.ai.sports.course.dto.*;
 import com.mx.ai.sports.course.query.ExportAllQuery;
 import com.mx.ai.sports.course.service.ICourseService;
 import com.mx.ai.sports.course.service.IRecordStudentService;
@@ -32,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,7 +37,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -251,6 +246,90 @@ public class ExportController extends BaseRestController implements ExportApi {
                     cn.hutool.core.io.FileUtil.mkdir(new File(allFileName + "/" + dto.getSubjectName()));
 
                     ExcelUtils.getInstance().exportObjects2Excel(templateFileName, 0, totalDtoList, titleData, ExportStudentRecordTotalDto.class, false, fileName);
+
+                } catch (Excel4JException | IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        String zipFileName = allFileName + ".zip";
+        ZipMultiFile.zipMultiFile(allFileName, zipFileName, true);
+        // 删除文件夹
+        FileUtil.delete(allFileName);
+
+        return new AiSportsResponse<String>().success().data(ossUploadUtil.uploadToOss(new File(zipFileName)));
+    }
+
+    @Override
+    public AiSportsResponse<String> exportStudentScore(@NotNull Long termId) {
+        Term term = termService.getById(termId);
+        if (term == null) {
+            return new AiSportsResponse<String>().fail().message("没有查询到学期信息！");
+        }
+
+        // 先查询到所有的课程以及序号和老师
+        List<SubjectTeacherDto> subjectTeacherList = subjectService.findSubjectTeacherDto();
+        // 根据课程Id进行分组
+        Map<Long, List<SubjectTeacherDto>> subjectTeacherMap = subjectTeacherList.stream().collect(Collectors.groupingBy(SubjectTeacherDto::getSubjectId));
+
+        String allFileName = "平时成绩表(" + term.getTermName() + ")";
+
+        subjectTeacherMap.forEach((subjectId, subjectSeqList) -> {
+            // 根据课程Id去查询课程下面的学生所有合格的健身记录
+            List<StudentRecordTotalDto> studentRecordTotalList = recordStudentService.findStudentRecordDetailBySubjectId(subjectId);
+            // 按照课程序号去分组
+            Map<Long, List<StudentRecordTotalDto>> studentRecordTotalMap = studentRecordTotalList.stream().collect(Collectors.groupingBy(StudentRecordTotalDto::getSubjectSeqId));
+
+            // subjectSeqList 对应一个课程下的很多个序号， 其中一个序号就对应一个sheet页
+            for (SubjectTeacherDto dto : subjectSeqList) {
+                // 一个课程序号下面的所有的学生健身记录，这里也就对应到一个sheet的数据
+                List<StudentRecordTotalDto> seqStudentRecordList = studentRecordTotalMap.get(dto.getSubjectSeqId());
+                if (CollectionUtils.isEmpty(seqStudentRecordList)) {
+                    continue;
+                }
+                log.info("课程：{}-{}, 对应有{}条数据 ", dto.getSubjectName(), dto.getSeq(), seqStudentRecordList.size());
+                // 每一个学生对应的多次成绩
+                Map<Long, List<StudentRecordTotalDto>> seqStudentRecordMap = seqStudentRecordList.stream().collect(Collectors.groupingBy(StudentRecordTotalDto::getUserId));
+                // 表头内容
+                Map<String, String> titleData = new HashMap<>(4);
+                titleData.put("number", dto.getNumber());
+                titleData.put("subjectName", dto.getSubjectName());
+                titleData.put("seq", dto.getSeq());
+                titleData.put("teacherName", dto.getFullName());
+                titleData.put("termName", term.getTermName());
+
+                List<ExportStudentScoreTotalDto> totalDtoList = new ArrayList<>();
+                seqStudentRecordMap.forEach((userId, studentRecordList) -> {
+                    ExportStudentScoreTotalDto totalDto = new ExportStudentScoreTotalDto();
+
+                    totalDto.setClassesName(studentRecordList.get(0).getClassesName());
+                    long score = studentRecordList.stream().filter(e -> e.getCourseId() != null).count();
+                    totalDto.setAiScore(score * 0.5f);
+                    totalDto.setSignedScore(score * 0.5f);
+                    // 如果学生的及格次数大于10，就直接赋值为10分
+                    if(score > 10){
+                        totalDto.setAiScore(5f);
+                        totalDto.setSignedScore(5f);
+                    }
+                    totalDto.setFullName(studentRecordList.get(0).getFullName());
+                    totalDto.setSno(studentRecordList.get(0).getSno());
+                    totalDto.setScore(totalDto.getAiScore() + totalDto.getSignedScore());
+
+                    totalDtoList.add(totalDto);
+                });
+
+                // 基于模板导出Excel
+                try {
+                    String templateFileName = "ai_student_score_template.xlsx";
+
+                    FileUtil.writeToLocal(templateFileName, (new DefaultResourceLoader()).getResource("classpath:" + templateFileName).getInputStream());
+                    // 最后输出的文件名称
+                    String fileName = allFileName + "/" + dto.getSubjectName() + "/" + dto.getSubjectName() + "-" + dto.getSeq() + "-" + dto.getFullName() + ".xlsx";
+
+                    cn.hutool.core.io.FileUtil.mkdir(new File(allFileName + "/" + dto.getSubjectName()));
+
+                    ExcelUtils.getInstance().exportObjects2Excel(templateFileName, 0, totalDtoList, titleData, ExportStudentScoreTotalDto.class, false, fileName);
 
                 } catch (Excel4JException | IOException e) {
                     e.printStackTrace();
