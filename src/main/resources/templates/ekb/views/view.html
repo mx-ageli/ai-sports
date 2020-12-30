@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${viewObj.title}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <style>
+        .article-title h2 {
+            font-size: 50px;
+            line-height: 58px;
+            padding-top: 30px;
+            padding-bottom: 20px;
+            text-align: justify;
+            font-weight: 700;
+            font-family: "Microsoft Yahei", "微软雅黑", "宋体";
+        }
+
+        body {
+            margin: 0px 80px 50px 80px;
+        }
+
+    </style>
+
+</head>
+<body>
+<div th:utext="${viewObj.content}"></div>
+</body>
+</html>

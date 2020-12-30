@@ -16,6 +16,8 @@ import org.springframework.context.annotation.PropertySource;
 @ConfigurationProperties(prefix = "ai-sports")
 public class AiSportsProperties {
 
+    private ShiroProperties shiro = new ShiroProperties();
+
     private boolean openAopLog = true;
 
 }

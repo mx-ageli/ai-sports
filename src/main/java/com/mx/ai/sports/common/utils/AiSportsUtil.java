@@ -123,6 +123,10 @@ public class AiSportsUtil {
     }
 
 
+    public static String view(String viewName) {
+        return AiSportsConstant.VIEW_PREFIX + viewName;
+    }
+
     /**
      * 获取随机字符,自定义长度
      */

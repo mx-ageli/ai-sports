@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Ai体育</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" th:href="@{layui/css/layui.css(t=2)}" media="all">
+    <link rel="stylesheet" th:href="@{ekb/css/ekb.css(t=2)}" media="all">
+    <link rel="stylesheet" th:href="@{ekb/css/login.css(t=2)}" media="all">
+    <link rel="icon" th:href="@{ekb/images/favicon.ico}" type="image/x-icon"/>
+</head>
+<body>
+<div id="ekb-login" lay-title="登录">
+    <div class="login-wrap">
+        <div class="layui-container">
+            <div class="layui-row">
+                <div class="layui-col-xs12 layui-col-lg4 layui-col-lg-offset4 ekb-tc">
+                    <div class="layui-logo"><span><b>Ai体育</b> </span></div>
+                </div>
+                <div class="layui-col-xs12 layui-col-lg4 layui-col-lg-offset4" id="login-div">
+                    <div class="layui-form" lay-filter="login-form">
+                        <div class="layui-anim layui-anim-upbit">
+                            <div class="normal-login-form">
+                                <div class="layui-form-item">
+                                    <label class="layui-icon label-icon layui-icon-username"></label>
+                                    <input type="text" name="username" lay-verify="required"
+                                           placeholder="用户名" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-item password-block">
+                                    <label class="layui-icon label-icon layui-icon-password"></label>
+                                    <input type="password" name="password" lay-verify="required"
+                                           placeholder="密码" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-item">
+                                    <button class="layui-btn layui-btn-normal layui-btn-fluid" lay-submit
+                                            lay-filter="login-submit" id="login">
+                                        <i style="display: none"
+                                           class="layui-icon layui-icon-loading layui-icon layui-anim layui-anim-rotate layui-anim-loop"></i>
+                                        立即登录
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{layui/layui.js}"></script>
+<script th:inline="javascript">
+    var ctx = [[@{/}]];
+
+        layui.extend({
+            validate: './ekb/lay/modules/validate'
+        }).use(['form', 'layer', 'validate'], function (form, layer) {
+            var $ = layui.jquery,
+                validate = layui.validate,
+                $view = $('#ekb-login'),
+                type = 'login';
+
+            form.verify(validate);
+            form.render();
+
+            //提交登录表单
+            form.on('submit(login-submit)', function (data) {
+                var loading = $(this).find('.layui-icon');
+                if (loading.is(":visible")) return;
+                loading.show();
+                $.post(ctx + 'login', data.field, function (r) {
+                    if (r.code === 200) {
+                        location.href = ctx + 'index';
+                    } else {
+                        layer.msg(r.message);
+                        loading.hide();
+                    }
+                });
+                return false;
+            });
+
+
+
+            $(document).on('keydown', function (e) {
+                if (e.keyCode === 13) {
+                    if (type === 'login')
+                        $view.find('#login').trigger("click");
+                    if (type === 'regist')
+                        $view.find('#regist').trigger("click");
+                }
+            });
+        });
+</script>
+</body>
+</html>

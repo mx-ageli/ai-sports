@@ -132,4 +132,14 @@ public class AiSportsConstant {
      */
     public static final String ENTRY_END_TIME = "17:00";
 
+    /**
+     * 后台密码
+     */
+    public static final String PASSWORD = "ai075380";
+
+    /**
+     * 前端页面路径前缀
+     */
+    public static final String VIEW_PREFIX = "ekb/views/";
+
 }

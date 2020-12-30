@@ -1,0 +1,90 @@
+<style>
+    #ekb-index .welcome-info {
+        border: 1px solid #f1f1f1;
+        margin-bottom: .5rem;
+        padding: .5rem;
+    }
+
+    #ekb-index .welcome-info-wrapper {
+        padding: .2rem;
+        display: inline-block
+    }
+
+    #ekb-index .welcome-info-wrapper .user-header {
+        display: inline-block;
+        vertical-align: middle
+    }
+
+    #ekb-index .welcome-info-wrapper .user-header img {
+        width: 5rem;
+        margin: .5rem 1rem;
+        border-radius: 50%
+    }
+
+    #ekb-index .welcome-info-wrapper .user-info {
+        display: inline-block;
+        vertical-align: middle
+    }
+
+    #ekb-index .welcome-info-wrapper .user-info .random-message {
+        font-size: 1rem;
+        margin-bottom: .2rem;
+        max-width: 21rem
+    }
+
+    #ekb-index .welcome-info-wrapper .user-info .user-dept, #ekb-index .welcome-info-wrapper .user-info .user-login-info {
+        color: rgba(0, 0, 0, 0.45);
+    }
+
+    #ekb-index .login-count-table {
+        width: 100%;
+        margin: 1rem;
+    }
+
+    #ekb-index .login-count-table .count {
+        padding-top: .8rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1890ff
+    }
+
+    #ekb-index .project-table {
+        padding: .5rem;
+        border: 1px solid #f1f1f1;
+        width: 100%
+    }
+
+    #ekb-index .project-table-td {
+        padding: .5rem 0.7rem;
+        border: 1px solid #f1f1f1;
+    }
+
+    #ekb-index .project-table-td a {
+        color: #42b983;
+        font-size: .9rem;
+        font-weight: 600;
+    }
+
+    #ekb-index .project-desc {
+        color: rgba(0, 0, 0, 0.45);
+    }
+</style>
+<div class="layui-fluid layui-anim ekb-anim-up" id="ekb-index" lay-title="系统首页">
+    <div class="layui-row layui-col-space8 ekb-container">
+
+    </div>
+</div>
+<script data-th-inline="javascript" type="text/javascript">
+    layui.use(['apexcharts', 'ekb', 'jquery', 'util'], function () {
+        var $ = layui.jquery,
+            util = layui.util,
+            $view = $('#ekb-index'),
+            ekb = layui.ekb;
+
+
+        $view.on('click', '#ekb-index-user',function () {
+            ekb.navigate("/user/profile");
+        })
+
+    });
+</script>
