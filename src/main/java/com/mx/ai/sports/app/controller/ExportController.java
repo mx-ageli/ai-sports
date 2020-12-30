@@ -305,16 +305,15 @@ public class ExportController extends BaseRestController implements ExportApi {
 
                     totalDto.setClassesName(studentRecordList.get(0).getClassesName());
                     long score = studentRecordList.stream().filter(e -> e.getCourseId() != null).count();
-                    totalDto.setAiScore(score * 0.5f);
-                    totalDto.setSignedScore(score * 0.5f);
-                    // 如果学生的及格次数大于10，就直接赋值为10分
+                    totalDto.setAiScore(score * 10);
+                    totalDto.setSignedScore(score * 10);
+                    // 如果学生的及格次数大于10，就直接赋值为100分
                     if(score > 10){
-                        totalDto.setAiScore(5f);
-                        totalDto.setSignedScore(5f);
+                        totalDto.setAiScore(100);
+                        totalDto.setSignedScore(100);
                     }
                     totalDto.setFullName(studentRecordList.get(0).getFullName());
                     totalDto.setSno(studentRecordList.get(0).getSno());
-                    totalDto.setScore(totalDto.getAiScore() + totalDto.getSignedScore());
 
                     totalDtoList.add(totalDto);
                 });

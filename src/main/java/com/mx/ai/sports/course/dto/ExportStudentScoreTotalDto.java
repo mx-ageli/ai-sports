@@ -26,10 +26,10 @@ public class ExportStudentScoreTotalDto implements Serializable {
     private String classesName;
 
     @ExcelField(title = "AI健身50%", order = 4)
-    private float aiScore;
+    private long aiScore;
 
     @ExcelField(title = "考勤50%", order = 5)
-    private float signedScore;
+    private long signedScore;
 
     @ExcelField(title = "", order = 6)
     private String empty1;
@@ -43,7 +43,10 @@ public class ExportStudentScoreTotalDto implements Serializable {
     private String empty5;
 
     @ExcelField(title = "平时成绩", order = 11)
-    private float score;
+    private String score;
+
+    @ExcelField(title = "备注", order = 12)
+    private String remark;
 
 
 
