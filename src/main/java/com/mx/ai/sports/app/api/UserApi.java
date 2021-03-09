@@ -170,4 +170,20 @@ public interface UserApi {
     @ApiImplicitParam(name = "query", value = "查询参数", paramType = "body", dataType = "UserCountQuery", required = true)
     @RequestMapping(value = "/find_add_user_count", method = RequestMethod.POST)
     AiSportsResponse<List<UserCountVo>> findAddUserCount(@RequestBody @Valid UserCountQuery query);
+
+
+    /**
+     * 修改学生手机号
+     *
+     * @param oldPhone
+     * @param newPhone
+     * @return
+     */
+    @ApiOperation(value = "#已实现 2021-03-09# 修改学生手机号")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "oldPhone", value = "老手机号", paramType = "query", dataType = "string", required = true),
+            @ApiImplicitParam(name = "newPhone", value = "新手机号", paramType = "query", dataType = "string", required = true)
+    })
+    @RequestMapping(value = "/change_username", method = RequestMethod.GET)
+    AiSportsResponse<Boolean> changeUsername(@RequestParam("oldPhone") String oldPhone, @RequestParam("newPhone") String newPhone);
 }

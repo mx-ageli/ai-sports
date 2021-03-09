@@ -376,4 +376,23 @@ public class UserController extends BaseRestController implements UserApi {
 
         return new AiSportsResponse<List<UserCountVo>>().success().data(userService.findAddUserCount(query.getStartTime(), query.getEndTime()));
     }
+
+    @Override
+    public AiSportsResponse<Boolean> changeUsername(@RequestParam("oldPhone") String oldPhone, @RequestParam("newPhone") String newPhone) {
+
+        User user = userService.findByUsername(newPhone);
+        if (user != null) {
+
+            if (StringUtils.isNotBlank(user.getFullName())) {
+                return new AiSportsResponse<Boolean>().fail().message("新手机号已经被" + user.getFullName() + "(学号:" + user.getSno() + ")绑定过，不能执行绑定操作");
+            }
+            // 把新手机号对应的账号先删除
+            userService.removeById(user.getUserId());
+        }
+
+        User updateUser = userService.findByUsername(oldPhone);
+        updateUser.setUsername(newPhone);
+
+        return new AiSportsResponse<Boolean>().data(userService.updateById(updateUser)).message("修改成功！");
+    }
 }
