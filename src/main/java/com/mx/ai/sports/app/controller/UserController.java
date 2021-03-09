@@ -391,6 +391,9 @@ public class UserController extends BaseRestController implements UserApi {
         }
 
         User updateUser = userService.findByUsername(oldPhone);
+        if(updateUser == null){
+            return new AiSportsResponse<Boolean>().fail().message("老手机号不存在，" + oldPhone);
+        }
         updateUser.setUsername(newPhone);
 
         return new AiSportsResponse<Boolean>().data(userService.updateById(updateUser)).message("修改成功！");
