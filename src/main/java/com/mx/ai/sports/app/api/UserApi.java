@@ -184,6 +184,6 @@ public interface UserApi {
             @ApiImplicitParam(name = "oldPhone", value = "老手机号", paramType = "query", dataType = "string", required = true),
             @ApiImplicitParam(name = "newPhone", value = "新手机号", paramType = "query", dataType = "string", required = true)
     })
-    @RequestMapping(value = "/change_username", method = RequestMethod.GET)
+    @RequestMapping(value = "/v/change_username", method = RequestMethod.GET)
     AiSportsResponse<Boolean> changeUsername(@RequestParam("oldPhone") String oldPhone, @RequestParam("newPhone") String newPhone);
 }
